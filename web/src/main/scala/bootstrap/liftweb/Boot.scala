@@ -35,7 +35,7 @@ class Boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     // Build SiteMap (used for navigation...)
-    val entries = Menu(Loc("Home", List("index"), "Home")) :: Menu(Loc("Erste Seite", List("firstPage"), "Erste Seite")) :: Nil
+    val entries = Menu(Loc("Home", List("index"), "Home")) :: Menu(Loc("First Page", List("firstPage"), "First Page")) :: Nil
     LiftRules.setSiteMap(SiteMap(entries:_*))
   }
 }
