@@ -17,26 +17,34 @@ package bootstrap.liftweb
 
 import _root_.java.util.Locale
 
-import _root_.net.liftweb.common.{Box,Empty,Full}
-import _root_.net.liftweb.util.{LoanWrapper,LogBoot}
+import _root_.net.liftweb.common.{Box, Empty, Full}
+import _root_.net.liftweb.util.{LoanWrapper, LogBoot}
 import _root_.net.liftweb.http._
 import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import TravelCompanionScala.model._
 import S.?
+import TravelCompanionScala.snippet.isLoggedIn
 
 /**
-  * A class that's instantiated early and run.  It allows the application
-  * to modify lift's environment
-  */
+ * A class that's instantiated early and run.  It allows the application
+ * to modify lift's environment
+ */
 class Boot {
   def boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     // Build SiteMap (used for navigation...)
-    val entries = Menu(Loc("Home", List("index"), "Home")) :: Menu(Loc("First Page", List("firstPage"), "First Page")) :: Nil
-    LiftRules.setSiteMap(SiteMap(entries:_*))
+    val AuthRequired = If(() => isLoggedIn.get, () => RedirectResponse("/login"))
+    // Build SiteMap
+    val entries = Menu(Loc("login", "login" :: Nil, "Login", Hidden)) ::
+            Menu(Loc("index", "index" :: Nil, "Startseite", AuthRequired)) ::
+            Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired)) ::
+            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired)) ::
+            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) ::
+            Nil
+    LiftRules.setSiteMap(SiteMap(entries: _*))
   }
 }
 

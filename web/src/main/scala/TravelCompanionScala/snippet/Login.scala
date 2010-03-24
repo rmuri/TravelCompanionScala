@@ -1,8 +1,10 @@
-package TravelCompanionScala.model
+package TravelCompanionScala.snippet
 
 import _root_.net.liftweb.util._
-import Helpers._;
+import Helpers._
 import xml.NodeSeq
+import net.liftweb.http._
+import net.liftweb.http.SHtml._
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,12 +14,25 @@ import xml.NodeSeq
  * To change this template use File | Settings | File Templates.
  */
 
-class Login  {
+object userName extends RequestVar[String]("")
+object password extends RequestVar[String]("")
+// You can use a StatefulSnippet to avoid using these RequestVar-s
 
-  def login(xhtml: NodeSeq) = {
-        bind("f",xhtml,
-          "username" -> text("", println(_)),
-          "password" -> text("", prinln(_)))
+object isLoggedIn extends SessionVar[Boolean](false)
+
+class Login {
+  def login(xhtml: NodeSeq): NodeSeq = {
+    bind("f", xhtml,
+      "username" -%> text("", userName.set(_)),
+      "password" -%> text("", password.set(_)),
+      "submit" -%> submit("Login", () => {
+        // Call your service login to talk with an external source
+        isLoggedIn.set(true)
+        // If your external session needs its own session ID after authentication (they usually do) you can retain that session ID
+        // into the SessionVar
+        println("Username: " + userName.get + ", Password: " + password.get)
+      })
+      )
   }
-
 }
+// We used -%> function in order for the attributes from the markup to be preserved.
