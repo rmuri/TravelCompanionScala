@@ -43,8 +43,8 @@ class Boot {
             Menu(Loc("index", "index" :: Nil, "Startseite", AuthRequired)) ::
             Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired)) ::
             Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired)) ::
-            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) ::
-            Nil
+            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) :: UserManagement.sitemap
+    
     LiftRules.setSiteMap(SiteMap(entries: _*))
   }
 }
