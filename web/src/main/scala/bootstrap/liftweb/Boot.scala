@@ -35,7 +35,7 @@ class Boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     // Build SiteMap (used for navigation...)
-    val AuthRequired = If(() => isLoggedIn.get, () => RedirectResponse(UserManagement.loginPageURL))
+    val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, "Startseite", AuthRequired)) ::
