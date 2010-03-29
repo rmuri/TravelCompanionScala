@@ -135,7 +135,7 @@ object UserManagement {
       curUser.set(Full(user))
       S.redirectTo("/")
     } else {
-
+      
     }
   }
 
