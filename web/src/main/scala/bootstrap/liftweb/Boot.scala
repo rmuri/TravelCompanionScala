@@ -38,7 +38,7 @@ class Boot {
     val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
-    val entries = Menu(Loc("index", "index" :: Nil, "Startseite", AuthRequired)) ::
+    val entries = Menu(Loc("index", "index" :: Nil, "Startseite")) ::
             Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired)) ::
             Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired)) ::
             Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) :: UserManagement.sitemap
