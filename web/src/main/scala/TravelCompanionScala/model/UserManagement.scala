@@ -21,7 +21,7 @@ import TravelCompanionScala.snippet.isLoggedIn
  */
 
 object UserManagement {
-  val database: List[User] = RalfMuri.get :: DanielHobi.get :: Nil
+  val database: List[User] = new User("Ralf","Muri","rmuri@gmail.com","123456") :: new User("Daniel","Hobi","d.hobi@gmx.ch","1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
   ///
   val basePath: List[String] = "user" :: Nil
 
