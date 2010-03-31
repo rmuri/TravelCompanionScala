@@ -1,10 +1,10 @@
 package TravelCompanionScala.snippet
 
-import net.liftweb.util.Helpers ._
+import net.liftweb.util.Helpers._
 import TravelCompanionScala.model.UserManagement
-import net.liftweb.common.Empty
 import xml.{Text, NodeSeq}
 import net.liftweb.http.{LiftRules, S, SHtml}
+import net.liftweb.common.{Box, Empty}
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,14 +15,26 @@ import net.liftweb.http.{LiftRules, S, SHtml}
  */
 
 class Startpage {
+  def link(xhtml: NodeSeq): NodeSeq = {
+    (<a href="/">Hallo</a>)
+  }
 
-  def link(xhtml: NodeSeq) : NodeSeq = {
-        (<a href="/">Hallo</a>)
+  def linkFromLocName(name: String): Box[NodeSeq] =
+    for{
+      sm <- LiftRules.siteMap
+      loc <- sm.findLoc(name)
+      link <- loc.createDefaultLink
+      linkText <- loc.linkText} yield <a href={link}>
+      {linkText}
+    </a>
+
+  def makelink(xhtml: NodeSeq): NodeSeq = {
+    linkFromLocName("tour") openOr Text("huhu")
   }
 
   // cheap variant
-  def link2(xhtml: NodeSeq) : NodeSeq = {
-    if(UserManagement.loggedIn_?) {
+  def link2(xhtml: NodeSeq): NodeSeq = {
+    if (UserManagement.loggedIn_?) {
       SHtml.link("/user/login", () => println("hallo"), Text("Edit"))
     } else {
       Text(S.??("must.be.logged.in"))
