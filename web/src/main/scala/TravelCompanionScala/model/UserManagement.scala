@@ -26,6 +26,7 @@ object UserManagement {
   val basePath: List[String] = "user" :: Nil
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
+  private object curUser extends SessionVar[Box[User]](Empty)
 
 
   def loginSuffix = "login"
@@ -80,9 +81,7 @@ object UserManagement {
   ///Login function
   def notLoggedIn_? = !loggedIn_?
 
-  def loggedIn_? = {
-    isLoggedIn.get
-  }
+  def loggedIn_? = !curUser.get.isEmpty
 
   ///wrap it
   def screenWrap: Box[Node] = Full(<lift:surround with="default" at="content">
@@ -133,9 +132,10 @@ object UserManagement {
 
   def checkLogin(user: User) = {
     if (user.email.equals(S.param("username").open_!) && user.password.equals(S.param("password").open_!)) {
-      isLoggedIn.set(true)
+      curUser.set(Full(user))
+      S.redirectTo("/")
     } else {
-      println(S.param("username") + "/" + S.param("password"))
+      
     }
   }
 
@@ -143,7 +143,7 @@ object UserManagement {
   ///Functions
 
   def logout = {
-    isLoggedIn.set(false)
+    curUser.set(Empty)
     S.redirectTo("/")
   }
 
@@ -151,6 +151,9 @@ object UserManagement {
   def login = {
     if (S.post_?) {
       database.foreach(u => checkLogin(u))
+        if(notLoggedIn_?) {
+            S.error({S.??("invalid.credentials")})
+        }
     }
 
     bind("user", loginXhtml,
