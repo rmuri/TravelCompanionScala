@@ -3,8 +3,8 @@ package TravelCompanionScala.snippet
 import net.liftweb.util.Helpers ._
 import TravelCompanionScala.model.UserManagement
 import net.liftweb.common.Empty
-import net.liftweb.http.{S, SHtml}
 import xml.{Text, NodeSeq}
+import net.liftweb.http.{LiftRules, S, SHtml}
 
 /**
  * Created by IntelliJ IDEA.
