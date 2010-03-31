@@ -36,11 +36,12 @@ class Boot {
     LiftRules.addToPackages("TravelCompanionScala")
     // Build SiteMap (used for navigation...)
     val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
+    val isAdmin = If(() => true, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, "Startseite")) ::
             Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired)) ::
-            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired)) ::
+            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired :: isAdmin :: Nil)) ::
             Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))

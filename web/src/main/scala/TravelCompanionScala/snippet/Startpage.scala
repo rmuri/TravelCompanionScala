@@ -19,19 +19,6 @@ class Startpage {
     (<a href="/">Hallo</a>)
   }
 
-  def linkFromLocName(name: String): Box[NodeSeq] =
-    for{
-      sm <- LiftRules.siteMap
-      loc <- sm.findLoc(name)
-      link <- loc.createDefaultLink
-      linkText <- loc.linkText} yield <a href={link}>
-      {linkText}
-    </a>
-
-  def makelink(xhtml: NodeSeq): NodeSeq = {
-    linkFromLocName("tour") openOr Text("huhu")
-  }
-
   // cheap variant
   def link2(xhtml: NodeSeq): NodeSeq = {
     if (UserManagement.loggedIn_?) {
