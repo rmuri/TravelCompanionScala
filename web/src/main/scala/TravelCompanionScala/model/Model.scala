@@ -25,3 +25,4 @@ object Model extends LocalEMF("jpaweb") with RequestVarEM
 
 }
 }
+
