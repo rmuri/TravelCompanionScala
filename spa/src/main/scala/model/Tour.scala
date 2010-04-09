@@ -19,7 +19,10 @@ class Tour {
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id : Long = _
 
+  @Column(name="name")
   val name : String = ""
+
+  @Column(name="description")
   val description : String = ""
 
   @OneToOne
