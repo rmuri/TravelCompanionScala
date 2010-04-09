@@ -39,10 +39,11 @@ class Boot {
     val isAdmin = If(() => true, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
-    val entries = Menu(Loc("index", "index" :: Nil, "Startseite")) ::
-            Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired)) ::
-            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired :: isAdmin :: Nil)) ::
-            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired)) :: UserManagement.sitemap
+    val entries = Menu(Loc("index", "index" :: Nil, "Startseite", LocGroup("main"))) ::
+            Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired, LocGroup("main"))) ::
+            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired, isAdmin, LocGroup("main"))) ::
+            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired, LocGroup("main"))) ::
+            Menu(Loc("test", "test" :: Nil, "Test", LocGroup("test"))) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
