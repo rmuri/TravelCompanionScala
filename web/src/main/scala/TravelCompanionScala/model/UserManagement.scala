@@ -10,7 +10,6 @@ import scala.xml.transform._
 
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
-import TravelCompanionScala.snippet.isLoggedIn
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,7 +58,7 @@ object UserManagement {
    */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
     If(notLoggedIn_? _, S.??("already.logged.in")) ::
-            Template(() => wrapIt(login)) ::
+            Template(() => wrapIt(login)) :: LocGroup("main") ::
             Nil
 
   /**
@@ -68,7 +67,7 @@ object UserManagement {
    */
   protected def logoutMenuLocParams: List[LocParam[Unit]] =
     Template(() => wrapIt(logout)) ::
-            testLogginIn ::
+            testLogginIn :: LocGroup("main") ::
             Nil
 
 
