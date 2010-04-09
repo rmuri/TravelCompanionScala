@@ -1,4 +1,5 @@
-package model
+package TravelCompanionScala {
+package model {
 
 import javax.persistence._
 
@@ -25,12 +26,10 @@ class Tour {
   @Column(name="description")
   val description : String = ""
 
-  @OneToOne
-  @JoinColumn(name = "start_location_id")
-  val start : Location = null
 
-  @OneToOne
-  @JoinColumn(name = "owner_id")
-  var belongsTo : Member = null
 
+}
+
+
+}
 }

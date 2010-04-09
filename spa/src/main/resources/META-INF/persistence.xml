@@ -1,6 +1,4 @@
 <persistence>
-  <!-- The following configuration is left as a placeholder. Please
-       replace with your own config -->
    <persistence-unit name="jpaweb" transaction-type="RESOURCE_LOCAL">
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
