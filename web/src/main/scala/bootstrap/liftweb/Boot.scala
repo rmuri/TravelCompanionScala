@@ -46,27 +46,6 @@ class Boot {
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
-
-    ///JPA
-    /* Set up a LoanWrapper to automatically instantiate and tear down the EntityManager on a per-request basis
-      S.addAround(List(
-        new LoanWrapper {
-          def apply[T] (f : => T): T = {
-            val em = Model.factory.createEntityManager()
-
-            // Add EM into S scope
-            Model.emVar.set(em)
-
-            try {
-              f
-            } finally {
-              em.close()
-            }
-          }
-        }
-      ))
-     */
-
   }
 }
 

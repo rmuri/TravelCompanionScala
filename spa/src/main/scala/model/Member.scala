@@ -1,4 +1,5 @@
-package model
+package TravelCompanionScala {
+package model {
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,4 +11,7 @@ package model
 
 class Member  {
   
+}
+
+}
 }
