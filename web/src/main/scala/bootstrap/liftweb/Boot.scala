@@ -38,10 +38,9 @@ class Boot {
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, "Startseite", LocGroup("main"))) ::
-            Menu(Loc("tour", "tour" :: Nil, "Reise", AuthRequired, LocGroup("main"))) ::
-            Menu(Loc("blog", "blog" :: Nil, "Blog", AuthRequired, LocGroup("main"))) ::
-            Menu(Loc("picture", "picture" :: Nil, "Bilder", AuthRequired, LocGroup("main"))) ::
-            Menu(Loc("test", "test" :: Nil, "Test", LocGroup("test"))) :: UserManagement.sitemap
+            Menu(Loc("TourView", ("TourView" :: Nil) -> true, "Reise", LocGroup("main"))) ::
+            Menu(Loc("blog", "blog" :: Nil, "Blog", LocGroup("main"))) ::
+            Menu(Loc("picture", "picture" :: Nil, "Bilder", LocGroup("main"))) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
