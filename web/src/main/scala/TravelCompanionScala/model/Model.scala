@@ -18,10 +18,19 @@ package model {
 
 import _root_.org.scala_libs.jpa.LocalEMF
 import _root_.net.liftweb.jpa.RequestVarEM
+  import javax.persistence.{EntityManager,Persistence}
 
 /* This object is left as a placeholder. Please modify to match your
  * configuration: */
-object Model extends LocalEMF("jpaweb") with RequestVarEM
+
+
+object Model {
+  val factory = Persistence.createEntityManagerFactory("jpaweb")
+
+  // Temporarily using ThreadLocal until we get lifecycle handling in RequestVar
+  val emVar = new ThreadLocal[EntityManager]
+  def em = emVar.get()
+}
 
 }
 }
