@@ -44,6 +44,12 @@ class Boot {
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
+    LiftRules.rewrite.append {
+      case RewriteRequest(
+      ParsePath(List("TourView", action, id), _, _, _), _, _) =>
+        RewriteResponse("TourView" :: action :: Nil, Map("id" -> id))
+    }
+
   }
 }
 

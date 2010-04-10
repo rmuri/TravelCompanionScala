@@ -1,5 +1,4 @@
-package TravelCompanionScala {
-package model {
+package TravelCompanionScala.model {
 
 import javax.persistence._
 
@@ -12,24 +11,28 @@ import javax.persistence._
  */
 
 @Entity
-@Table(name="tour")
+@Table(name = "tour")
 class Tour {
-
   @Id
   @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
-  var id : Long = _
+  var id: Long = _
 
-  @Column(name="name")
-  val name : String = ""
+  @Column(name = "name")
+  val name: String = ""
 
-  @Column(name="description")
-  val description : String = ""
-
-
-
-}
+  @Column(name = "description")
+  val description: String = ""
 
 
 }
+
+object Tour {
+  def apply(name: String, description: String): Tour = {
+    var t = new Tour
+    t.name = name
+    t.description = description
+  }
+}
+
 }

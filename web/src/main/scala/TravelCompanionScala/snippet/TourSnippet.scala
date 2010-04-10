@@ -1,11 +1,12 @@
 package TravelCompanionScala.snippet
 
-import xml.NodeSeq
 import net.liftweb.util.Helpers
 import net.liftweb._
 
+import http.S
 import util._
 import Helpers._
+import xml.{Text, NodeSeq}
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,14 +16,33 @@ import Helpers._
  * To change this template use File | Settings | File Templates.
  */
 
-class Tour(var name: String, var description: String)
+class Tour(var id: Int, var name: String, var creator: String, var description: String)
+
+object TourEnum extends Enumeration {
+  val ALL_TOURS = Value("AllTours")
+  val OWN_TOURS = Value("OwnTours")
+  val OTHERS_TOURS = Value("OthersTours")
+}
 
 class TourSnippet {
-  var ownTours: List[Tour] = new Tour("Amsterdam", "bli bla blub") :: new Tour("Philippinen", "blindtext blabla") :: Nil
+  var listOwnTours: List[Tour] = new Tour(1, "Amsterdam", "Ralf", "bli bla blub") :: new Tour(2, "Philippinen", "Ralf", "blindtext blabla") :: Nil
+  var ListOthersTours: List[Tour] = new Tour(3, "Canada", "Daniel", "howdey partner...") :: Nil
+  var ListAllTours: List[Tour] = listOwnTours ::: ListOthersTours
 
 
-  def listOwnTours(html: NodeSeq): NodeSeq = {
-    ownTours.flatMap(tour => bind("tour", html, "name" -> tour.name, "description" -> tour.description))
+  def listTours(html: NodeSeq): NodeSeq = {
+    val which = S.attr("which").map(_.toString) openOr "AllTours"
+    var tours: List[Tour] = Nil
+    TourEnum.withName(which) match {
+      case TourEnum.OWN_TOURS => tours = listOwnTours
+      case TourEnum.OTHERS_TOURS => tours = ListOthersTours
+      case _ => tours = ListAllTours
+    }
+    tours.flatMap(tour => bind("tour", html,
+      "name" -> tour.name,
+      "description" -> tour.description,
+      "creator" -> tour.creator,
+      FuncAttrBindParam("view_href", _ => Text("view/" + tour.id), "href")))
   }
 
 }
