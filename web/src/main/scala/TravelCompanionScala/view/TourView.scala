@@ -22,7 +22,7 @@ class TourView extends LiftView {
   }
 
   def doView(): NodeSeq = {
-        <lift:surround with="default" at="content">
+    <lift:surround with="default" at="content">
       <lift:TourSnippet.viewTour>
         <h1>
             <tour:name/>
@@ -32,6 +32,7 @@ class TourView extends LiftView {
         </span>
       </lift:TourSnippet.viewTour>
     </lift:surround>
+
   }
 
   def doEdit(): NodeSeq = {

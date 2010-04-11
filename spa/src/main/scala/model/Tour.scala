@@ -27,12 +27,5 @@ class Tour {
 
 }
 
-object Tour {
-  def apply(name: String, description: String): Tour = {
-    var t = new Tour
-    t.name = name
-    t.description = description
-  }
-}
 
 }
