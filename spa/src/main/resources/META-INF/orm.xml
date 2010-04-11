@@ -6,4 +6,10 @@
 
   <package>TravelCompanionScala.model</package>
 
+  <entity class="Tour">
+    <named-query name="findAllTours">
+      <query><![CDATA[from Tour b order by b.name]]></query>
+    </named-query>
+  </entity>
+
 </entity-mappings>

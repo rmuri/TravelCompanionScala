@@ -19,12 +19,13 @@ class Tour {
   var id: Long = _
 
   @Column(name = "name")
-  val name: String = ""
+  var name: String = ""
 
   @Column(name = "description")
-  val description: String = ""
+  var description: String = ""
 
-
+  @ManyToOne
+  var owner : Member = null
 }
 
 

@@ -1,6 +1,10 @@
 package model {
 
-import org.junit._
+import _root_.TravelCompanionScala.model.{Tour, Member}
+import org.junit.Test
+import org.junit.Before
+import org.junit.After
+import org.junit.Assert._
 import javax.persistence.{Persistence, EntityManagerFactory}
 
 /**
@@ -39,7 +43,45 @@ class TestJPAWeb {
 
   @Test
   def save_stuff () = {
+
     var em = emf.createEntityManager()
+    val tx = em.getTransaction()
+
+    tx.begin()
+
+    val member = new Member
+    member.name = "Hobi"
+
+    em.persist(member)
+
+    val tour = new Tour
+    tour.name = "My Travel"
+    tour.description = "Litlle description in here"
+    tour.owner = member
+
+    em.persist(tour)
+
+    tx.commit()
+
+    em.close()
+
+    /////assert
+    em = emf.createEntityManager()
+
+    val retrieved = em.createNamedQuery("findAllTours").getResultList().asInstanceOf[java.util.List[Tour]]
+
+    assertEquals(1, retrieved.size())
+    assertEquals("My Travel", retrieved.get(0).name)
+    println("Found " + retrieved.get(0).name)
+
+    ///cleaup
+    em.getTransaction().begin()
+
+    em.remove(em.getReference(classOf[Tour],tour.id))
+    em.remove(em.getReference(classOf[Member],member.id))
+
+    em.getTransaction().commit()
+
     em.close()
   }
 
