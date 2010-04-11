@@ -29,6 +29,11 @@ class TourSnippet {
   var ListOthersTours: List[Tour] = new Tour(3, "Canada", "Daniel", "howdey partner...") :: Nil
   var ListAllTours: List[Tour] = listOwnTours ::: ListOthersTours
 
+  def viewTour(html: NodeSeq): NodeSeq = {
+    var id = S.param("id").map(_.toInt) openOr 0
+    val tour = ListAllTours.find((t) => t.id == id) getOrElse new Tour(0, "Keine Tour gefunden", "", "")
+    bind("tour", html, "name" -> tour.name, "description" -> tour.description)
+  }
 
   def listTours(html: NodeSeq): NodeSeq = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"

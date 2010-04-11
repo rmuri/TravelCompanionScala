@@ -1,9 +1,9 @@
 package TravelCompanionScala.view
 
-import xml.NodeSeq
 import TravelCompanionScala.model.UserManagement
 import TravelCompanionScala.snippet.TourEnum
 import net.liftweb.http.{S, LiftView}
+import xml.{Text, NodeSeq}
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,12 +22,15 @@ class TourView extends LiftView {
   }
 
   def doView(): NodeSeq = {
-    var id = S.param("id") openOr ""
-
-    <lift:surround with="default" at="content">
-      <p>view item
-        {id}
-      </p>
+        <lift:surround with="default" at="content">
+      <lift:TourSnippet.viewTour>
+        <h1>
+            <tour:name/>
+        </h1>
+        <span>
+            <tour:description/>
+        </span>
+      </lift:TourSnippet.viewTour>
     </lift:surround>
   }
 
@@ -74,7 +77,8 @@ class TourView extends LiftView {
                           <tour:description/>
                       </td>
                       <td>
-                        <a tour:view_href=" ">View</a>
+                        <a tour:view_href=" ">View
+                        </a>
                       </td>
 
                     </tr>
