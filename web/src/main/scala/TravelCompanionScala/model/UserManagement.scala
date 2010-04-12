@@ -20,7 +20,7 @@ import net.liftweb.util.Helpers._
  */
 
 object UserManagement {
-  val database: List[User] = new User("Ralf","Muri","rmuri@gmail.com","123456") :: new User("Daniel","Hobi","d.hobi@gmx.ch","1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
+  val database: List[User] = new User("Ralf", "Muri", "rmuri@gmail.com", "123456") :: new User("Daniel", "Hobi", "d.hobi@gmx.ch", "1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
   ///
   val basePath: List[String] = "user" :: Nil
 
@@ -36,6 +36,16 @@ object UserManagement {
 
   lazy val logoutPath = thePath(logoutSuffix)
 
+  def signUpSuffix = "sign_up"
+
+  lazy val registerPath = thePath(signUpSuffix)
+
+  def profileSuffix = "profile"
+
+  lazy val profilePath = thePath(profileSuffix)
+
+  val defaultLocGroup = LocGroup("user")
+
 
   /**
    * Return the URL of the "login" page
@@ -50,6 +60,12 @@ object UserManagement {
   def logoutMenuLoc: Box[Menu] =
     Full(Menu(Loc("Logout", logoutPath, S.??("logout"), logoutMenuLocParams)))
 
+  def createUserMenuLoc: Box[Menu] =
+    Full(Menu(Loc("CreateUser", registerPath, S.??("sign.up"), createUserMenuLocParams)))
+
+  /*def profileMenuLoc: Box[Menu] =
+    Full(Menu(Loc("Profile", profilePath, S.??("profile"), profileMenuLocParams)))*/
+
   def thePath(end: String): List[String] = basePath ::: List(end)
 
   /**
@@ -57,8 +73,18 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
+  
     If(notLoggedIn_? _, S.??("already.logged.in")) ::
-            Template(() => wrapIt(login)) :: LocGroup("main") ::
+            Template(() => wrapIt(login)) :: defaultLocGroup ::
+            Nil
+
+  /**
+   * The LocParams for the menu item for register.
+   * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
+   */
+  protected def createUserMenuLocParams: List[LocParam[Unit]] =
+    /*Template(() => wrapIt(signupFunc.map(_()) openOr signup)) ::*/
+            If(notLoggedIn_? _, S.??("logout.first")) :: defaultLocGroup ::
             Nil
 
   /**
@@ -67,15 +93,24 @@ object UserManagement {
    */
   protected def logoutMenuLocParams: List[LocParam[Unit]] =
     Template(() => wrapIt(logout)) ::
-            testLogginIn :: LocGroup("main") ::
+            testLogginIn :: defaultLocGroup ::
             Nil
+
+  /**
+   * The LocParams for the menu item for profile.
+   * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
+   */
+  /*  protected def profileMenuLocParams: List[LocParam[Unit]] =
+Template(() => wrapIt(profile)) ::
+  testLogginIn :: defaultLocGroup ::
+  Nil*/
 
 
 
   ///Menu sitemap
   def menus: List[Menu] = sitemap
 
-  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc).flatten(a => a)
+  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc /*, profileMenuLoc*/ ).flatten(a => a)
 
   ///Login function
   def notLoggedIn_? = !loggedIn_?
@@ -134,7 +169,7 @@ object UserManagement {
       curUser.set(Full(user))
       S.redirectTo("/")
     } else {
-      
+
     }
   }
 
@@ -150,9 +185,9 @@ object UserManagement {
   def login = {
     if (S.post_?) {
       database.foreach(u => checkLogin(u))
-        if(notLoggedIn_?) {
-            S.error({S.??("invalid.credentials")})
-        }
+      if (notLoggedIn_?) {
+        S.error({S.??("invalid.credentials")})
+      }
     }
 
     bind("user", loginXhtml,
