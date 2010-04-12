@@ -18,11 +18,11 @@ class UserMenu {
       if (UserManagement.loggedIn_?) {
         <span>Wilkommen, username</span>
       }
-      <span>[
+      <span>
         <lift:Menu.group group="user">
-            <menu:bind/>
+            <span>| <menu:bind/> |</span>
         </lift:Menu.group>
-        ]</span>
+        </span>
     }
   }
 }
