@@ -24,6 +24,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="TravelCompanionScala-spa" exported="" />
+    <orderEntry type="library" exported="" name="Maven: com.h2database:h2:1.2.133" level="project" />
     <orderEntry type="library" exported="" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" level="project" />
@@ -52,7 +53,6 @@
     <orderEntry type="library" exported="" name="Maven: com.thoughtworks.paranamer:paranamer:2.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-fileupload:commons-fileupload:1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.scala-libs:scalajpa:1.2-scala280-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: com.h2database:h2:1.2.127" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derby:10.4.2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.23" level="project" />

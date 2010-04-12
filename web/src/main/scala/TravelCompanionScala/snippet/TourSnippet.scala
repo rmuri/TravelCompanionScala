@@ -1,12 +1,19 @@
-package TravelCompanionScala.snippet
+package TravelCompanionScala {
+package snippet {
 
-import net.liftweb.util.Helpers
-import net.liftweb._
+import _root_.scala.xml.{NodeSeq,Text}
 
-import http.S
+import _root_.net.liftweb._
+import http._
+import S._
+import common._
 import util._
 import Helpers._
-import xml.{Text, NodeSeq}
+
+import _root_.javax.persistence.{EntityExistsException,PersistenceException}
+import TravelCompanionScala.model._
+import Model._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +23,7 @@ import xml.{Text, NodeSeq}
  * To change this template use File | Settings | File Templates.
  */
 
-class Tour(var id: Int, var name: String, var creator: String, var description: String)
+
 
 object TourEnum extends Enumeration {
   val ALL_TOURS = Value("AllTours")
@@ -25,17 +32,19 @@ object TourEnum extends Enumeration {
 }
 
 class TourSnippet {
-  var listOwnTours: List[Tour] = new Tour(1, "Amsterdam", "Ralf", "bli bla blub") :: new Tour(2, "Philippinen", "Ralf", "blindtext blabla") :: Nil
-  var ListOthersTours: List[Tour] = new Tour(3, "Canada", "Daniel", "howdey partner...") :: Nil
-  var ListAllTours: List[Tour] = listOwnTours ::: ListOthersTours
+  var listOwnTours : List[Tour] = Model.createNamedQuery[Tour]("findAllTours").getResultList().toList
+  var ListOthersTours : List[Tour] = Model.createNamedQuery[Tour]("findAllTours").getResultList().toList
+  var ListAllTours = listOwnTours ::: ListOthersTours
 
   def viewTour(html: NodeSeq): NodeSeq = {
     var id = S.param("id").map(_.toInt) openOr 0
-    val tour = ListAllTours.find((t) => t.id == id) getOrElse new Tour(0, "Keine Tour gefunden", "", "")
+    val tour = ListAllTours.find((t) => t.id == id) getOrElse new Tour
     bind("tour", html, "name" -> tour.name, "description" -> tour.description)
   }
 
   def listTours(html: NodeSeq): NodeSeq = {
+    println("count of db tours"+listOwnTours.size)
+
     val which = S.attr("which").map(_.toString) openOr "AllTours"
     var tours: List[Tour] = Nil
     TourEnum.withName(which) match {
@@ -46,8 +55,11 @@ class TourSnippet {
     tours.flatMap(tour => bind("tour", html,
       "name" -> tour.name,
       "description" -> tour.description,
-      "creator" -> tour.creator,
+      "creator" -> tour.owner.name,
       FuncAttrBindParam("view_href", _ => Text("view/" + tour.id), "href")))
   }
 
+}
+
+}
 }
