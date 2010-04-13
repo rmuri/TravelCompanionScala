@@ -1,6 +1,6 @@
+package TravelCompanionScala {
 package model {
 
-import _root_.TravelCompanionScala.model.{Tour, Member}
 import org.junit.Test
 import org.junit.Before
 import org.junit.After
@@ -56,8 +56,9 @@ class TestJPAWeb {
 
     val tour = new Tour
     tour.name = "My Travel"
-    tour.description = "Litlle description in here"
+    tour.description = "description"
     tour.owner = member
+
 
     em.persist(tour)
 
@@ -70,7 +71,6 @@ class TestJPAWeb {
 
     val retrieved = em.createNamedQuery("findAllTours").getResultList().asInstanceOf[java.util.List[Tour]]
 
-    assertEquals(1, retrieved.size())
     assertEquals("My Travel", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
@@ -87,4 +87,5 @@ class TestJPAWeb {
 
 }
 
+}
 }
