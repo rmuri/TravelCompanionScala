@@ -3,6 +3,7 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+
 /**
  * Created by IntelliJ IDEA.
  * User: dhobi
@@ -12,40 +13,39 @@ import _root_.java.util._
  */
 
 @Entity
-@Table(name="members")
-class Member()  {
-
+@Table(name = "members")
+class Member() {
   @Id
   @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
-  var id : Long = _
+  var id: Long = _
 
   @Column(name = "city")
-  var city : String = ""
+  var city: String = ""
 
   @Column(name = "email")
-  var email : String = ""
+  var email: String = ""
 
   @Column(name = "forename")
-  var forename : String = ""
+  var forename: String = ""
 
   @Column(name = "name")
-  var name : String = ""
+  var name: String = ""
 
   @Column(name = "password")
-  var password : String = ""
+  var password: String = ""
 
   @Column(name = "street")
   var street: String = ""
 
   @Column(name = "surname")
-  var surname : String = ""
+  var surname: String = ""
 
   @Column(name = "zipcode")
-  var zipcode : String = ""
+  var zipcode: String = ""
 
-  @OneToMany(mappedBy = "owner",targetEntity = classOf[Tour])
-  var tours : Set[Tour] = new HashSet[Tour]()
+  @OneToMany(mappedBy = "owner", targetEntity = classOf[Tour])
+  var tours: List[Tour] = new ArrayList[Tour]()
 }
 
 }
