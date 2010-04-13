@@ -74,6 +74,9 @@ class TestJPAWeb {
     assertEquals("My Travel", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
+    assertEquals("Hobi",retrieved.get(0).owner.name)
+    println("Found member " + retrieved.get(0).owner.name)
+
     ///cleaup
     em.getTransaction().begin()
 

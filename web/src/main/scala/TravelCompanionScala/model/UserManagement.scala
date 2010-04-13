@@ -20,12 +20,12 @@ import net.liftweb.util.Helpers._
  */
 
 object UserManagement {
-  var database: List[User] = new User("Ralf", "Muri", "rmuri@gmail.com", "123456") :: new User("Daniel", "Hobi", "d.hobi@gmx.ch", "1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
   ///
   val basePath: List[String] = "user" :: Nil
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
-  private object curUser extends SessionVar[Box[User]](Empty)
+  private object curUser extends SessionVar[Box[Member]](Empty)
+  def currentUser = curUser.is openOr new Member
 
 
   def loginSuffix = "login"
@@ -64,7 +64,7 @@ object UserManagement {
     Full(Menu(Loc("CreateUser", registerPath, S.??("sign.up"), createUserMenuLocParams)))
 
   def profileMenuLoc: Box[Menu] =
-    Full(Menu(Loc("Profile", profilePath, S.??("profile"), profileMenuLocParams)))
+    Full(Menu(Loc("Profile", profilePath, S.??("edit.profile"), profileMenuLocParams)))
 
   def thePath(end: String): List[String] = basePath ::: List(end)
 
@@ -110,7 +110,7 @@ object UserManagement {
   ///Menu sitemap
   def menus: List[Menu] = sitemap
 
-  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc, profileMenuLoc ).flatten(a => a)
+  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc, profileMenuLoc).flatten(a => a)
 
   ///Login function
   def notLoggedIn_? = !loggedIn_?
@@ -164,12 +164,11 @@ object UserManagement {
     </form>)
   }
 
-  def checkLogin(user: User) = {
-    if (user.email.equals(S.param("email").open_!) && user.password.equals(S.param("password").open_!)) {
-      curUser.set(Full(user))
+  def checkLogin() = {
+    val user = Model.createQuery[Member]("from Member m where m.email = :email and m.password = :password").setParams("email" -> S.param("email").open_!, "password" -> S.param("password").open_!).findOne
+    if (user.isDefined) {
+      curUser.set(Full(user.get))
       S.redirectTo("/")
-    } else {
-
     }
   }
 
@@ -184,7 +183,7 @@ object UserManagement {
 
   def login = {
     if (S.post_?) {
-      database.foreach(u => checkLogin(u))
+      checkLogin()
       if (notLoggedIn_?) {
         S.error({S.??("invalid.credentials")})
       }
@@ -234,13 +233,13 @@ object UserManagement {
   protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty)
 
   def signup = {
-    var theUser: User = new User("", "", "", "")
+    var theUser: Member = new Member
 
     def testSignup() {
       if ((S.param("email").open_! != "") && (S.param("password").open_! != "")) {
         theUser.email = S.param("email").open_!
         theUser.password = S.param("password").open_!
-        database = database ::: List(theUser)
+        Model.mergeAndFlush(theUser)
         S.notice(S.??("welcome"))
         curUser.set(Full(theUser))
         S.redirectTo("/")

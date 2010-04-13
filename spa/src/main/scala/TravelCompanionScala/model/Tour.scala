@@ -2,7 +2,7 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-
+import _root_.java.util._
 /**
  * Created by IntelliJ IDEA.
  * User: dhobi
@@ -12,7 +12,7 @@ import javax.persistence._
  */
 
 @Entity
-@Table(name = "tour")
+@Table(name = "tours")
 class Tour {
 
   @Id
@@ -28,6 +28,9 @@ class Tour {
 
   @ManyToOne
   var owner : Member = null
+
+  @OneToMany(mappedBy = "tour",targetEntity = classOf[Stage])
+  var stages : Set[Stage] = new HashSet[Stage]()
 
 }
 
