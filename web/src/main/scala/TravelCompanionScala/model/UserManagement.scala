@@ -25,8 +25,13 @@ object UserManagement {
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
   private object curUser extends SessionVar[Box[Member]](Empty)
-  def currentUser = curUser.is openOr new Member
-
+  def currentUserId = {
+    if (curUser.is.isDefined) {
+      curUser.is.open_!.id
+    } else {
+      0
+    }
+  }
 
   def loginSuffix = "login"
 

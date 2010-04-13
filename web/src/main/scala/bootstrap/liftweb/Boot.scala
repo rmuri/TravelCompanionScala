@@ -38,7 +38,9 @@ class Boot {
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, "Startseite", LocGroup("main"))) ::
-            Menu(Loc("TourView", ("TourView" :: Nil) -> true, "Reise", LocGroup("main"))) ::
+            Menu(Loc("tour", "tour" :: "list" :: Nil, "Reise", LocGroup("main"), LocGroup("tour"))) ::
+            Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
+            Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
             Menu(Loc("blog", "blog" :: Nil, "Blog", LocGroup("main"))) ::
             Menu(Loc("picture", "picture" :: Nil, "Bilder", LocGroup("main"))) :: UserManagement.sitemap
 
@@ -46,8 +48,8 @@ class Boot {
 
     LiftRules.rewrite.append {
       case RewriteRequest(
-      ParsePath(List("TourView", action, id), _, _, _), _, _) =>
-        RewriteResponse("TourView" :: action :: Nil, Map("id" -> id))
+      ParsePath(List("tour", action, id), _, _, _), _, _) =>
+        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
     }
 
   }
