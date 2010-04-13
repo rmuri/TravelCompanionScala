@@ -1,4 +1,5 @@
-package TravelCompanionScala.model {
+package TravelCompanionScala {
+package model {
 
 import javax.persistence._
 
@@ -13,6 +14,7 @@ import javax.persistence._
 @Entity
 @Table(name = "tour")
 class Tour {
+
   @Id
   @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +28,9 @@ class Tour {
 
   @ManyToOne
   var owner : Member = null
+
 }
 
 
+}
 }

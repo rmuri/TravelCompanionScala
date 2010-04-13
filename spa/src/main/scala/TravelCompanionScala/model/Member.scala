@@ -13,7 +13,7 @@ import _root_.java.util._
 
 @Entity
 @Table(name="members")
-class Member  {
+class Member()  {
 
   @Id
   @Version
@@ -29,7 +29,7 @@ class Member  {
   @Column(name = "forename")
   var forename : String = ""
 
-  @Column(name = "ame")
+  @Column(name = "name")
   var name : String = ""
 
   @Column(name = "password")
@@ -38,14 +38,14 @@ class Member  {
   @Column(name = "street")
   var street: String = ""
 
-  @Column(name = "sumame")
-  var sumame : String = ""
+  @Column(name = "surname")
+  var surname : String = ""
 
   @Column(name = "zipcode")
   var zipcode : String = ""
 
   @OneToMany(mappedBy = "owner",targetEntity = classOf[Tour])
-  var books : Set[Tour] = new HashSet[Tour]()
+  var tours : Set[Tour] = new HashSet[Tour]()
 }
 
 }

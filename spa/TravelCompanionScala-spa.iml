@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="Maven: com.h2database:h2:1.2.133" level="project" />
     <orderEntry type="library" exported="" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" level="project" />
