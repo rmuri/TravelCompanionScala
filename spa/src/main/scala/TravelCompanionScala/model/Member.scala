@@ -38,8 +38,8 @@ class Member()  {
   @Column(name = "street")
   var street: String = ""
 
-  @Column(name = "sumame")
-  var sumame : String = ""
+  @Column(name = "surname")
+  var surname : String = ""
 
   @Column(name = "zipcode")
   var zipcode : String = ""

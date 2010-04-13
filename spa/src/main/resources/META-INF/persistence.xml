@@ -5,7 +5,7 @@
          <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
          <property name="connection.username">sa</property>
           <property name="connection.password"></property>
-         <property name="hibernate.connection.url" value="jdbc:h2:file:db/TravelCompanion"/>
+         <property name="hibernate.connection.url" value="jdbc:h2:TravelCompanion"/>
          <property name="hibernate.max_fetch_depth" value="3"/>
          <property name="hibernate.show_sql" value="true" />
          <property name="hibernate.hbm2ddl.auto" value="update" />
