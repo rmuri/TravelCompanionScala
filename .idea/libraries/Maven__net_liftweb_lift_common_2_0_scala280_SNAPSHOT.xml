@@ -5,7 +5,6 @@
     </CLASSES>
     <JAVADOC>
       <root url="http://scala-tools.org/mvnsites-snapshots/liftweb/lift-webkit/scaladocs/index.html" />
-      <root url="jar://$MAVEN_REPOSITORY$/net/liftweb/lift-common/2.0-scala280-SNAPSHOT/lift-common-2.0-scala280-SNAPSHOT-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/net/liftweb/lift-common/2.0-scala280-SNAPSHOT/lift-common-2.0-scala280-SNAPSHOT-sources.jar!/" />

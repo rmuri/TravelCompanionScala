@@ -14,13 +14,15 @@ import net.liftweb.http.SHtml
 
 class UserMenu {
   def show(xhtml: NodeSeq): NodeSeq = {
-    <p>
-      {if (UserManagement.loggedIn_?) {
-      <span>Wilkommen, username [ <lift:Menu.item name="Logout">Abmelden</lift:Menu.item> | Profil ]</span>
+    {
+      if (UserManagement.loggedIn_?) {
+        <span>Wilkommen, username</span>
+      }
+      <span>
+        <lift:Menu.group group="user">
+            <span>| <menu:bind/> |</span>
+        </lift:Menu.group>
+        </span>
     }
-    else
-      {<span>[ <lift:Menu.item name="Login">Anmelden</lift:Menu.item> | Registrieren ]</span>
-      }}
-    </p>
   }
 }

@@ -20,7 +20,7 @@ import net.liftweb.util.Helpers._
  */
 
 object UserManagement {
-  val database: List[User] = new User("Ralf", "Muri", "rmuri@gmail.com", "123456") :: new User("Daniel", "Hobi", "d.hobi@gmx.ch", "1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
+  var database: List[User] = new User("Ralf", "Muri", "rmuri@gmail.com", "123456") :: new User("Daniel", "Hobi", "d.hobi@gmx.ch", "1234") :: new User("Test", "Test", "t@test.com", "test") :: Nil
   ///
   val basePath: List[String] = "user" :: Nil
 
@@ -63,8 +63,8 @@ object UserManagement {
   def createUserMenuLoc: Box[Menu] =
     Full(Menu(Loc("CreateUser", registerPath, S.??("sign.up"), createUserMenuLocParams)))
 
-  /*def profileMenuLoc: Box[Menu] =
-    Full(Menu(Loc("Profile", profilePath, S.??("profile"), profileMenuLocParams)))*/
+  def profileMenuLoc: Box[Menu] =
+    Full(Menu(Loc("Profile", profilePath, S.??("profile"), profileMenuLocParams)))
 
   def thePath(end: String): List[String] = basePath ::: List(end)
 
@@ -73,7 +73,7 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
-  
+
     If(notLoggedIn_? _, S.??("already.logged.in")) ::
             Template(() => wrapIt(login)) :: defaultLocGroup ::
             Nil
@@ -83,7 +83,7 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def createUserMenuLocParams: List[LocParam[Unit]] =
-    /*Template(() => wrapIt(signupFunc.map(_()) openOr signup)) ::*/
+    Template(() => wrapIt(signupFunc.map(_()) openOr signup)) ::
             If(notLoggedIn_? _, S.??("logout.first")) :: defaultLocGroup ::
             Nil
 
@@ -100,17 +100,17 @@ object UserManagement {
    * The LocParams for the menu item for profile.
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
-  /*  protected def profileMenuLocParams: List[LocParam[Unit]] =
-Template(() => wrapIt(profile)) ::
-  testLogginIn :: defaultLocGroup ::
-  Nil*/
+  protected def profileMenuLocParams: List[LocParam[Unit]] =
+  /*Template(() => wrapIt(profile)) ::*/
+    testLogginIn :: defaultLocGroup ::
+            Nil
 
 
 
   ///Menu sitemap
   def menus: List[Menu] = sitemap
 
-  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc /*, profileMenuLoc*/ ).flatten(a => a)
+  lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc, profileMenuLoc ).flatten(a => a)
 
   ///Login function
   def notLoggedIn_? = !loggedIn_?
@@ -165,7 +165,7 @@ Template(() => wrapIt(profile)) ::
   }
 
   def checkLogin(user: User) = {
-    if (user.email.equals(S.param("username").open_!) && user.password.equals(S.param("password").open_!)) {
+    if (user.email.equals(S.param("email").open_!) && user.password.equals(S.param("password").open_!)) {
       curUser.set(Full(user))
       S.redirectTo("/")
     } else {
@@ -191,9 +191,72 @@ Template(() => wrapIt(profile)) ::
     }
 
     bind("user", loginXhtml,
-      "email" -> (<input type="text" name="username"/>),
+      "email" -> (<input type="text" name="email"/>),
       "password" -> (<input type="password" name="password"/>),
       "submit" -> (<input type="submit" value={S.??("log.in")}/>))
+  }
+
+  def signupXhtml() = {
+    (<form method="post" action={S.uri}>
+      <table>
+        <tr>
+          <td colspan="2">
+            {S.??("sign.up")}
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("email.address")}
+          </td> <td>
+            <user:email/>
+        </td>
+        </tr>
+        <tr>
+          <td>
+            {S.??("password")}
+          </td> <td>
+            <user:password/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            &nbsp;
+          </td> <td>
+            <user:submit/>
+        </td>
+        </tr>
+      </table>
+    </form>)
+  }
+
+  protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty)
+
+  def signup = {
+    var theUser: User = new User("", "", "", "")
+
+    def testSignup() {
+      if ((S.param("email").open_! != "") && (S.param("password").open_! != "")) {
+        theUser.email = S.param("email").open_!
+        theUser.password = S.param("password").open_!
+        database = database ::: List(theUser)
+        S.notice(S.??("welcome"))
+        curUser.set(Full(theUser))
+        S.redirectTo("/")
+      } else {
+        S.error(S.??("error"));
+        signupFunc(Full(innerSignup _))
+      }
+    }
+
+    def innerSignup = bind("user",
+      signupXhtml,
+      "email" -> (<input type="text" name="email"/>),
+      "password" -> (<input type="password" name="password"/>),
+      "submit" -> SHtml.submit(S.??("sign.up"), testSignup _))
+
+    innerSignup
   }
 
 }
