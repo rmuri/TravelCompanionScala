@@ -53,7 +53,7 @@ class TourSnippet {
   }
 
   def viewTour(html: NodeSeq): NodeSeq = {
-    val tour = Model.find(classOf[Tour], id).get
+    val currentTour = tour
     bind("tour", html, "name" -> tour.name, "description" -> tour.description)
   }
 
@@ -70,14 +70,24 @@ class TourSnippet {
   }
 
   def editTour(html: NodeSeq): NodeSeq = {
-    val tour = Model.find(classOf[Tour], id).get
-    editTourForm(html, tour)
+    def doEdit() = {
+      println(tour.description)
+      tourVar(Model.mergeAndFlush(tour))
+      println(tour.description)
+      S.redirectTo("/tour/list")
+    }
+
+    val currentTour = tour
+
+    bind("tour", html,
+      "id" -> SHtml.hidden(() => tourVar(currentTour)),
+      "name" -> SHtml.text(tour.name, tour.name = _),
+      "description" -> SHtml.textarea(tour.description, tour.description = _),
+      "submit" -> SHtml.submit("Speichern", doEdit))
   }
 
   def createTour(html: NodeSeq): NodeSeq = {
-    val tour = new Tour
-    tour.owner = UserManagement.currentUser
-    editTourForm(html, tour)
+    editTour(html)
   }
 
   def listTours(html: NodeSeq): NodeSeq = {
@@ -86,10 +96,9 @@ class TourSnippet {
       "name" -> tour.name,
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      FuncAttrBindParam("view_href", _ => Text("view/" + tour.id), "href"),
-      FuncAttrBindParam("edit_href", _ => Text("edit/" + tour.id), "href"),
       FuncAttrBindParam("create_href", _ => Text("create/" + tour.id), "href"),
-      FuncAttrBindParam("remove_href", _ => Text("remove/" + tour.id), "href"),
+      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
+      "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
       "remove" -> SHtml.link("remove", () => tourVar(tour), Text(?("Remove")))))
   }
 
