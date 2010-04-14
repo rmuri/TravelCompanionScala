@@ -24,7 +24,7 @@ object UserManagement {
   val basePath: List[String] = "user" :: Nil
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
-  private object curUser extends SessionVar[Box[Member]](Empty)
+  object curUser extends SessionVar[Box[Member]](Empty)
   def currentUserId = {
     if (curUser.is.isDefined) {
       curUser.is.open_!.id
@@ -33,13 +33,7 @@ object UserManagement {
     }
   }
 
-  private var loggedinUser: Member = new Member
-
-  def currentUser: Member = {
-    println(loggedinUser)
-    println(loggedinUser.tours)
-    loggedinUser
-  }
+  def currentUser = curUser.is
 
   def loginSuffix = "login"
 
@@ -181,9 +175,6 @@ object UserManagement {
     val user = Model.createQuery[Member]("from Member m where m.email = :email and m.password = :password").setParams("email" -> S.param("email").open_!, "password" -> S.param("password").open_!).findOne
     if (user.isDefined) {
       curUser.set(Full(user.get))
-      println("atLogin" + user.get)
-      println("atLogin" + user.get.tours)
-      loggedinUser = user.get
       S.redirectTo("/")
     }
   }
@@ -258,7 +249,6 @@ object UserManagement {
         theUser = Model.mergeAndFlush(theUser)
         S.notice(S.??("welcome"))
         curUser.set(Full(theUser))
-        loggedinUser = theUser
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));

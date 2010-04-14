@@ -30,7 +30,6 @@ object TourEnum extends Enumeration {
 }
 
 class TourSnippet {
-  var id = S.param("id").map(_.toLong) openOr 0l
 
   // Set up a requestVar to track the TOUR object for edits and adds
   object tourVar extends RequestVar(new Tour())
@@ -39,51 +38,40 @@ class TourSnippet {
   def deleteTour(html: NodeSeq): NodeSeq = {
 
     def doRemove() = {
-      Model.remove(tour)
+      val t = Model.merge(tour)
+      Model.remove(t)
       S.redirectTo("/tour/list")
     }
 
     val currentTour = tour
 
     bind("tour", html,
-      "id" -> SHtml.hidden(() => tourVar(currentTour)),
       "name" -> tour.name,
       "description" -> tour.description,
-      "submit" -> SHtml.submit("Delete", doRemove))
+      "submit" -> SHtml.submit("Delete", () => {tourVar(currentTour); doRemove}))
   }
 
   def viewTour(html: NodeSeq): NodeSeq = {
-    val currentTour = tour
     bind("tour", html, "name" -> tour.name, "description" -> tour.description)
-  }
-
-  def editTourForm(html: NodeSeq, tour: Tour, saveAction: () => Any *): NodeSeq = {
-    def submitHandler() = {
-      val editedTour = Model.mergeAndFlush(tour)
-      saveAction.foreach(_())
-      S.redirectTo("/tour/view/" + editedTour.id)
-    }
-    bind("tour", html,
-      "name" -> SHtml.text(tour.name, tour.name = _),
-      "description" -> SHtml.textarea(tour.description, tour.description = _),
-      "submit" -> SHtml.submit("Submit", submitHandler _))
   }
 
   def editTour(html: NodeSeq): NodeSeq = {
     def doEdit() = {
-      println(tour.description)
-      tourVar(Model.mergeAndFlush(tour))
-      println(tour.description)
+      Model.mergeAndFlush(tour)
       S.redirectTo("/tour/list")
     }
 
     val currentTour = tour
 
+    if (currentTour.owner == null) {
+      currentTour.owner = UserManagement.currentUser.open_!
+    }
+
     bind("tour", html,
-      "id" -> SHtml.hidden(() => tourVar(currentTour)),
-      "name" -> SHtml.text(tour.name, tour.name = _),
-      "description" -> SHtml.textarea(tour.description, tour.description = _),
-      "submit" -> SHtml.submit("Speichern", doEdit))
+      "name" -> SHtml.text(currentTour.name, currentTour.name = _),
+      "description" -> SHtml.textarea(currentTour.description, currentTour.description = _),
+      "owner" -> SHtml.text(currentTour.owner.name, currentTour.owner.name = _),
+      "submit" -> SHtml.submit("Speichern", () => {tourVar(currentTour); doEdit}))
   }
 
   def createTour(html: NodeSeq): NodeSeq = {
@@ -96,8 +84,7 @@ class TourSnippet {
       "name" -> tour.name,
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      FuncAttrBindParam("create_href", _ => Text("create/" + tour.id), "href"),
-      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
+      "edit" -> SHtml.link("edit", () => {println(tour); tourVar(tour)}, Text(?("Edit"))),
       "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
       "remove" -> SHtml.link("remove", () => tourVar(tour), Text(?("Remove")))))
   }
