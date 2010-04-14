@@ -30,26 +30,74 @@ object TourEnum extends Enumeration {
 }
 
 class TourSnippet {
+  var id = S.param("id").map(_.toLong) openOr 0l
+
+  // Set up a requestVar to track the TOUR object for edits and adds
+  object tourVar extends RequestVar(new Tour())
+  def tour = tourVar.is
+
+  def deleteTour(html: NodeSeq): NodeSeq = {
+
+    def doRemove() = {
+      Model.remove(tour)
+      S.redirectTo("/tour/list")
+    }
+
+    val currentTour = tour
+
+    bind("tour", html,
+      "id" -> SHtml.hidden(() => tourVar(currentTour)),
+      "name" -> tour.name,
+      "description" -> tour.description,
+      "submit" -> SHtml.submit("Delete", doRemove))
+  }
+
   def viewTour(html: NodeSeq): NodeSeq = {
-    var id = S.param("id").map(_.toLong) openOr 0l
     val tour = Model.find(classOf[Tour], id).get
     bind("tour", html, "name" -> tour.name, "description" -> tour.description)
   }
 
-  def listTours(html: NodeSeq): NodeSeq = {
+  def editTourForm(html: NodeSeq, tour: Tour, saveAction: () => Any *): NodeSeq = {
+    def submitHandler() = {
+      val editedTour = Model.mergeAndFlush(tour)
+      saveAction.foreach(_())
+      S.redirectTo("/tour/view/" + editedTour.id)
+    }
+    bind("tour", html,
+      "name" -> SHtml.text(tour.name, tour.name = _),
+      "description" -> SHtml.textarea(tour.description, tour.description = _),
+      "submit" -> SHtml.submit("Submit", submitHandler _))
+  }
 
+  def editTour(html: NodeSeq): NodeSeq = {
+    val tour = Model.find(classOf[Tour], id).get
+    editTourForm(html, tour)
+  }
+
+  def createTour(html: NodeSeq): NodeSeq = {
+    val tour = new Tour
+    tour.owner = UserManagement.currentUser
+    editTourForm(html, tour)
+  }
+
+  def listTours(html: NodeSeq): NodeSeq = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"
     tours(TourEnum.withName(which)).flatMap(tour => bind("tour", html,
       "name" -> tour.name,
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      FuncAttrBindParam("view_href", _ => Text("view/" + tour.id), "href")))
+      FuncAttrBindParam("view_href", _ => Text("view/" + tour.id), "href"),
+      FuncAttrBindParam("edit_href", _ => Text("edit/" + tour.id), "href"),
+      FuncAttrBindParam("create_href", _ => Text("create/" + tour.id), "href"),
+      FuncAttrBindParam("remove_href", _ => Text("remove/" + tour.id), "href"),
+      "remove" -> SHtml.link("remove", () => tourVar(tour), Text(?("Remove")))))
   }
 
-  def tours(which: TourEnum.Value): List[Tour] = {
+  private def tours(which: TourEnum.Value): List[Tour] = {
     val mid = UserManagement.currentUserId
     which match {
       case TourEnum.OWN_TOURS => Model.createQuery[Tour]("from Tour t where t.owner.id = :id").setParams("id" -> mid).findAll.toList
+      // case TourEnum.OWN_TOURS => scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.tours).toList
       case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("from Tour t where t.owner.id != :id").setParams("id" -> mid).findAll.toList
     }
   }
