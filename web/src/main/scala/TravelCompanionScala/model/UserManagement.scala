@@ -33,6 +33,14 @@ object UserManagement {
     }
   }
 
+  private var loggedinUser: Member = new Member
+
+  def currentUser: Member = {
+    println(loggedinUser)
+    println(loggedinUser.tours)
+    loggedinUser
+  }
+
   def loginSuffix = "login"
 
   lazy val loginPath = thePath(loginSuffix)
@@ -173,6 +181,9 @@ object UserManagement {
     val user = Model.createQuery[Member]("from Member m where m.email = :email and m.password = :password").setParams("email" -> S.param("email").open_!, "password" -> S.param("password").open_!).findOne
     if (user.isDefined) {
       curUser.set(Full(user.get))
+      println("atLogin" + user.get)
+      println("atLogin" + user.get.tours)
+      loggedinUser = user.get
       S.redirectTo("/")
     }
   }
@@ -244,9 +255,10 @@ object UserManagement {
       if ((S.param("email").open_! != "") && (S.param("password").open_! != "")) {
         theUser.email = S.param("email").open_!
         theUser.password = S.param("password").open_!
-        Model.mergeAndFlush(theUser)
+        theUser = Model.mergeAndFlush(theUser)
         S.notice(S.??("welcome"))
         curUser.set(Full(theUser))
+        loggedinUser = theUser
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));

@@ -1,0 +1,13 @@
+<lift:surround with="default" at="content">
+    <h1>Wollen Sie die folgende Tour wirklich l&ouml;schen?</h1>
+    <lift:TourSnippet.deleteTour form="POST">
+        <tour:id/>
+        <h2>
+            <tour:name/>
+        </h2>
+        <p>
+            <tour:description/>
+        </p>
+        <tour:submit/>
+    </lift:TourSnippet.deleteTour>
+</lift:surround>

@@ -20,12 +20,16 @@
                     <td>
                         <tour:description/>
                     </td>
-                    <td><a tour:view_href=" ">View</a></td>
+                    <td><a tour:view_href=" ">View</a> | <a tour:edit_href="">Edit</a> | <tour:remove/></td>
                 </tr>
             </lift:TourSnippet.listTours>
             </tbody>
         </table>
+        <p>
+            <lift:Menu.item name="tour_create">Neue Reise hinzuf&uuml;gen</lift:Menu.item>
+        </p>
     </lift:UsrMgtHelper.showIfAuthenticated>
+
 
     <h1>Reisen anderer Mitglieder</h1>
     <span>Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern eingetragenen Reisen:</span>
