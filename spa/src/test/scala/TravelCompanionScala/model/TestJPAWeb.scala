@@ -71,7 +71,7 @@ class TestJPAWeb {
 
     val retrieved = em.createNamedQuery("findAllTours").getResultList().asInstanceOf[java.util.List[Tour]]
 
-    assertEquals("My Travel", retrieved.get(0).name)
+    assertEquals("Amsterdam", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
     assertEquals("Hobi",retrieved.get(0).owner.name)

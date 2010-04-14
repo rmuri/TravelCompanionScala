@@ -11,6 +11,7 @@
           <element id="archive" name="TravelCompanionScala-spa-1.0.jar">
             <element id="module-output" name="TravelCompanionScala-spa" />
           </element>
+          <element id="library" level="project" name="Maven: com.h2database:h2:1.2.133" />
           <element id="library" level="project" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" />
           <element id="library" level="project" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" />
           <element id="library" level="project" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" />
@@ -39,7 +40,6 @@
           <element id="library" level="project" name="Maven: com.thoughtworks.paranamer:paranamer:2.0" />
           <element id="library" level="project" name="Maven: commons-fileupload:commons-fileupload:1.2.1" />
           <element id="library" level="project" name="Maven: org.scala-libs:scalajpa:1.2-scala280-SNAPSHOT" />
-          <element id="library" level="project" name="Maven: com.h2database:h2:1.2.127" />
         </element>
       </element>
     </root>
