@@ -33,7 +33,9 @@ object UserManagement {
     }
   }
 
-  def currentUser = curUser.is
+  def currentUser: Member = {
+    Model.merge(curUser.is.open_!)
+  }
 
   def loginSuffix = "login"
 
