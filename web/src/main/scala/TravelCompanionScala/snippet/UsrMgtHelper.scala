@@ -2,6 +2,7 @@ package TravelCompanionScala.snippet
 
 import xml.NodeSeq
 import TravelCompanionScala.model.UserManagement
+import net.liftweb.util.Helpers._
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,11 +13,15 @@ import TravelCompanionScala.model.UserManagement
  */
 
 class UsrMgtHelper {
-  def showIfAuthenticated(html: NodeSeq) : NodeSeq = {
-     if (UserManagement.loggedIn_?) {
+  def showIfAuthenticated(html: NodeSeq): NodeSeq = {
+    if (UserManagement.loggedIn_?) {
       html
     } else {
       NodeSeq.Empty
     }
+  }
+
+  def currentUser(html: NodeSeq): NodeSeq = {
+    bind("user", html, "name" -> UserManagement.currentUser.name)
   }
 }

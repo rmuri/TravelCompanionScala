@@ -24,17 +24,19 @@ object UserManagement {
   val basePath: List[String] = "user" :: Nil
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
-  object curUser extends SessionVar[Box[Member]](Empty)
+
+  object userVar extends SessionVar[Box[Member]](Empty)
+
   def currentUserId = {
-    if (curUser.is.isDefined) {
-      curUser.is.open_!.id
+    if (userVar.is.isDefined) {
+      userVar.is.open_!.id
     } else {
       0
     }
   }
 
   def currentUser: Member = {
-    Model.merge(curUser.is.open_!)
+    Model.merge(userVar.is.open_!)
   }
 
   def loginSuffix = "login"
@@ -124,7 +126,7 @@ object UserManagement {
   ///Login function
   def notLoggedIn_? = !loggedIn_?
 
-  def loggedIn_? = !curUser.get.isEmpty
+  def loggedIn_? = !userVar.get.isEmpty
 
   ///wrap it
   def screenWrap: Box[Node] = Full(<lift:surround with="default" at="content">
@@ -176,7 +178,7 @@ object UserManagement {
   def checkLogin() = {
     val user = Model.createQuery[Member]("from Member m where m.email = :email and m.password = :password").setParams("email" -> S.param("email").open_!, "password" -> S.param("password").open_!).findOne
     if (user.isDefined) {
-      curUser.set(Full(user.get))
+      userVar.set(Full(user.get))
       S.redirectTo("/")
     }
   }
@@ -185,7 +187,7 @@ object UserManagement {
   ///Functions
 
   def logout = {
-    curUser.set(Empty)
+    userVar.set(Empty)
     S.redirectTo("/")
   }
 
@@ -209,8 +211,58 @@ object UserManagement {
       <table>
         <tr>
           <td colspan="2">
-            {S.??("sign.up")}
+            <h2>
+              {S.??("sign.up")}
+            </h2>
           </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("user.name")}
+          </td> <td>
+            <user:username/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("first.name")}
+          </td> <td>
+            <user:firstname/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("last.name")}
+          </td> <td>
+            <user:lastname/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("street")}
+          </td> <td>
+            <user:street/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("zipcode")}
+          </td> <td>
+            <user:zipcode/>
+        </td>
+        </tr>
+
+        <tr>
+          <td>
+            {S.??("city")}
+          </td> <td>
+            <user:city/>
+        </td>
         </tr>
 
         <tr>
@@ -242,15 +294,15 @@ object UserManagement {
   protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty)
 
   def signup = {
-    var theUser: Member = new Member
+    var newMember: Member = new Member
 
     def testSignup() {
       if ((S.param("email").open_! != "") && (S.param("password").open_! != "")) {
-        theUser.email = S.param("email").open_!
-        theUser.password = S.param("password").open_!
-        theUser = Model.mergeAndFlush(theUser)
+        newMember.email = S.param("email").open_!
+        newMember.password = S.param("password").open_!
+        newMember = Model.mergeAndFlush(newMember)
         S.notice(S.??("welcome"))
-        curUser.set(Full(theUser))
+        userVar.set(Full(newMember))
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));
@@ -260,7 +312,7 @@ object UserManagement {
 
     def innerSignup = bind("user",
       signupXhtml,
-      "email" -> (<input type="text" name="email"/>),
+      "email" -> SHtml.text(newMember.email, newMember.email = _),
       "password" -> (<input type="password" name="password"/>),
       "submit" -> SHtml.submit(S.??("sign.up"), testSignup _))
 
