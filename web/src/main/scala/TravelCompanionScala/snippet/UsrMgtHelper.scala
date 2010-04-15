@@ -22,6 +22,6 @@ class UsrMgtHelper {
   }
 
   def currentUser(html: NodeSeq): NodeSeq = {
-    bind("user", html, "name" -> UserManagement.currentUser.name)
+    bind("user", html, "name" -> UserManagement.user.name)
   }
 }

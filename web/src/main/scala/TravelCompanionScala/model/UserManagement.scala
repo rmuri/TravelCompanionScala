@@ -25,18 +25,14 @@ object UserManagement {
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
 
-  object userVar extends SessionVar[Box[Member]](Empty)
+  object curUsr extends SessionVar[Box[Member]](Empty)
 
-  def currentUserId = {
-    if (userVar.is.isDefined) {
-      userVar.is.open_!.id
-    } else {
-      0
-    }
-  }
+  object userVar extends SessionVar[Member](new Member)
+
+  def user: Member = userVar.is
 
   def currentUser: Member = {
-    Model.merge(userVar.is.open_!)
+    Model.merge(curUsr.is.open_!)
   }
 
   def loginSuffix = "login"
@@ -126,7 +122,7 @@ object UserManagement {
   ///Login function
   def notLoggedIn_? = !loggedIn_?
 
-  def loggedIn_? = !userVar.get.isEmpty
+  def loggedIn_? = !curUsr.get.isEmpty
 
   ///wrap it
   def screenWrap: Box[Node] = Full(<lift:surround with="default" at="content">
@@ -154,9 +150,9 @@ object UserManagement {
         </tr>
         <tr>
           <td>
-            {S.??("email.address")}
+            {S.??("user.name")}
           </td> <td>
-            <user:email/>
+            <user:username/>
         </td>
         </tr>
         <tr>
@@ -175,35 +171,38 @@ object UserManagement {
     </form>)
   }
 
-  def checkLogin() = {
-    val user = Model.createQuery[Member]("from Member m where m.email = :email and m.password = :password").setParams("email" -> S.param("email").open_!, "password" -> S.param("password").open_!).findOne
-    if (user.isDefined) {
-      userVar.set(Full(user.get))
-      S.redirectTo("/")
-    }
+  def logInUser(user: Member) = {
+    curUsr.set(Full(user))
+    userVar(user)
+    S.redirectTo("/")
   }
 
 
   ///Functions
 
   def logout = {
-    userVar.set(Empty)
+    curUsr.set(Empty)
+    userVar(new Member)
     S.redirectTo("/")
   }
 
 
   def login = {
-    if (S.post_?) {
-      checkLogin()
-      if (notLoggedIn_?) {
+    def checkLogin() {
+      val tryUser = Model.createQuery[Member]("from Member m where m.name = :name and m.password = :password").setParams("name" -> user.name, "password" -> user.password).findOne
+      if (tryUser.isDefined) {
+        logInUser(tryUser.get)
+      } else {
         S.error({S.??("invalid.credentials")})
       }
     }
 
+    val current = user
+
     bind("user", loginXhtml,
-      "email" -> (<input type="text" name="email"/>),
-      "password" -> (<input type="password" name="password"/>),
-      "submit" -> (<input type="submit" value={S.??("log.in")}/>))
+      "username" -> SHtml.text(user.name, user.name = _),
+      "password" -> SHtml.password(user.password, user.password = _),
+      "submit" -> SHtml.submit(S.??("log.in"), () => {userVar(current); checkLogin}))
   }
 
   def signupXhtml() = {
@@ -293,30 +292,57 @@ object UserManagement {
 
   protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty)
 
+  def validateMember(m: Member): Boolean = {
+    var validation = true
+    if (m.name == "") {
+      S.error(S.??("name"))
+      validation = false
+    }
+    if (m.email == "") {
+      S.error(S.??("email"))
+      validation = false
+    }
+    if (m.password == "") {
+      S.error(S.??("password"))
+      validation = false
+    }
+    if (!Model.createQuery[Tour]("from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+      S.error(S.??("duplicated"))
+      validation = false
+    }
+    validation
+  }
+
   def signup = {
-    var newMember: Member = new Member
 
     def testSignup() {
-      if ((S.param("email").open_! != "") && (S.param("password").open_! != "")) {
-        newMember.email = S.param("email").open_!
-        newMember.password = S.param("password").open_!
-        newMember = Model.mergeAndFlush(newMember)
+      if (validateMember(userVar)) {
+        userVar(Model.mergeAndFlush(user))
         S.notice(S.??("welcome"))
-        userVar.set(Full(newMember))
+        curUsr.set(Full(user))
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));
-        signupFunc(Full(innerSignup _))
       }
     }
 
-    def innerSignup = bind("user",
-      signupXhtml,
-      "email" -> SHtml.text(newMember.email, newMember.email = _),
-      "password" -> (<input type="password" name="password"/>),
-      "submit" -> SHtml.submit(S.??("sign.up"), testSignup _))
+    val current = user
 
-    innerSignup
+    bind("user",
+      signupXhtml,
+      "username" -> SHtml.text(current.name, current.name = _),
+      "firstname" -> SHtml.text(current.forename, current.forename = _),
+      "lastname" -> SHtml.text(current.surname, current.forename = _),
+      "street" -> SHtml.text(current.street, current.street = _),
+      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
+      "city" -> SHtml.text(current.city, current.city = _),
+      "email" -> SHtml.text(current.email, current.email = _),
+      "password" -> SHtml.password(current.password, current.password = _),
+      "submit" -> SHtml.submit(S.??("sign.up"), () => {
+        userVar(current);
+        testSignup
+      }))
+
   }
 
 }
