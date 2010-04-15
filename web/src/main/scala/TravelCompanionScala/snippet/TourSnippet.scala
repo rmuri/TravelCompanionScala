@@ -64,7 +64,7 @@ class TourSnippet {
     val currentTour = tour
 
     if (currentTour.owner == null) {
-      currentTour.owner = UserManagement.user
+      currentTour.owner = UserManagement.currentUser
     }
 
     bind("tour", html,
@@ -93,7 +93,7 @@ class TourSnippet {
     which match {
     //case TourEnum.OWN_TOURS => Model.createQuery[Tour]("from Tour t where t.owner.id = :id").setParams("id" -> mid).findAll.toList
       case TourEnum.OWN_TOURS => scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.tours).toList
-      case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.user.id).findAll.toList
+      case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     }
   }
 

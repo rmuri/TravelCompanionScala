@@ -25,14 +25,18 @@ object UserManagement {
 
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
 
-  object curUsr extends SessionVar[Box[Member]](Empty)
+  // this object holds the logged-in user or is empty. Access is only permitted within this class.
+  private object curUsr extends SessionVar[Box[Member]](Empty)
 
-  object userVar extends SessionVar[Member](new Member)
-
-  def user: Member = userVar.is
+  // this object holds a temporary user which is used for binding form fields (Signup, login...) to the user.
+  // its not an entity from the datebase and should never come in touch with the EntityManager.
+  private object tempUserVar extends RequestVar[Member](new Member)
 
   def currentUser: Member = {
-    Model.merge(curUsr.is.open_!)
+    if (curUsr.is.isDefined)
+      Model.merge(curUsr.is.open_!)
+    else
+      new Member
   }
 
   def loginSuffix = "login"
@@ -90,7 +94,7 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def createUserMenuLocParams: List[LocParam[Unit]] =
-    Template(() => wrapIt(signupFunc.map(_()) openOr signup)) ::
+    Template(() => wrapIt(signup)) ::
             If(notLoggedIn_? _, S.??("logout.first")) :: defaultLocGroup ::
             Nil
 
@@ -108,8 +112,8 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def profileMenuLocParams: List[LocParam[Unit]] =
-  /*Template(() => wrapIt(profile)) ::*/
-    testLogginIn :: defaultLocGroup ::
+    Template(() => wrapIt(editProfile)) ::
+            testLogginIn :: defaultLocGroup ::
             Nil
 
 
@@ -173,7 +177,7 @@ object UserManagement {
 
   def logInUser(user: Member) = {
     curUsr.set(Full(user))
-    userVar(user)
+    tempUserVar(user)
     S.redirectTo("/")
   }
 
@@ -182,14 +186,14 @@ object UserManagement {
 
   def logout = {
     curUsr.set(Empty)
-    userVar(new Member)
+    tempUserVar(new Member)
     S.redirectTo("/")
   }
 
 
   def login = {
     def checkLogin() {
-      val tryUser = Model.createQuery[Member]("from Member m where m.name = :name and m.password = :password").setParams("name" -> user.name, "password" -> user.password).findOne
+      val tryUser = Model.createQuery[Member]("from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
       if (tryUser.isDefined) {
         logInUser(tryUser.get)
       } else {
@@ -197,21 +201,21 @@ object UserManagement {
       }
     }
 
-    val current = user
+    val current = tempUserVar.is
 
     bind("user", loginXhtml,
-      "username" -> SHtml.text(user.name, user.name = _),
-      "password" -> SHtml.password(user.password, user.password = _),
-      "submit" -> SHtml.submit(S.??("log.in"), () => {userVar(current); checkLogin}))
+      "username" -> SHtml.text(current.name, current.name = _),
+      "password" -> SHtml.password(current.password, current.password = _),
+      "submit" -> SHtml.submit(S.??("log.in"), () => {tempUserVar(current); checkLogin}))
   }
 
-  def signupXhtml() = {
+  def memberXhtml() = {
     (<form method="post" action={S.uri}>
       <table>
         <tr>
           <td colspan="2">
             <h2>
-              {S.??("sign.up")}
+                <user:title/>
             </h2>
           </td>
         </tr>
@@ -290,9 +294,7 @@ object UserManagement {
     </form>)
   }
 
-  protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty)
-
-  def validateMember(m: Member): Boolean = {
+  def validateMember(m: Member, create: Boolean): Boolean = {
     var validation = true
     if (m.name == "") {
       S.error(S.??("name"))
@@ -306,7 +308,7 @@ object UserManagement {
       S.error(S.??("password"))
       validation = false
     }
-    if (!Model.createQuery[Tour]("from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+    if (create && !Model.createQuery[Tour]("from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
       S.error(S.??("duplicated"))
       validation = false
     }
@@ -316,33 +318,66 @@ object UserManagement {
   def signup = {
 
     def testSignup() {
-      if (validateMember(userVar)) {
-        userVar(Model.mergeAndFlush(user))
+      if (validateMember(tempUserVar.is, true)) {
+        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
         S.notice(S.??("welcome"))
-        curUsr.set(Full(user))
+        curUsr.set(Full(tempUserVar.is))
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));
       }
     }
 
-    val current = user
+    val current = tempUserVar.is
 
     bind("user",
-      signupXhtml,
+      memberXhtml,
+      "title" -> S.??("sign.up"),
       "username" -> SHtml.text(current.name, current.name = _),
       "firstname" -> SHtml.text(current.forename, current.forename = _),
-      "lastname" -> SHtml.text(current.surname, current.forename = _),
+      "lastname" -> SHtml.text(current.surname, current.surname = _),
       "street" -> SHtml.text(current.street, current.street = _),
       "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
       "city" -> SHtml.text(current.city, current.city = _),
       "email" -> SHtml.text(current.email, current.email = _),
       "password" -> SHtml.password(current.password, current.password = _),
       "submit" -> SHtml.submit(S.??("sign.up"), () => {
-        userVar(current);
+        tempUserVar(current);
         testSignup
       }))
 
+  }
+
+  def editProfile = {
+
+    def testSave() {
+      if (validateMember(tempUserVar.is, false)) {
+        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
+        S.notice(S.??("profile.updated"))
+        curUsr.set(Full(tempUserVar.is))
+        S.redirectTo("/")
+      } else {
+        S.error(S.??("error"));
+      }
+    }
+
+    val current = currentUser
+
+    bind("user",
+      memberXhtml,
+      "title" -> S.??("edit.profile"),
+      "username" -> SHtml.text(current.name, current.name = _),
+      "firstname" -> SHtml.text(current.forename, current.forename = _),
+      "lastname" -> SHtml.text(current.surname, current.surname = _),
+      "street" -> SHtml.text(current.street, current.street = _),
+      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
+      "city" -> SHtml.text(current.city, current.city = _),
+      "email" -> SHtml.text(current.email, current.email = _),
+      "password" -> SHtml.password(current.password, current.password = _),
+      "submit" -> SHtml.submit(S.??("save"), () => {
+        tempUserVar(current);
+        testSave
+      }))
   }
 
 }
