@@ -3,6 +3,7 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+
 /**
  * Created by IntelliJ IDEA.
  * User: dhobi
@@ -14,7 +15,6 @@ import _root_.java.util._
 @Entity
 @Table(name = "tours")
 class Tour {
-
   @Id
   @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,10 +27,13 @@ class Tour {
   var description: String = ""
 
   @ManyToOne
-  var owner : Member = null
+  var owner: Member = null
 
-  @OneToMany(mappedBy = "tour",targetEntity = classOf[Stage])
-  var stages : Set[Stage] = new HashSet[Stage]()
+  @OneToMany(mappedBy = "tour", targetEntity = classOf[Stage])
+  var stages: List[Stage] = new ArrayList[Stage]()
+
+  @OneToMany(mappedBy = "tour", targetEntity = classOf[BlogEntry])
+  var blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
 }
 

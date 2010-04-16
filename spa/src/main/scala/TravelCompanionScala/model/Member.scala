@@ -46,6 +46,9 @@ class Member() {
 
   @OneToMany(mappedBy = "owner", targetEntity = classOf[Tour])
   var tours: List[Tour] = new ArrayList[Tour]()
+
+  @OneToMany(mappedBy = "owner", targetEntity = classOf[BlogEntry])
+  val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 }
 
 }
