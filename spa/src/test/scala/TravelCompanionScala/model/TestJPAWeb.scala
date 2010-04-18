@@ -69,12 +69,12 @@ class TestJPAWeb {
     /////assert
     em = emf.createEntityManager()
 
-    val retrieved = em.createNamedQuery("findAllTours").getResultList().asInstanceOf[java.util.List[Tour]]
+    val retrieved = em.createQuery("from Tour t where t.name = :name").setParameter("name","My Travel").getResultList.asInstanceOf[java.util.List[Tour]]
 
-    assertEquals("Amsterdam", retrieved.get(0).name)
+    assertEquals("My Travel", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
-    assertEquals("rm",retrieved.get(0).owner.name)
+    assertEquals("Hobi",retrieved.get(0).owner.name)
     println("Found member " + retrieved.get(0).owner.name)
 
     ///cleaup

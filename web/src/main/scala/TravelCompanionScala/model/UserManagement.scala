@@ -145,33 +145,24 @@ object UserManagement {
   ///Login form
   def loginXhtml = {
     (<form method="post" action={S.uri}>
-      <table>
-        <tr>
-          <td
-          colspan="2">
-            {S.??("log.in")}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            {S.??("user.name")}
-          </td> <td>
-            <user:username/>
-        </td>
-        </tr>
-        <tr>
-          <td>
-            {S.??("password")}
-          </td> <td>
-            <user:password/>
-        </td>
-        </tr>
-        <tr>
-          <td></td> <td>
-            <user:submit/>
-        </td>
-        </tr>
-      </table>
+      <table class="form">
+            <tbody><tr>
+                <td class="desc"><label for="name">{S.??("user.name")}</label></td>
+                <td><user:username/></td>
+            </tr>
+            <tr>
+                <td class="desc"><label for="password">{S.??("password")}</label></td>
+                <td><user:password/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="bottomnavi">
+              <user:submit/>
+        </div>
     </form>)
   }
 
