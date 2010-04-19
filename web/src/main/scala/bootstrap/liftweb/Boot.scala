@@ -33,12 +33,17 @@ class Boot {
   def boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
+
+    ResourceServer.allow {
+      case "css" :: _ => true
+    } 
+
     // Build SiteMap (used for navigation...)
     val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, "Startseite", LocGroup("main"))) ::
-            Menu(Loc("tour", "tour" :: "list" :: Nil, "Reise", LocGroup("main"), LocGroup("tour"))) ::
+            Menu(Loc("tour", "tour" :: "list" :: Nil, "Reisen", LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
             Menu(Loc("tour_create", "tour" :: "create" :: Nil, "Reise erstellen", LocGroup("tour"))) ::
