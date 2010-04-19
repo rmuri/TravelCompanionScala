@@ -22,16 +22,14 @@
     <div class="login">
 
         <lift:UsrMgtHelper.showIfAuthenticated>
-        <span>Wilkommen, <lift:UsrMgtHelper.currentUser>
+        <span>Willkommen, <lift:UsrMgtHelper.currentUser>
             <b><user:name/></b>
         </lift:UsrMgtHelper.currentUser>
         </span>
         </lift:UsrMgtHelper.showIfAuthenticated>
               <span>
                 <lift:Menu.group group="user">
-                  <span>|
-                      <menu:bind/>
-                    |</span>
+                  <span>[<menu:bind/>]</span>
                 </lift:Menu.group>
               </span>
 

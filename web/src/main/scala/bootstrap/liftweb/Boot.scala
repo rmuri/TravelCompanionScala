@@ -46,7 +46,6 @@ class Boot {
             Menu(Loc("tour", "tour" :: "list" :: Nil, "Reisen", LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("tour_create", "tour" :: "create" :: Nil, "Reise erstellen", LocGroup("tour"))) ::
             Menu(Loc("tour_remove", "tour" :: "remove" :: Nil, "Reise l&ouml;schen", LocGroup("tour"))) ::
             Menu(Loc("blog", "blog" :: Nil, "Blog", LocGroup("main"))) ::
             Menu(Loc("picture", "picture" :: Nil, "Bilder", LocGroup("main"))) :: UserManagement.sitemap

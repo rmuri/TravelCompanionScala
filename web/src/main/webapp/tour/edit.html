@@ -1,12 +1,30 @@
 <lift:surround with="default" at="content">
-    <lift:TourSnippet.editTour form="POST">
-        <h1>
-            <tour:name/>
-        </h1>
-        <span>
-            <tour:description/>
-        </span>
-        
-        <p><tour:submit/></p>
-    </lift:TourSnippet.editTour>
+    <div class="content">
+        <p>F&uuml;llen Sie das folgende Formular aus, um eine neue Reise zu erstellen oder eine bestehende zu editieren
+            (mit
+            * markierte Felder sind obligatorisch):</p>
+        <lift:TourSnippet.editTour form="POST">
+            <table class="form">
+                <tr>
+                    <td class="desc"><label for="name">Titel*</label></td>
+                    <td>
+                        <tour:name/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="desciption">Beschreibung</label></td>
+                    <td>
+                        <tour:description/>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="bottomnavi">
+                <tour:submit/>
+                <lift:Menu.item name="tour" a:class="button">Abbrechen</lift:Menu.item>
+            </div>
+
+
+        </lift:TourSnippet.editTour>
+    </div>
 </lift:surround>

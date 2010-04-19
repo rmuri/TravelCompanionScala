@@ -6,15 +6,10 @@ import _root_.scala.xml.{NodeSeq, Text}
 import _root_.net.liftweb._
 import http._
 import S._
-import common._
 import util._
 import Helpers._
 
-import _root_.javax.persistence.{EntityExistsException, PersistenceException}
 import TravelCompanionScala.model._
-import Model._
-
-
 /**
  * Created by IntelliJ IDEA.
  * User: Ralf Muri
@@ -74,14 +69,14 @@ class TourSnippet {
       "submit" -> SHtml.submit("Speichern", () => {tourVar(currentTour); doEdit}))
   }
 
-  def createTour(html: NodeSeq): NodeSeq = {
-    editTour(html)
+  def addStage(html: NodeSeq) : NodeSeq = {
+    
   }
 
   def listTours(html: NodeSeq): NodeSeq = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"
     tours(TourEnum.withName(which)).flatMap(tour => bind("tour", html,
-      "name" -> tour.name,
+      "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
       "description" -> tour.description,
       "creator" -> tour.owner.name,
       "edit" -> SHtml.link("edit", () => {println(tour); tourVar(tour)}, Text(?("Edit"))),

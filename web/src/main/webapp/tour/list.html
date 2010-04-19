@@ -1,18 +1,59 @@
 <lift:surround with="default" at="content">
     <lift:UsrMgtHelper.showIfAuthenticated>
-        <h1>Ihre Reisen</h1>
-        <span>Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen Reisen:</span>
+        <div class="content">
+            <h1>Ihre Reisen</h1>
+
+            <p>Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen Reisen:</p>
+            <table class="list">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Operations</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <lift:TourSnippet.listTours which="OwnTours">
+                    <tr>
+                        <td>
+                            <tour:name/>
+                        </td>
+                        <td>
+                            <tour:description/>
+                        </td>
+                        <td>
+                            <tour:addStage/>
+                            |
+                            <tour:edit/>
+                            |
+                            <tour:remove/>
+                        </td>
+                    </tr>
+                </lift:TourSnippet.listTours>
+                </tbody>
+            </table>
+
+            <lift:Menu.item name="tour_edit" a:class="button">Reise hinzuf&uuml;gen</lift:Menu.item>
+
+        </div>
+    </lift:UsrMgtHelper.showIfAuthenticated>
+
+    <div class="content">
+        <h1>Reisen anderer Mitglieder</h1>
+
+        <p>Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern eingetragenen Reisen:</p>
         <table class="list">
             <thead>
             <tr>
-                <th>Name</th>
+                <th class="name">Name</th>
                 <th>Description</th>
-                <th>Operations</th>
+                <th class="name">Creator</th>
             </tr>
             </thead>
 
             <tbody>
-            <lift:TourSnippet.listTours which="OwnTours">
+            <lift:TourSnippet.listTours which="OthersTours">
                 <tr>
                     <td>
                         <tour:name/>
@@ -21,48 +62,12 @@
                         <tour:description/>
                     </td>
                     <td>
-                        <tour:view/>
-                        |
-                        <tour:edit/>
-                        |
-                        <tour:remove/>
+                        <tour:creator/>
                     </td>
                 </tr>
             </lift:TourSnippet.listTours>
             </tbody>
         </table>
-        <p>
-            <lift:Menu.item name="tour_create">Neue Reise hinzuf&uuml;gen</lift:Menu.item>
-        </p>
-    </lift:UsrMgtHelper.showIfAuthenticated>
-
-
-    <h1>Reisen anderer Mitglieder</h1>
-    <span>Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern eingetragenen Reisen:</span>
-    <table class="list">
-        <thead>
-        <tr>
-            <th class="name">Name</th>
-            <th>Description</th>
-            <th class="name">Creator</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <lift:TourSnippet.listTours which="OthersTours">
-            <tr>
-                <td>
-                    <tour:name/>
-                </td>
-                <td>
-                    <tour:description/>
-                </td>
-                <td>
-                    <tour:creator/>
-                </td>
-            </tr>
-        </lift:TourSnippet.listTours>
-        </tbody>
-    </table>
+    </div>
 
 </lift:surround>
