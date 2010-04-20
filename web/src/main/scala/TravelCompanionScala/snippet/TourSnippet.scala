@@ -31,20 +31,10 @@ class TourSnippet {
   object tourVar extends RequestVar(new Tour())
   def tour = tourVar.is
 
-  def deleteTour(html: NodeSeq): NodeSeq = {
-
-    def doRemove() = {
-      val t = Model.merge(tour)
-      Model.remove(t)
-      S.redirectTo("/tour/list")
-    }
-
-    val currentTour = tour
-
-    bind("tour", html,
-      "name" -> tour.name,
-      "description" -> tour.description,
-      "submit" -> SHtml.submit("Delete", () => {tourVar(currentTour); doRemove}))
+  def doRemove() = {
+    val t = Model.merge(tour)
+    Model.remove(t)
+    S.redirectTo("/tour/list")
   }
 
   def viewTour(html: NodeSeq): NodeSeq = {
@@ -80,12 +70,11 @@ class TourSnippet {
       "addStage" -> SHtml.link("addStage", () => tourVar(tour), Text(?("Add Stage"))),
       "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
       "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
-      "remove" -> SHtml.link("remove", () => tourVar(tour), Text(?("Remove")))))
+      "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("Remove")))))
   }
 
   private def tours(which: TourEnum.Value): List[Tour] = {
     which match {
-    //case TourEnum.OWN_TOURS => Model.createQuery[Tour]("from Tour t where t.owner.id = :id").setParams("id" -> mid).findAll.toList
       case TourEnum.OWN_TOURS => scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.tours).toList
       case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     }

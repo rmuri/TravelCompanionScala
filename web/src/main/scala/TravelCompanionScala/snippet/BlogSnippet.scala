@@ -22,4 +22,6 @@ class BlogSnippet {
   // Set up a requestVar to track the STAGE object for edits and adds
   object blogEntryVar extends RequestVar(new BlogEntry())
   def blogEntry = blogEntryVar.is
+
+  
 }
