@@ -10,6 +10,7 @@ import util._
 import Helpers._
 
 import TravelCompanionScala.model._
+
 /**
  * Created by IntelliJ IDEA.
  * User: Ralf Muri
@@ -69,8 +70,8 @@ class TourSnippet {
       "submit" -> SHtml.submit("Speichern", () => {tourVar(currentTour); doEdit}))
   }
 
-  def addStage(html: NodeSeq) : NodeSeq = {
-    
+  def addStage(html: NodeSeq): NodeSeq = {
+    html
   }
 
   def listTours(html: NodeSeq): NodeSeq = {
