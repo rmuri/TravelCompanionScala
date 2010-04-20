@@ -1,4 +1,5 @@
-package TravelCompanionScala.model
+package TravelCompanionScala {
+package model  {
 
 import javax.persistence._
 import _root_.java.util._
@@ -12,7 +13,7 @@ import _root_.java.util._
  */
 
 @Entity
-@Table(name = "blogEntries")
+@Table(name = "blogentries")
 class BlogEntry {
   @Id
   @Version
@@ -32,12 +33,15 @@ class BlogEntry {
   @Column
   var published: Boolean = false
 
-  @OneToOne
+  @ManyToOne
   var tour: Tour = null
 
-  @OneToOne
+  @ManyToOne
   var owner: Member = null
 
   @OneToMany(mappedBy = "blogEntry", targetEntity = classOf[Comment])
   var comments: List[Comment] = new ArrayList[Comment]()
+}
+
+}
 }

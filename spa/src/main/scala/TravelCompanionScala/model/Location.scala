@@ -12,7 +12,7 @@ import _root_.java.util._
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "Location")
+@Table(name = "locations")
 class Location {
   @Id
   @Version
