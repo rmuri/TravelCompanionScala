@@ -1,7 +1,7 @@
 <lift:surround with="default" at="content">
     <lift:UsrMgtHelper:showIfAuthenticated>
         <div class="content">
-            <h1>Ihre Blogeintr&uaml;ge</h1>
+            <h1>Ihre Blogeintr&auml;ge</h1>
 
             <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&uaml;ge:</p>
             <lift:BlogSnippet:listOwnEntries>
@@ -13,11 +13,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <th>
                             <entry:title/>
-                            geh&uoml;rt zur Tour:
+                            geh&ouml;rt zur Tour:
                             <entry:tour/>
-                        </td>
+                        </th>
                     </tr>
                     <tr>
                         <td>
@@ -41,7 +41,7 @@
         </div>
     </lift:UsrMgtHelper:showIfAuthenticated>
     <div class="content">
-        <h1>Eingetragene Blogeintr&uaml;ge</h1>
+        <h1>Eingetragene Blogeintr&auml;ge</h1>
 
         <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
 
@@ -59,16 +59,13 @@
                 <tr>
                     <td>
                         <entry:title/>
-                        >
                     </td>
                     <td>
                         <entry:preview/>
-                        [
-                        <entry:readOn/>
-                        ]
+                        [<entry:readOn/>]
                     </td>
                     <td>
-                        <entry:lastUpdate/>
+                        <entry:lastUpdated/>
                     </td>
                     <td>
                         <entry:creator/>

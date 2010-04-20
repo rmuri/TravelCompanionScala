@@ -3,12 +3,14 @@ package TravelCompanionScala.snippet
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
+import common.Empty
 import http._
 import S._
 import util._
 import Helpers._
 
 import TravelCompanionScala.model._
+import java.text.SimpleDateFormat
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,12 +25,40 @@ class BlogSnippet {
   object blogEntryVar extends RequestVar(new BlogEntry())
   def blogEntry = blogEntryVar.is
 
+  def editBlogEntry(html: NodeSeq): NodeSeq = {
+    def doEdit() = {
+      Model.mergeAndFlush(blogEntry)
+      S.redirectTo("/blog/list")
+    }
+
+    val currentEntry = blogEntry
+
+    if (currentEntry.owner == null) {
+      currentEntry.owner = UserManagement.currentUser
+    }
+
+    val tours = Model.createQuery[Tour]("from Tour").findAll.toList
+    val choices = tours.map(tour => (tour.id.toString -> tour.name)).toList
+
+    bind("entry", html,
+      "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
+      "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
+      "tour" -> SHtml.select(choices, Empty, {tourId: String => blogEntry.tour = Model.getReference(classOf[Tour], tourId.toLong)}),
+      "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
+      "submit" -> SHtml.submit("Speichern", () => {blogEntryVar(currentEntry); doEdit}))
+  }
+
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
     entries.flatMap(entry => bind("entry", html,
       "title" -> entry.title,
-      "preview" -> entry.content.substring(0, 50),
-      "readOn" -> SHtml.link("view", () => blogEntryVar(blogEntry), Text(?("weiterlesen"))),
-      "lastUpdate" -> entry.lastUpdated.toString,
+      "tour" -> SHtml.link("/tour/view", () => (), Text( /*entry.tour.name*/ "")),
+      "content" -> entry.content,
+      "edit" -> SHtml.link("edit", () => blogEntryVar(entry), Text(?("edit"))),
+      "comments" -> SHtml.link("comments", () => blogEntryVar(entry), Text(?("comments"))),
+      "remove" -> SHtml.link("remove", () => blogEntryVar(entry), Text(?("remove"))),
+      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("weiterlesen"))),
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
       "creator" -> entry.owner.name))
   }
 

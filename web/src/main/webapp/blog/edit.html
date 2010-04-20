@@ -1,0 +1,34 @@
+<lift:surround with="default" at="content">
+    <div class="content">
+        <p>F&uuml;llen Sie das folgende Formular aus, um den Blogeintrag zu editieren (mit * markierte Felder sind
+            obligatorisch):</p>
+        <lift:BlogSnippet:editBlogEntry form="POST">
+            <table class="form">
+                <tbody>
+                <tr>
+                    <td class="desc"><label for="title">Titel*</label></td>
+                    <td>
+                        <entry:title/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="content">Blogeintrag*</label></td>
+                    <td>
+                        <entry:content/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tour"><label for="tour">Reise</label></td>
+                    <td>
+                        <entry:tour/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="bottomnavi">
+                <entry:submit/>
+                <lift:Menu.item name="blog" a:class="button">Abbrechen</lift:Menu.item>
+            </div>
+        </lift:BlogSnippet:editBlogEntry>
+    </div>
+</lift:surround>

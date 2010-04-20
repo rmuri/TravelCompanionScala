@@ -146,23 +146,36 @@ object UserManagement {
   def loginXhtml = {
     (<form method="post" action={S.uri}>
       <table class="form">
-            <tbody><tr>
-                <td class="desc"><label for="name">{S.??("user.name")}</label></td>
-                <td><user:username/></td>
-            </tr>
-            <tr>
-                <td class="desc"><label for="password">{S.??("password")}</label></td>
-                <td><user:password/></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="bottomnavi">
-              <user:submit/>
-        </div>
+        <tbody>
+          <tr>
+            <td class="desc">
+              <label for="name">
+                {S.??("user.name")}
+              </label>
+            </td>
+            <td>
+                <user:username/>
+            </td>
+          </tr>
+          <tr>
+            <td class="desc">
+              <label for="password">
+                {S.??("password")}
+              </label>
+            </td>
+            <td>
+                <user:password/>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="bottomnavi">
+          <user:submit/>
+      </div>
     </form>)
   }
 
@@ -310,9 +323,8 @@ object UserManagement {
 
     def testSignup() {
       if (validateMember(tempUserVar.is, true)) {
-        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
+        logInUser(Model.mergeAndFlush(tempUserVar.is))
         S.notice(S.??("welcome"))
-        curUsr.set(Full(tempUserVar.is))
         S.redirectTo("/")
       } else {
         S.error(S.??("error"));
