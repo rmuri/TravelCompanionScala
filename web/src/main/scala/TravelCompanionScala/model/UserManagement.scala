@@ -184,7 +184,7 @@ object UserManagement {
 
   def login = {
     def checkLogin() {
-      val tryUser = Model.createQuery[Member]("from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
+      val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
       if (tryUser.isDefined) {
         logInUser(tryUser.get)
       } else {
@@ -299,7 +299,7 @@ object UserManagement {
       S.error(S.??("password"))
       validation = false
     }
-    if (create && !Model.createQuery[Tour]("from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+    if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
       S.error(S.??("duplicated"))
       validation = false
     }

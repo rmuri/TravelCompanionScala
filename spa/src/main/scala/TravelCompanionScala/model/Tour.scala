@@ -16,7 +16,6 @@ import _root_.java.util._
 @Table(name = "tours")
 class Tour {
   @Id
-  @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
 

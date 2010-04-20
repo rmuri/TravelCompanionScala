@@ -13,18 +13,10 @@
           </element>
           <element id="library" level="project" name="Maven: com.h2database:h2:1.2.133" />
           <element id="library" level="project" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" />
-          <element id="library" level="project" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" />
-          <element id="library" level="project" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" />
-          <element id="library" level="project" name="Maven: org.hibernate:hibernate-commons-annotations:3.1.0.GA" />
-          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.5.11" />
-          <element id="library" level="project" name="Maven: org.hibernate:hibernate-annotations:3.4.0.GA" />
-          <element id="library" level="project" name="Maven: org.hibernate:hibernate-core:3.3.0.SP1" />
-          <element id="library" level="project" name="Maven: antlr:antlr:2.7.6" />
-          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.1" />
-          <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
-          <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.0.b2" />
-          <element id="library" level="project" name="Maven: javassist:javassist:3.4.GA" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.1.0-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: javax.persistence:persistence-api:1.0" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-simple:1.4.2" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.5.11" />
           <element id="library" level="project" name="Maven: org.scala-lang:scala-library:2.8.0.Beta1" />
           <element id="library" level="project" name="Maven: net.liftweb:lift-jpa:2.0-scala280-SNAPSHOT" />
           <element id="library" level="project" name="Maven: net.liftweb:lift-webkit:2.0-scala280-SNAPSHOT" />

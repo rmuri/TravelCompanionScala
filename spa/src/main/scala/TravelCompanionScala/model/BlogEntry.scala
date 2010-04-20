@@ -2,7 +2,7 @@ package TravelCompanionScala {
 package model  {
 
 import javax.persistence._
-import _root_.java.util._
+import java.util.{Date, ArrayList}
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +16,6 @@ import _root_.java.util._
 @Table(name = "blogentries")
 class BlogEntry {
   @Id
-  @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
 
@@ -40,7 +39,7 @@ class BlogEntry {
   var owner: Member = null
 
   @OneToMany(mappedBy = "blogEntry", targetEntity = classOf[Comment])
-  var comments: List[Comment] = new ArrayList[Comment]()
+  var comments: java.util.List[Comment] = new ArrayList[Comment]()
 }
 
 }
