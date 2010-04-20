@@ -9,7 +9,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <context-artifact name="TravelCompanionScala-web:war exploded" />
       </configuration>
     </facet>
   </component>
