@@ -23,5 +23,22 @@ class BlogSnippet {
   object blogEntryVar extends RequestVar(new BlogEntry())
   def blogEntry = blogEntryVar.is
 
-  
+  def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
+    entries.flatMap(entry => bind("entry", html,
+      "title" -> entry.title,
+      "preview" -> entry.content.substring(0, 50),
+      "readOn" -> SHtml.link("view", () => blogEntryVar(blogEntry), Text(?("weiterlesen"))),
+      "lastUpdate" -> entry.lastUpdated.toString,
+      "creator" -> entry.owner.name))
+  }
+
+  def listOtherEntries(html: NodeSeq): NodeSeq = {
+    val entries = Model.createQuery[BlogEntry]("from BlogEntry e where e.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    listEntries(html, entries)
+  }
+
+  def listOwnEntries(html: NodeSeq): NodeSeq = {
+    val entries = scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.blogEntries).toList
+    listEntries(html, entries)
+  }
 }
