@@ -4,7 +4,8 @@
             <h1>Ihre Reisen</h1>
 
             <p>Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen Reisen:</p>
-            <table class="list">
+            <lift:TableSorter for="listtours"/>
+            <table class="tablesorter list" id="listtours">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -43,7 +44,8 @@
         <h1>Reisen anderer Mitglieder</h1>
 
         <p>Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern eingetragenen Reisen:</p>
-        <table class="list">
+        <lift:TableSorter for="listtoursothers"/>
+            <table class="list tablesorter" id="listtoursothers">
             <thead>
             <tr>
                 <th class="name">Name</th>
@@ -69,5 +71,5 @@
             </tbody>
         </table>
     </div>
-
+   
 </lift:surround>
