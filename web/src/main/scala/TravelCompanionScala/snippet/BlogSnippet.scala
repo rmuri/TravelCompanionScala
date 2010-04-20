@@ -37,7 +37,7 @@ class BlogSnippet {
       currentEntry.owner = UserManagement.currentUser
     }
 
-    val tours = Model.createQuery[Tour]("from Tour").findAll.toList
+    val tours = Model.createQuery[Tour]("SELECT t from Tour t").findAll.toList
     val choices = tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     bind("entry", html,
@@ -63,7 +63,7 @@ class BlogSnippet {
   }
 
   def listOtherEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createQuery[BlogEntry]("from BlogEntry e where e.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    val entries = Model.createQuery[BlogEntry]("SELECT e from BlogEntry e where e.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     listEntries(html, entries)
   }
 

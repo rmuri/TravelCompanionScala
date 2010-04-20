@@ -11,6 +11,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.eclipse.persistence:eclipselink:2.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.h2database:h2:1.2.133" level="project" />
     <orderEntry type="library" exported="" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.eclipse.persistence:eclipselink:2.1.0-SNAPSHOT" level="project" />

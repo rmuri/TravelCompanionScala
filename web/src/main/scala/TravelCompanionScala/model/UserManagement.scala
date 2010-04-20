@@ -149,13 +149,17 @@ object UserManagement {
 
   ///Login form
   def loginXhtml = {
-    (<form method="post" action={S.uri}>
+    (<p>{S.?("member.login")}</p>
+     <lift:Msgs>
+        <lift:error_msg />
+      </lift:Msgs>
+      <form method="post" action={S.uri}>
       <table class="form">
         <tbody>
           <tr>
             <td class="desc">
               <label for="name">
-                {S.??("user.name")}
+                {S.?("member.username")}
               </label>
             </td>
             <td>
@@ -207,7 +211,7 @@ object UserManagement {
         logInUser(tryUser.get)
       } else {
         S.error({
-          S.??("invalid.credentials")
+          S.?("member.invalid.credentials")
         })
       }
     }
@@ -236,7 +240,7 @@ object UserManagement {
 
         <tr>
           <td>
-            {S.??("user.name")}
+            {S.?("member.username")}
           </td> <td>
             <user:username/>
         </td>

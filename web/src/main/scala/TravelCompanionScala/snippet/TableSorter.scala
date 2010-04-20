@@ -18,6 +18,7 @@ import net.liftweb.common.Empty
 class TableSorter {
   def render(xhtml: NodeSeq): NodeSeq = {
     val which = S.attr("for").map(_.toString) openOr ""
+    println("Tablesorter for: "+which)
     TableSorter("#"+which)
   }
 

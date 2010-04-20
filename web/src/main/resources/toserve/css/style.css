@@ -417,3 +417,12 @@ table.blog tr.editieren {
 pre {
 	vertical-align: top;
 }
+
+#lift__noticesContainer___error {
+    background-color:#FFCCCC;
+    border:1px solid #F00000;
+    color:#F00000;
+    font-weight:bold;
+    margin-bottom:10px;
+    padding-left:10px;
+}
