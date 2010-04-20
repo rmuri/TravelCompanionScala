@@ -33,15 +33,10 @@ object UserManagement {
   private object tempUserVar extends RequestVar[Member](new Member)
 
   def currentUser: Member = {
-    if (curUsr.is.isDefined) {
-      val u = Model.merge(curUsr.is.open_!)
-      println(u.id)
-      println(u.name)
-      scala.collection.JavaConversions.asBuffer(u.tours).toList.foreach(t => println(t.name))
-      u
-    } else {
+    if (curUsr.is.isDefined)
+      curUsr.is.open_!
+    else
       new Member
-    }
   }
 
   def loginSuffix = "login"
@@ -150,6 +145,7 @@ object UserManagement {
   ///Login form
   def loginXhtml = {
     (<form method="post" action={S.uri}>
+      <p>Geben Sie Ihren Benutzernamen und Ihr Passwort ein, um sich anzumelden:</p>
       <table class="form">
         <tbody>
           <tr>
@@ -180,6 +176,7 @@ object UserManagement {
       </table>
       <div class="bottomnavi">
           <user:submit/>
+        <a href="/index">Abbrechen</a>
       </div>
     </form>)
   }
@@ -225,172 +222,184 @@ object UserManagement {
 
   def memberXhtml() = {
     (<form method="post" action={S.uri}>
-      <table>
-        <tr>
-          <td colspan="2">
-            <h2>
-                <user:title/>
-            </h2>
-          </td>
-        </tr>
-
-        <tr>
-          <td>
+      <h2>
+          <user:title/>
+      </h2>
+      <p>F&uuml;llen Sie das folgende Formular aus, um sich als neues Mitglied zu registrieren (mit * markierte Felder sind obligatorisch):
+  </p>
+  <table class="form">
+    <tbody>
+      <tr>
+        <td class="desc">
+          <label for="username">
             {S.??("user.name")}
-          </td> <td>
+          </label>
+        </td>
+        <td>
             <user:username/>
         </td>
-        </tr>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="firstname">
             {S.??("first.name")}
-          </td> <td>
-            <user:firstname/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:firstname/>
+      </td>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="lastname">
             {S.??("last.name")}
-          </td> <td>
-            <user:lastname/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:lastname/>
+      </td>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="street">
             {S.??("street")}
-          </td> <td>
-            <user:street/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:street/>
+      </td>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="zipcode">
             {S.??("zipcode")}
-          </td> <td>
-            <user:zipcode/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:zipcode/>
+      </td>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="city">
             {S.??("city")}
-          </td> <td>
-            <user:city/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:city/>
+      </td>
+      </tr>
 
-        <tr>
-          <td>
+      <tr>
+        <td class="desc">
+          <label for="email">
             {S.??("email.address")}
-          </td> <td>
-            <user:email/>
-        </td>
-        </tr>
-        <tr>
-          <td>
+          </label>
+        </td> <td>
+          <user:email/>
+      </td>
+      </tr>
+      <tr>
+        <td class="desc">
+          <label for="password">
             {S.??("password")}
-          </td> <td>
-            <user:password/>
-        </td>
-        </tr>
+          </label>
+        </td> <td>
+          <user:password/>
+      </td>
+      </tr>
+    </tbody>
+  </table>
+          <div class="bottomnavi">
+              <user:submit/>
+            <a href="/index">Abbrechen</a>
+          </div>
+  </form>)
+}
 
-        <tr>
-          <td>
-            &nbsp;
-          </td> <td>
-            <user:submit/>
-        </td>
-        </tr>
-      </table>
-    </form>)
-  }
+def validateMember (m: Member, create: Boolean): Boolean =
+{
+var validation = true
+if (m.name == "") {
+S.error (S.?? ("name") )
+validation = false
+}
+if (m.email == "") {
+S.error (S.?? ("email") )
+validation = false
+}
+if (m.password == "") {
+S.error (S.?? ("password") )
+validation = false
+}
+if (create && ! Model.createQuery[Tour] ("SELECT m from Member m where m.name = :name or m.email = :email").setParams ("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+S.error (S.?? ("duplicated") )
+validation = false
+}
+validation
+}
 
-  def validateMember(m: Member, create: Boolean): Boolean = {
-    var validation = true
-    if (m.name == "") {
-      S.error(S.??("name"))
-      validation = false
-    }
-    if (m.email == "") {
-      S.error(S.??("email"))
-      validation = false
-    }
-    if (m.password == "") {
-      S.error(S.??("password"))
-      validation = false
-    }
-    if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
-      S.error(S.??("duplicated"))
-      validation = false
-    }
-    validation
-  }
+def signup =
+{
+def testSignup () {
+if (validateMember (tempUserVar.is, true) ) {
+logInUser (Model.mergeAndFlush (tempUserVar.is) )
+S.notice (S.?? ("welcome") )
+S.redirectTo ("/")
+} else {
+S.error (S.?? ("error") );
+}
+}
 
-  def signup = {
+val current = tempUserVar.is
 
-    def testSignup() {
-      if (validateMember(tempUserVar.is, true)) {
-        logInUser(Model.mergeAndFlush(tempUserVar.is))
-        S.notice(S.??("welcome"))
-        S.redirectTo("/")
-      } else {
-        S.error(S.??("error"));
-      }
-    }
+bind ("user",
+memberXhtml,
+"title" -> S.?? ("sign.up"),
+"username" -> SHtml.text (current.name, current.name = _),
+"firstname" -> SHtml.text (current.forename, current.forename = _),
+"lastname" -> SHtml.text (current.surname, current.surname = _),
+"street" -> SHtml.text (current.street, current.street = _),
+"zipcode" -> SHtml.text (current.zipcode, current.zipcode = _),
+"city" -> SHtml.text (current.city, current.city = _),
+"email" -> SHtml.text (current.email, current.email = _),
+"password" -> SHtml.password (current.password, current.password = _),
+"submit" -> SHtml.submit (S.?? ("sign.up"), () => {
+tempUserVar (current);
+testSignup
+}) )
+}
 
-    val current = tempUserVar.is
+def editProfile =
+{
+def testSave () {
+if (validateMember (tempUserVar.is, false) ) {
+tempUserVar (Model.mergeAndFlush (tempUserVar.is) )
+S.notice (S.?? ("profile.updated") )
+curUsr.set (Full (tempUserVar.is) )
+S.redirectTo ("/")
+} else {
+S.error (S.?? ("error") );
+}
+}
 
-    bind("user",
-      memberXhtml,
-      "title" -> S.??("sign.up"),
-      "username" -> SHtml.text(current.name, current.name = _),
-      "firstname" -> SHtml.text(current.forename, current.forename = _),
-      "lastname" -> SHtml.text(current.surname, current.surname = _),
-      "street" -> SHtml.text(current.street, current.street = _),
-      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
-      "city" -> SHtml.text(current.city, current.city = _),
-      "email" -> SHtml.text(current.email, current.email = _),
-      "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("sign.up"), () => {
-        tempUserVar(current);
-        testSignup
-      }))
+val current = currentUser
 
-  }
-
-  def editProfile = {
-
-    def testSave() {
-      if (validateMember(tempUserVar.is, false)) {
-        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-        S.notice(S.??("profile.updated"))
-        curUsr.set(Full(tempUserVar.is))
-        S.redirectTo("/")
-      } else {
-        S.error(S.??("error"));
-      }
-    }
-
-    val current = currentUser
-
-    bind("user",
-      memberXhtml,
-      "title" -> S.??("edit.profile"),
-      "username" -> SHtml.text(current.name, current.name = _),
-      "firstname" -> SHtml.text(current.forename, current.forename = _),
-      "lastname" -> SHtml.text(current.surname, current.surname = _),
-      "street" -> SHtml.text(current.street, current.street = _),
-      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
-      "city" -> SHtml.text(current.city, current.city = _),
-      "email" -> SHtml.text(current.email, current.email = _),
-      "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("save"), () => {
-        tempUserVar(current);
-        testSave
-      }))
-  }
+bind ("user",
+memberXhtml,
+"title" -> S.?? ("edit.profile"),
+"username" -> SHtml.text (current.name, current.name = _),
+"firstname" -> SHtml.text (current.forename, current.forename = _),
+"lastname" -> SHtml.text (current.surname, current.surname = _),
+"street" -> SHtml.text (current.street, current.street = _),
+"zipcode" -> SHtml.text (current.zipcode, current.zipcode = _),
+"city" -> SHtml.text (current.city, current.city = _),
+"email" -> SHtml.text (current.email, current.email = _),
+"password" -> SHtml.password (current.password, current.password = _),
+"submit" -> SHtml.submit (S.?? ("save"), () => {
+tempUserVar (current);
+testSave
+}) )
+}
 
 }
