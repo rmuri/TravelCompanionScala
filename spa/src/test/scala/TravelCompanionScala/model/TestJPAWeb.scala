@@ -88,6 +88,48 @@ class TestJPAWeb {
     em.close()
   }
 
+  @Test
+  def collection () = {
+
+    var em = emf.createEntityManager()
+    val tx = em.getTransaction()
+
+    tx.begin()
+
+    val member = new Member
+    member.name = "Hobi"
+
+    em.persist(member)
+
+    val tour = new Tour
+    tour.name = "My Travel"
+    tour.description = "description"
+    tour.owner = member
+
+    em.persist(tour)
+
+    val tour2 = new Tour
+    tour2.name = "My Travel 2"
+    tour2.description = "description 2"
+    tour2.owner = member
+    em.persist(tour2)
+
+    tx.commit()
+    em.close()
+
+
+    ///assert
+    em = emf.createEntityManager()
+
+    val retrieved = em.createQuery("SELECT m from Member m where m.name = :name").setParameter("name","Hobi").getResultList.asInstanceOf[java.util.List[Member]]
+
+    assertEquals("Hobi", retrieved.get(0).name)
+    println("Found " + retrieved.get(0).name)
+
+    assertEquals("Hobi",retrieved.get(1).name)
+    println("Found member " + retrieved.get(1).name)
+  }
+
 }
 
 }
