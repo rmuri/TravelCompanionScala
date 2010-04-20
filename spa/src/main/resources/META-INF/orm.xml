@@ -8,13 +8,13 @@
 
   <entity class="Tour">
     <named-query name="findAllTours">
-      <query><![CDATA[from Tour t order by t.name]]></query>
+      <query><![CDATA[SELECT t from Tour t order by t.name]]></query>
     </named-query>
   </entity>
 
     <entity class="Member">
         <named-query name="findAllMembers">
-            <query><![CDATA[from Member m order by m.name]]></query>
+            <query><![CDATA[SELECT m from Member m order by m.name]]></query>
         </named-query>
     </entity>
 

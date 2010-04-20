@@ -1,14 +1,33 @@
-<persistence>
-   <persistence-unit name="jpaweb" transaction-type="RESOURCE_LOCAL">
-      <properties>
-         <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-         <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-         <property name="connection.username">sa</property>
-          <property name="connection.password"></property>
-         <property name="hibernate.connection.url" value="jdbc:h2:file:~/TravelCompanion;FILE_LOCK=NO"/>
-         <property name="hibernate.max_fetch_depth" value="3"/>
-         <property name="hibernate.show_sql" value="true" />
-         <property name="hibernate.hbm2ddl.auto" value="update" />
-      </properties>
-   </persistence-unit>
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+
+    <persistence-unit name="jpaweb" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider </provider>
+        
+        <class>TravelCompanionScala.model.BlogEntry</class>
+        <class>TravelCompanionScala.model.Comment</class>
+        <class>TravelCompanionScala.model.Location</class>
+        <class>TravelCompanionScala.model.Member</class>
+        <class>TravelCompanionScala.model.Stage</class>
+        <class>TravelCompanionScala.model.Tour</class>
+
+        <properties>
+            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:~/TravelCompanion;FILE_LOCK=NO"/>
+            <!--<property name="eclipselink.jdbc.url" value="jdbc:h2:tcp://localhost/~/aulaweb/db/database"/>-->
+            <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />-->
+            <property name="eclipselink.ddl-generation" value="create-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            
+        </properties>
+
+
+    </persistence-unit>
 </persistence>

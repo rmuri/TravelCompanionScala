@@ -76,7 +76,7 @@ class TourSnippet {
   private def tours(which: TourEnum.Value): List[Tour] = {
     which match {
       case TourEnum.OWN_TOURS => scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.tours).toList
-      case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+      case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("SELECT t from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     }
   }
 

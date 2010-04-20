@@ -33,10 +33,15 @@ object UserManagement {
   private object tempUserVar extends RequestVar[Member](new Member)
 
   def currentUser: Member = {
-    if (curUsr.is.isDefined)
-      Model.merge(curUsr.is.open_!)
-    else
+    if (curUsr.is.isDefined) {
+      val u = Model.merge(curUsr.is.open_!)
+      println(u.id)
+      println(u.name)
+      scala.collection.JavaConversions.asBuffer(u.tours).toList.foreach(t => println(t.name))
+      u
+    } else {
       new Member
+    }
   }
 
   def loginSuffix = "login"
@@ -197,11 +202,13 @@ object UserManagement {
 
   def login = {
     def checkLogin() {
-      val tryUser = Model.createQuery[Member]("from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
+      val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
       if (tryUser.isDefined) {
         logInUser(tryUser.get)
       } else {
-        S.error({S.??("invalid.credentials")})
+        S.error({
+          S.??("invalid.credentials")
+        })
       }
     }
 
@@ -210,7 +217,10 @@ object UserManagement {
     bind("user", loginXhtml,
       "username" -> SHtml.text(current.name, current.name = _),
       "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("log.in"), () => {tempUserVar(current); checkLogin}))
+      "submit" -> SHtml.submit(S.??("log.in"), () => {
+        tempUserVar(current);
+        checkLogin
+      }))
   }
 
   def memberXhtml() = {
@@ -312,7 +322,7 @@ object UserManagement {
       S.error(S.??("password"))
       validation = false
     }
-    if (create && !Model.createQuery[Tour]("from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+    if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
       S.error(S.??("duplicated"))
       validation = false
     }

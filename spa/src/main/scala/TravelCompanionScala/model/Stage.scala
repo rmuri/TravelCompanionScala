@@ -1,7 +1,6 @@
 package TravelCompanionScala {
 package model {
 
-
 import javax.persistence._
 import _root_.java.util._
 
@@ -17,7 +16,6 @@ import _root_.java.util._
 @Table(name = "stages")
 class Stage {
   @Id
-  @Version
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
 
