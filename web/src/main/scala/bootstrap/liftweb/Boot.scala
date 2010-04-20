@@ -22,8 +22,10 @@ import _root_.net.liftweb.util.{LoanWrapper, LogBoot}
 import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
+import _root_.net.liftweb.widgets.tablesorter.TableSorter
 import TravelCompanionScala.model._
 import net.liftweb.http._
+
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -58,6 +60,9 @@ class Boot {
     //        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
     //    }
 
+
+    //Widgets
+    TableSorter.init
   }
 }
 
