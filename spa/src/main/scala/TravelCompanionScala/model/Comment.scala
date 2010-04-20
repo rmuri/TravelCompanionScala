@@ -1,4 +1,5 @@
-package TravelCompanionScala.model
+package TravelCompanionScala {
+package model  {
 
 import javax.persistence._
 import _root_.java.util._
@@ -22,7 +23,7 @@ class Comment {
   @Column
   var content: String = ""
 
-  @Column
+  @OneToOne
   var member: Member = null
 
   @Temporal(TemporalType.DATE)
@@ -31,4 +32,7 @@ class Comment {
 
   @ManyToOne
   var blogEntry: BlogEntry = null
+}
+
+}
 }

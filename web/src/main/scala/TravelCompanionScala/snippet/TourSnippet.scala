@@ -70,9 +70,6 @@ class TourSnippet {
       "submit" -> SHtml.submit("Speichern", () => {tourVar(currentTour); doEdit}))
   }
 
-  def addStage(html: NodeSeq): NodeSeq = {
-    html
-  }
 
   def listTours(html: NodeSeq): NodeSeq = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"
@@ -80,7 +77,8 @@ class TourSnippet {
       "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      "edit" -> SHtml.link("edit", () => {println(tour); tourVar(tour)}, Text(?("Edit"))),
+      "addStage" -> SHtml.link("addStage", () => tourVar(tour), Text(?("Add Stage"))),
+      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
       "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
       "remove" -> SHtml.link("remove", () => tourVar(tour), Text(?("Remove")))))
   }
