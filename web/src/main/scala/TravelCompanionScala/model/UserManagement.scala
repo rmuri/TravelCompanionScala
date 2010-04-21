@@ -34,7 +34,7 @@ object UserManagement {
 
   def currentUser: Member = {
     if (curUsr.is.isDefined)
-      Model.merge(curUsr.is.open_!)
+      curUsr.is.open_!
     else
       new Member
   }
@@ -145,24 +145,39 @@ object UserManagement {
   ///Login form
   def loginXhtml = {
     (<form method="post" action={S.uri}>
+      <p>Geben Sie Ihren Benutzernamen und Ihr Passwort ein, um sich anzumelden:</p>
       <table class="form">
-            <tbody><tr>
-                <td class="desc"><label for="name">{S.??("user.name")}</label></td>
-                <td><user:username/></td>
-            </tr>
-            <tr>
-                <td class="desc"><label for="password">{S.??("password")}</label></td>
-                <td><user:password/></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="bottomnavi">
-              <user:submit/>
-        </div>
+        <tbody>
+          <tr>
+            <td class="desc">
+              <label for="name">
+                {S.??("user.name")}
+              </label>
+            </td>
+            <td>
+                <user:username/>
+            </td>
+          </tr>
+          <tr>
+            <td class="desc">
+              <label for="password">
+                {S.??("password")}
+              </label>
+            </td>
+            <td>
+                <user:password/>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="bottomnavi">
+          <user:submit/>
+        <a href="/index">Abbrechen</a>
+      </div>
     </form>)
   }
 
@@ -188,7 +203,9 @@ object UserManagement {
       if (tryUser.isDefined) {
         logInUser(tryUser.get)
       } else {
-        S.error({S.??("invalid.credentials")})
+        S.error({
+          S.??("invalid.credentials")
+        })
       }
     }
 
@@ -197,178 +214,193 @@ object UserManagement {
     bind("user", loginXhtml,
       "username" -> SHtml.text(current.name, current.name = _),
       "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("log.in"), () => {tempUserVar(current); checkLogin}))
+      "submit" -> SHtml.submit(S.??("log.in"), () => {
+        tempUserVar(current);
+        checkLogin
+      }))
   }
 
   def memberXhtml() = {
     (<form method="post" action={S.uri}>
-      <table>
-        <tr>
-          <td colspan="2">
-            <h2>
-                <user:title/>
-            </h2>
+      <h2>
+          <user:title/>
+      </h2>
+      <p>
+        {"Fuellen Sie das folgende Formular aus, um sich als neues Mitglied zu registrieren (mit * markierte Felder sind obligatorisch):"}
+      </p>
+      <table class="form">
+        <tbody>
+          <tr>
+            <td class="desc">
+              <label for="username">
+                {S.??("user.name")}
+              </label>
+            </td>
+            <td>
+                <user:username/>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="desc">
+              <label for="firstname">
+                {S.??("first.name")}
+              </label>
+            </td> <td>
+              <user:firstname/>
           </td>
-        </tr>
+          </tr>
 
-        <tr>
-          <td>
-            {S.??("user.name")}
-          </td> <td>
-            <user:username/>
-        </td>
-        </tr>
+          <tr>
+            <td class="desc">
+              <label for="lastname">
+                {S.??("last.name")}
+              </label>
+            </td> <td>
+              <user:lastname/>
+          </td>
+          </tr>
 
-        <tr>
-          <td>
-            {S.??("first.name")}
-          </td> <td>
-            <user:firstname/>
-        </td>
-        </tr>
+          <tr>
+            <td class="desc">
+              <label for="street">
+                {S.??("street")}
+              </label>
+            </td> <td>
+              <user:street/>
+          </td>
+          </tr>
 
-        <tr>
-          <td>
-            {S.??("last.name")}
-          </td> <td>
-            <user:lastname/>
-        </td>
-        </tr>
+          <tr>
+            <td class="desc">
+              <label for="zipcode">
+                {S.??("zipcode")}
+              </label>
+            </td> <td>
+              <user:zipcode/>
+          </td>
+          </tr>
 
-        <tr>
-          <td>
-            {S.??("street")}
-          </td> <td>
-            <user:street/>
-        </td>
-        </tr>
+          <tr>
+            <td class="desc">
+              <label for="city">
+                {S.??("city")}
+              </label>
+            </td> <td>
+              <user:city/>
+          </td>
+          </tr>
 
-        <tr>
-          <td>
-            {S.??("zipcode")}
-          </td> <td>
-            <user:zipcode/>
-        </td>
-        </tr>
-
-        <tr>
-          <td>
-            {S.??("city")}
-          </td> <td>
-            <user:city/>
-        </td>
-        </tr>
-
-        <tr>
-          <td>
-            {S.??("email.address")}
-          </td> <td>
-            <user:email/>
-        </td>
-        </tr>
-        <tr>
-          <td>
-            {S.??("password")}
-          </td> <td>
-            <user:password/>
-        </td>
-        </tr>
-
-        <tr>
-          <td>
-            &nbsp;
-          </td> <td>
-            <user:submit/>
-        </td>
-        </tr>
+          <tr>
+            <td class="desc">
+              <label for="email">
+                {S.??("email.address")}
+              </label>
+            </td> <td>
+              <user:email/>
+          </td>
+          </tr>
+          <tr>
+            <td class="desc">
+              <label for="password">
+                {S.??("password")}
+              </label>
+            </td> <td>
+              <user:password/>
+          </td>
+          </tr>
+        </tbody>
       </table>
+      <div class="bottomnavi">
+          <user:submit/>
+        <a href="/index">Abbrechen</a>
+      </div>
     </form>)
   }
 
-  def validateMember(m: Member, create: Boolean): Boolean = {
-    var validation = true
-    if (m.name == "") {
-      S.error(S.??("name"))
-      validation = false
-    }
-    if (m.email == "") {
-      S.error(S.??("email"))
-      validation = false
-    }
-    if (m.password == "") {
-      S.error(S.??("password"))
-      validation = false
-    }
-    if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
-      S.error(S.??("duplicated"))
-      validation = false
-    }
-    validation
-  }
-
-  def signup = {
-
-    def testSignup() {
-      if (validateMember(tempUserVar.is, true)) {
-        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-        S.notice(S.??("welcome"))
-        curUsr.set(Full(tempUserVar.is))
-        S.redirectTo("/")
-      } else {
-        S.error(S.??("error"));
+  def validateMember(m: Member, create: Boolean): Boolean =
+    {
+      var validation = true
+      if (m.name == "") {
+        S.error(S.??("name"))
+        validation = false
       }
-    }
-
-    val current = tempUserVar.is
-
-    bind("user",
-      memberXhtml,
-      "title" -> S.??("sign.up"),
-      "username" -> SHtml.text(current.name, current.name = _),
-      "firstname" -> SHtml.text(current.forename, current.forename = _),
-      "lastname" -> SHtml.text(current.surname, current.surname = _),
-      "street" -> SHtml.text(current.street, current.street = _),
-      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
-      "city" -> SHtml.text(current.city, current.city = _),
-      "email" -> SHtml.text(current.email, current.email = _),
-      "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("sign.up"), () => {
-        tempUserVar(current);
-        testSignup
-      }))
-
-  }
-
-  def editProfile = {
-
-    def testSave() {
-      if (validateMember(tempUserVar.is, false)) {
-        tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-        S.notice(S.??("profile.updated"))
-        curUsr.set(Full(tempUserVar.is))
-        S.redirectTo("/")
-      } else {
-        S.error(S.??("error"));
+      if (m.email == "") {
+        S.error(S.??("email"))
+        validation = false
       }
+      if (m.password == "") {
+        S.error(S.??("password"))
+        validation = false
+      }
+      if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
+        S.error(S.??("duplicated"))
+        validation = false
+      }
+      validation
     }
 
-    val current = currentUser
+  def signup =
+    {
+      def testSignup() {
+        if (validateMember(tempUserVar.is, true)) {
+          logInUser(Model.mergeAndFlush(tempUserVar.is))
+          S.notice(S.??("welcome"))
+          S.redirectTo("/")
+        } else {
+          S.error(S.??("error"));
+        }
+      }
 
-    bind("user",
-      memberXhtml,
-      "title" -> S.??("edit.profile"),
-      "username" -> SHtml.text(current.name, current.name = _),
-      "firstname" -> SHtml.text(current.forename, current.forename = _),
-      "lastname" -> SHtml.text(current.surname, current.surname = _),
-      "street" -> SHtml.text(current.street, current.street = _),
-      "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
-      "city" -> SHtml.text(current.city, current.city = _),
-      "email" -> SHtml.text(current.email, current.email = _),
-      "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("save"), () => {
-        tempUserVar(current);
-        testSave
-      }))
-  }
+      val current = tempUserVar.is
+
+      bind("user",
+        memberXhtml,
+        "title" -> S.??("sign.up"),
+        "username" -> SHtml.text(current.name, current.name = _),
+        "firstname" -> SHtml.text(current.forename, current.forename = _),
+        "lastname" -> SHtml.text(current.surname, current.surname = _),
+        "street" -> SHtml.text(current.street, current.street = _),
+        "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
+        "city" -> SHtml.text(current.city, current.city = _),
+        "email" -> SHtml.text(current.email, current.email = _),
+        "password" -> SHtml.password(current.password, current.password = _),
+        "submit" -> SHtml.submit(S.??("sign.up"), () => {
+          tempUserVar(current);
+          testSignup
+        }))
+    }
+
+  def editProfile =
+    {
+      def testSave() {
+        if (validateMember(tempUserVar.is, false)) {
+          tempUserVar(Model.mergeAndFlush(tempUserVar.is))
+          S.notice(S.??("profile.updated"))
+          curUsr.set(Full(tempUserVar.is))
+          S.redirectTo("/")
+        } else {
+          S.error(S.??("error"));
+        }
+      }
+
+      val current = currentUser
+
+      bind("user",
+        memberXhtml,
+        "title" -> S.??("edit.profile"),
+        "username" -> SHtml.text(current.name, current.name = _),
+        "firstname" -> SHtml.text(current.forename, current.forename = _),
+        "lastname" -> SHtml.text(current.surname, current.surname = _),
+        "street" -> SHtml.text(current.street, current.street = _),
+        "zipcode" -> SHtml.text(current.zipcode, current.zipcode = _),
+        "city" -> SHtml.text(current.city, current.city = _),
+        "email" -> SHtml.text(current.email, current.email = _),
+        "password" -> SHtml.password(current.password, current.password = _),
+        "submit" -> SHtml.submit(S.??("save"), () => {
+          tempUserVar(current);
+          testSave
+        }))
+    }
 
 }

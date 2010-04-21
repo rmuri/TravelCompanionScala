@@ -48,16 +48,17 @@ class Boot {
             Menu(Loc("tour", "tour" :: "list" :: Nil, "Reisen", LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("blog", "blog" :: Nil, "Blog", LocGroup("main"))) ::
+            Menu(Loc("blog", "blog" :: "list" :: Nil, "Blog", LocGroup("main"), LocGroup("blog"))) ::
+            Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
             Menu(Loc("picture", "picture" :: Nil, "Bilder", LocGroup("main"))) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
-    LiftRules.rewrite.append {
-      case RewriteRequest(
-      ParsePath(List("tour", action, id), _, _, _), _, _) =>
-        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
-    }
+    //    LiftRules.rewrite.append {
+    //      case RewriteRequest(
+    //      ParsePath(List("tour", action, id), _, _, _), _, _) =>
+    //        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
+    //    }
 
 
     //Widgets

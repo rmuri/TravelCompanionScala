@@ -4,6 +4,7 @@ package snippet {
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
+import common.{Box, Empty}
 import http._
 import S._
 import util._
@@ -25,10 +26,14 @@ object TourEnum extends Enumeration {
   val OTHERS_TOURS = Value("OthersTours")
 }
 
+object TourOps {
+  object tourParam extends RequestVar[Box[Tour]](Empty)
+}
+
 class TourSnippet {
 
   // Set up a requestVar to track the TOUR object for edits and adds
-  object tourVar extends RequestVar(new Tour())
+  object tourVar extends RequestVar[Tour](new Tour())
   def tour = tourVar.is
 
   def doRemove() = {
@@ -38,7 +43,10 @@ class TourSnippet {
   }
 
   def viewTour(html: NodeSeq): NodeSeq = {
-    bind("tour", html, "name" -> tour.name, "description" -> tour.description)
+    if (TourOps.tourParam.is.isDefined)
+      bind("tour", html, "name" -> TourOps.tourParam.is.open_!.name, "description" -> TourOps.tourParam.is.open_!.description)
+    else
+      bind("tour", html, "name" -> tour.name, "description" -> tour.description)
   }
 
   def editTour(html: NodeSeq): NodeSeq = {
@@ -75,11 +83,10 @@ class TourSnippet {
 
   private def tours(which: TourEnum.Value): List[Tour] = {
     which match {
-      case TourEnum.OWN_TOURS => scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.tours).toList
-      case TourEnum.OTHERS_TOURS => return Model.createQuery[Tour]("SELECT t from Tour t where t.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+      case TourEnum.OWN_TOURS => Model.createNamedQuery[Tour]("findTourByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+      case TourEnum.OTHERS_TOURS => Model.createNamedQuery[Tour]("findTourByOthers").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     }
   }
-
 }
 }
 }
