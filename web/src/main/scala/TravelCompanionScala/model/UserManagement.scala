@@ -397,7 +397,7 @@ object UserManagement {
 
       bind("user",
         memberXhtml,
-        "title" -> S.?("edit.profile"),
+        "title" -> S.?("member.editProfile"),
         "username" -> SHtml.text(current.name, current.name = _),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
         "lastname" -> SHtml.text(current.surname, current.surname = _),
