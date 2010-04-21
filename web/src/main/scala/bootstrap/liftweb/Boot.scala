@@ -35,7 +35,7 @@ class Boot {
   def boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
-    LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: Nil 
+    LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: Nil
 
     ResourceServer.allow {
       case "css" :: _ => true
@@ -50,6 +50,7 @@ class Boot {
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
             Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))) ::
+            Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))) ::
             Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
             Menu(Loc("picture", "picture" :: Nil, S.?("pictures"), LocGroup("main"))) :: UserManagement.sitemap
 

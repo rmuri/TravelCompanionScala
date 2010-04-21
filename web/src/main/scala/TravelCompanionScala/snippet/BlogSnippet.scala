@@ -55,6 +55,27 @@ class BlogSnippet {
       "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
   }
 
+  def showEntry(html: NodeSeq): NodeSeq = {
+
+    val currentEntry = blogEntry
+
+    bind("entry", html,
+      "title" -> currentEntry.title,
+      "tour" -> {
+        if (currentEntry.tour == null) {
+          NodeSeq.Empty
+        } else {
+          Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(currentEntry.tour), Text(currentEntry.tour.name))
+        }
+      },
+      "content" -> currentEntry.content,
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(currentEntry.lastUpdated))
+  }
+
+  def showComments(html: NodeSeq): NodeSeq = {
+    html
+  }
+
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
     entries.flatMap(entry => bind("entry", html,
       "title" -> entry.title,
