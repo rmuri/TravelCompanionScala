@@ -73,7 +73,11 @@ class BlogSnippet {
   }
 
   def showComments(html: NodeSeq): NodeSeq = {
-    html
+    val comments = Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> blogEntry).findAll.toList
+    comments.flatMap(comment => bind("comment", html,
+      "member" -> comment.member.name,
+      "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
+      "content" -> comment.content))
   }
 
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -83,6 +87,7 @@ class BlogSnippet {
         if (entry.tour == null) {
           NodeSeq.Empty
         } else {
+
           Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
         }
       },
