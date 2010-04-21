@@ -102,7 +102,7 @@ class BlogSnippet {
         if (entry.tour == null) {
           NodeSeq.Empty
         } else {
-          Text(?("blog.belongsTo") + "") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
         }
       },
       "content" -> entry.content,
