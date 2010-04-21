@@ -8,6 +8,7 @@ import http._
 import S._
 import util._
 import Helpers._
+import net.liftweb.common._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -22,8 +23,14 @@ import java.text.SimpleDateFormat
 
 class BlogSnippet {
   // Set up a requestVar to track the STAGE object for edits and adds
-  object blogEntryVar extends RequestVar(new BlogEntry())
+  object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
   def blogEntry = blogEntryVar.is
+
+  def removeBlogEntry(entry: BlogEntry) {
+    val e = Model.merge(entry)
+    Model.remove(e)
+    S.redirectTo("/blog/list")
+  }
 
   def editBlogEntry(html: NodeSeq): NodeSeq = {
     def doEdit() = {
@@ -37,13 +44,13 @@ class BlogSnippet {
       currentEntry.owner = UserManagement.currentUser
     }
 
-    val tours = Model.createQuery[Tour]("SELECT t from Tour t").findAll.toList
+    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     val choices = tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     bind("entry", html,
       "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
       "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
-      "tour" -> SHtml.select(choices, Empty, {tourId: String => blogEntry.tour = Model.getReference(classOf[Tour], tourId.toLong)}),
+      "tour" -> SHtml.select(choices, Empty, {tourId: String => currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong)}),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
       "submit" -> SHtml.submit("Speichern", () => {blogEntryVar(currentEntry); doEdit}))
   }
@@ -51,11 +58,17 @@ class BlogSnippet {
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
     entries.flatMap(entry => bind("entry", html,
       "title" -> entry.title,
-      "tour" -> SHtml.link("/tour/view", () => (), Text( /*entry.tour.name*/ "")),
+      "tour" -> {
+        if (entry.tour == null) {
+          NodeSeq.Empty
+        } else {
+          Text("gehoert zur Tour: ") ++ SHtml.link("/tour/view", () => TourOps.tourParam(Full(entry.tour)), Text(entry.tour.name))
+        }
+      },
       "content" -> entry.content,
       "edit" -> SHtml.link("edit", () => blogEntryVar(entry), Text(?("edit"))),
       "comments" -> SHtml.link("comments", () => blogEntryVar(entry), Text(?("comments"))),
-      "remove" -> SHtml.link("remove", () => blogEntryVar(entry), Text(?("remove"))),
+      "remove" -> SHtml.link("remove", () => removeBlogEntry(entry), Text(?("remove"))),
       "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
       "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("weiterlesen"))),
       "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
@@ -63,12 +76,12 @@ class BlogSnippet {
   }
 
   def listOtherEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createQuery[BlogEntry]("SELECT e from BlogEntry e where e.owner.id != :id").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     listEntries(html, entries)
   }
 
   def listOwnEntries(html: NodeSeq): NodeSeq = {
-    val entries = scala.collection.JavaConversions.asBuffer(UserManagement.currentUser.blogEntries).toList
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
     listEntries(html, entries)
   }
 }
