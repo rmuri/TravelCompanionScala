@@ -4,7 +4,7 @@ package snippet {
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
-import common.{Box, Empty}
+import common.{Full, Box, Empty}
 import http._
 import S._
 import util._
@@ -75,7 +75,7 @@ class TourSnippet {
       "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      "addStage" -> SHtml.link("addStage", () => tourVar(tour), Text(?("Add Stage"))),
+      "addStage" -> SHtml.link("stage/edit", () => tourParam(Full(tour)), Text(?("Add Stage"))),
       "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
       "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
       "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("Remove")))))

@@ -77,7 +77,7 @@ class TestJPAWeb {
     assertEquals("Hobi",retrieved.get(0).owner.name)
     println("Found member " + retrieved.get(0).owner.name)
 
-    ///cleaup
+    ///clenaup
     em.getTransaction().begin()
 
     em.remove(em.getReference(classOf[Tour],tour.id))
@@ -128,6 +128,17 @@ class TestJPAWeb {
 
     assertEquals("Hobi",retrieved.get(1).name)
     println("Found member " + retrieved.get(1).name)
+
+     ///cleanup
+    em.getTransaction().begin()
+
+    em.remove(em.getReference(classOf[Tour],tour.id))
+    em.remove(em.getReference(classOf[Tour],tour2.id))
+    em.remove(em.getReference(classOf[Member],member.id))
+
+    em.getTransaction().commit()
+
+    em.close()
   }
 
 }
