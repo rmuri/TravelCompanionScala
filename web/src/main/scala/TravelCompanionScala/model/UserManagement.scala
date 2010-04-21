@@ -76,7 +76,7 @@ object UserManagement {
     Full(Menu(Loc("CreateUser", registerPath, S.??("sign.up"), createUserMenuLocParams)))
 
   def profileMenuLoc: Box[Menu] =
-    Full(Menu(Loc("Profile", profilePath, S.??("edit.profile"), profileMenuLocParams)))
+    Full(Menu(Loc("Profile", profilePath, S.?("member.profile"), profileMenuLocParams)))
 
   def thePath(end: String): List[String] = basePath ::: List(end)
 
@@ -232,14 +232,14 @@ object UserManagement {
           <user:title/>
       </h2>
       <p>
-        {"Fuellen Sie das folgende Formular aus, um sich als neues Mitglied zu registrieren (mit * markierte Felder sind obligatorisch):"}
+        {S.?("member.register")}
       </p>
       <table class="form">
         <tbody>
           <tr>
             <td class="desc">
               <label for="username">
-                {S.??("user.name")}
+                {S.?("member.username")}
               </label>
             </td>
             <td>
@@ -270,7 +270,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="street">
-                {S.??("street")}
+                {S.?("street")}
               </label>
             </td> <td>
               <user:street/>
@@ -280,7 +280,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="zipcode">
-                {S.??("zipcode")}
+                {S.?("zipcode")}
               </label>
             </td> <td>
               <user:zipcode/>
@@ -290,7 +290,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="city">
-                {S.??("city")}
+                {S.?("city")}
               </label>
             </td> <td>
               <user:city/>
@@ -319,7 +319,9 @@ object UserManagement {
       </table>
       <div class="bottomnavi">
           <user:submit/>
-        <a href="/index">Abbrechen</a>
+        <a href="/index">
+          {S.?("cancel")}
+        </a>
       </div>
     </form>)
   }
@@ -328,11 +330,11 @@ object UserManagement {
     {
       var validation = true
       if (m.name == "") {
-        S.error(S.??("name"))
+        S.error(S.?("member.username"))
         validation = false
       }
       if (m.email == "") {
-        S.error(S.??("email"))
+        S.error(S.??("email.address"))
         validation = false
       }
       if (m.password == "") {
@@ -340,7 +342,7 @@ object UserManagement {
         validation = false
       }
       if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
-        S.error(S.??("duplicated"))
+        S.error(S.?("duplicated"))
         validation = false
       }
       validation
@@ -395,7 +397,7 @@ object UserManagement {
 
       bind("user",
         memberXhtml,
-        "title" -> S.??("edit.profile"),
+        "title" -> S.?("edit.profile"),
         "username" -> SHtml.text(current.name, current.name = _),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
         "lastname" -> SHtml.text(current.surname, current.surname = _),
@@ -404,7 +406,7 @@ object UserManagement {
         "city" -> SHtml.text(current.city, current.city = _),
         "email" -> SHtml.text(current.email, current.email = _),
         "password" -> SHtml.password(current.password, current.password = _),
-        "submit" -> SHtml.submit(S.??("save"), () => {
+        "submit" -> SHtml.submit(S.?("save"), () => {
           tempUserVar(current);
           testSave
         }))
