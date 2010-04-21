@@ -49,6 +49,7 @@ class Boot {
             Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
+            Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LocGroup("tour"))) ::
             Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))) ::
             Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))) ::
             Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
