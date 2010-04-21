@@ -45,12 +45,12 @@ class BlogSnippet {
     }
 
     val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
-    val choices = tours.map(tour => (tour.id.toString -> tour.name)).toList
+    val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     bind("entry", html,
       "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
       "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
-      "tour" -> SHtml.select(choices, Empty, {tourId: String => currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong)}),
+      "tour" -> SHtml.select(choices, Empty, (tourId: String) => {if (tourId != "") currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentEntry.tour = null}),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
       "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
   }
@@ -72,6 +72,21 @@ class BlogSnippet {
       "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(currentEntry.lastUpdated))
   }
 
+  def addComment(html: NodeSeq): NodeSeq = {
+    def doAdd(c: Comment) = {
+      c.blogEntry = blogEntry
+      c.member = UserManagement.currentUser
+      Model.mergeAndFlush(c)
+    }
+
+    val currentEntry = blogEntry
+    val newComment = new Comment
+
+    bind("comment", html,
+      "content" -> SHtml.textarea(newComment.content, newComment.content = _),
+      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
+  }
+
   def showComments(html: NodeSeq): NodeSeq = {
     val comments = Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> blogEntry).findAll.toList
     comments.flatMap(comment => bind("comment", html,
@@ -87,13 +102,12 @@ class BlogSnippet {
         if (entry.tour == null) {
           NodeSeq.Empty
         } else {
-
-          Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+          Text(?("blog.belongsTo") + "") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
         }
       },
       "content" -> entry.content,
       "edit" -> SHtml.link("edit", () => blogEntryVar(entry), Text(?("edit"))),
-      "comments" -> SHtml.link("comments", () => blogEntryVar(entry), Text(?("blog.comments"))),
+      "comments" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("blog.comments"))),
       "remove" -> SHtml.link("remove", () => removeBlogEntry(entry), Text(?("remove"))),
       "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
       "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
