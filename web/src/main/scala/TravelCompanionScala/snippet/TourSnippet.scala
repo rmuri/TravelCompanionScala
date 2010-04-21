@@ -26,14 +26,10 @@ object TourEnum extends Enumeration {
   val OTHERS_TOURS = Value("OthersTours")
 }
 
-object TourOps {
-  object tourParam extends RequestVar[Box[Tour]](Empty)
-}
+// Set up a requestVar to track the TOUR object for edits and adds
+object tourVar extends RequestVar[Tour](new Tour())
 
 class TourSnippet {
-
-  // Set up a requestVar to track the TOUR object for edits and adds
-  object tourVar extends RequestVar[Tour](new Tour())
   def tour = tourVar.is
 
   def doRemove() = {
@@ -43,10 +39,7 @@ class TourSnippet {
   }
 
   def viewTour(html: NodeSeq): NodeSeq = {
-    if (TourOps.tourParam.is.isDefined)
-      bind("tour", html, "name" -> TourOps.tourParam.is.open_!.name, "description" -> TourOps.tourParam.is.open_!.description)
-    else
-      bind("tour", html, "name" -> tour.name, "description" -> tour.description)
+    bind("tour", html, "name" -> tour.name, "description" -> tour.description)
   }
 
   def editTour(html: NodeSeq): NodeSeq = {
@@ -65,7 +58,7 @@ class TourSnippet {
       "name" -> SHtml.text(currentTour.name, currentTour.name = _),
       "description" -> SHtml.textarea(currentTour.description, currentTour.description = _),
       "owner" -> SHtml.text(currentTour.owner.name, currentTour.owner.name = _),
-      "submit" -> SHtml.submit("Speichern", () => {tourVar(currentTour); doEdit}))
+      "submit" -> SHtml.submit(?("save"), () => {tourVar(currentTour); doEdit}))
   }
 
 
@@ -75,10 +68,10 @@ class TourSnippet {
       "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
       "description" -> tour.description,
       "creator" -> tour.owner.name,
-      "addStage" -> SHtml.link("stage/edit", () => tourParam(Full(tour)), Text(?("Add Stage"))),
-      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("Edit"))),
-      "view" -> SHtml.link("view", () => tourVar(tour), Text(?("View"))),
-      "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("Remove")))))
+      "addStage" -> SHtml.link("stage/edit", () => tourVar(tour), Text(?("tour.addStage"))),
+      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))),
+      "view" -> SHtml.link("view", () => tourVar(tour), Text(?("view"))),
+      "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("remove")))))
   }
 
   private def tours(which: TourEnum.Value): List[Tour] = {

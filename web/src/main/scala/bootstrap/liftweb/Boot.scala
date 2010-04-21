@@ -35,7 +35,7 @@ class Boot {
   def boot {
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
-    LiftRules.resourceNames = "Member" :: Nil
+    LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: Nil
 
     ResourceServer.allow {
       case "css" :: _ => true
@@ -45,14 +45,15 @@ class Boot {
     val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
-    val entries = Menu(Loc("index", "index" :: Nil, "Startseite", LocGroup("main"))) ::
-            Menu(Loc("tour", "tour" :: "list" :: Nil, "Reisen", LocGroup("main"), LocGroup("tour"))) ::
+    val entries = Menu(Loc("index", "index" :: Nil, S.?("home"), LocGroup("main"))) ::
+            Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("tour_addstage", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("blog", "blog" :: "list" :: Nil, "Blog", LocGroup("main"), LocGroup("blog"))) ::
+            Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LocGroup("tour"))) ::
+            Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))) ::
+            Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))) ::
             Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
-            Menu(Loc("picture", "picture" :: Nil, "Bilder", LocGroup("main"))) :: UserManagement.sitemap
+            Menu(Loc("picture", "picture" :: Nil, S.?("pictures"), LocGroup("main"))) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 

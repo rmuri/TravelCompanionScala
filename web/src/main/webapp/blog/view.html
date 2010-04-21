@@ -1,0 +1,33 @@
+<lift:surround with="default" at="content">
+    <h1>Ihr Blogeintrag</h1>
+
+    <p>Nachfolgend erhalten Sie Ihren Blogeintrag sowie eine Liste der dazu erstellten Kommentare:</p>
+    <lift:BlogSnippet:showEntry>
+        <table class="blog">
+            <tbody>
+            <tr>
+                <td>
+                    <entry:lastUpdated/>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <entry:title/>
+                    <entry:tour/>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <entry:content/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </lift:BlogSnippet:showEntry>
+    <lift:BlogSnippet:showComments>
+
+    </lift:BlogSnippet:showComments>
+    <lift:UsrMgtHelper:showIfAuthenticated>
+
+    </lift:UsrMgtHelper:showIfAuthenticated>
+</lift:surround>

@@ -52,7 +52,28 @@ class BlogSnippet {
       "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
       "tour" -> SHtml.select(choices, Empty, {tourId: String => currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong)}),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
-      "submit" -> SHtml.submit("Speichern", () => {blogEntryVar(currentEntry); doEdit}))
+      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
+  }
+
+  def showEntry(html: NodeSeq): NodeSeq = {
+
+    val currentEntry = blogEntry
+
+    bind("entry", html,
+      "title" -> currentEntry.title,
+      "tour" -> {
+        if (currentEntry.tour == null) {
+          NodeSeq.Empty
+        } else {
+          Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(currentEntry.tour), Text(currentEntry.tour.name))
+        }
+      },
+      "content" -> currentEntry.content,
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(currentEntry.lastUpdated))
+  }
+
+  def showComments(html: NodeSeq): NodeSeq = {
+    html
   }
 
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -62,15 +83,15 @@ class BlogSnippet {
         if (entry.tour == null) {
           NodeSeq.Empty
         } else {
-          Text("gehoert zur Tour: ") ++ SHtml.link("/tour/view", () => TourOps.tourParam(Full(entry.tour)), Text(entry.tour.name))
+          Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
         }
       },
       "content" -> entry.content,
       "edit" -> SHtml.link("edit", () => blogEntryVar(entry), Text(?("edit"))),
-      "comments" -> SHtml.link("comments", () => blogEntryVar(entry), Text(?("comments"))),
+      "comments" -> SHtml.link("comments", () => blogEntryVar(entry), Text(?("blog.comments"))),
       "remove" -> SHtml.link("remove", () => removeBlogEntry(entry), Text(?("remove"))),
       "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
-      "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("weiterlesen"))),
+      "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
       "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
       "creator" -> entry.owner.name))
   }
