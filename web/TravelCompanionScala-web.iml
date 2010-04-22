@@ -25,26 +25,23 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.22" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.22" level="project" />
-    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.eclipse.persistence:eclipselink:2.1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="module" module-name="TravelCompanionScala-spa" exported="" />
     <orderEntry type="library" exported="" name="Maven: com.h2database:h2:1.2.133" level="project" />
     <orderEntry type="library" exported="" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.eclipse.persistence:eclipselink:2.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
-    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: org.slf4j:slf4j-simple:1.4.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.5.11" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.8.0.Beta1" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-jpa:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-webkit:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-util:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-actor:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-common:2.0-scala280-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.6.0-RC0" level="project" />
     <orderEntry type="library" exported="" name="Maven: log4j:log4j:1.2.14" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.mail:mail:1.4.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-codec:commons-codec:1.3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-log4j12:1.5.11" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-log4j12:1.6.0-RC0" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-json:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.thoughtworks.paranamer:paranamer:2.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-fileupload:commons-fileupload:1.2.1" level="project" />
