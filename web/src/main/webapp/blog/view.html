@@ -24,10 +24,49 @@
             </tbody>
         </table>
     </lift:BlogSnippet:showEntry>
-    <lift:BlogSnippet:showComments>
+    <table class="blog">
+        <tbody>
+        <tr>
+            <th>Kommentare</th>
+        </tr>
+        <lift:BlogSnippet:showComments>
 
-    </lift:BlogSnippet:showComments>
+            <tr>
+                <td class="header">
+                    <comment:member/>
+                    hat am
+                    <comment:dateCreated/>
+                    geschrieben:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <comment:content/>
+                    <br/></td>
+            </tr>
+
+        </lift:BlogSnippet:showComments>
+        </tbody>
+    </table>
     <lift:UsrMgtHelper:showIfAuthenticated>
+        <lift:BlogSnippet:addComment form="POST">
+            <table class="form">
+                <tr>
+                    <td class="desc">
+                        <label for="content">Ihr Kommentar:*</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <comment:content/>
+                    </td>
+                </tr>
+            </table>
+            <div class="bottomnavi">
+                <comment:submit/>
+                <lift:Menu.item name="blog" a:class="button">Zur&uuml;ck</lift:Menu.item>
+            </div>
+        </lift:BlogSnippet:addComment>
 
     </lift:UsrMgtHelper:showIfAuthenticated>
 </lift:surround>
