@@ -21,9 +21,10 @@ import java.text.SimpleDateFormat
  * To change this template use File | Settings | File Templates.
  */
 
+// Set up a requestVar to track the STAGE object for edits and adds
+object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
+
 class BlogSnippet {
-  // Set up a requestVar to track the STAGE object for edits and adds
-  object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
   def blogEntry = blogEntryVar.is
 
   def removeBlogEntry(entry: BlogEntry) {
@@ -65,7 +66,7 @@ class BlogSnippet {
         if (currentEntry.tour == null) {
           NodeSeq.Empty
         } else {
-          Text(?("blog.belongsTo")) ++ SHtml.link("/tour/view", () => tourVar(currentEntry.tour), Text(currentEntry.tour.name))
+          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(currentEntry.tour), Text(currentEntry.tour.name))
         }
       },
       "content" -> currentEntry.content,
@@ -93,6 +94,19 @@ class BlogSnippet {
       "member" -> comment.member.name,
       "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
       "content" -> comment.content))
+  }
+
+  def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByTour").setParams("tour" -> currentTour).findAll.toList
+
+    entries.flatMap(entry => bind("entry", html,
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
+      "title" -> entry.title,
+      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
+      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
+      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove")))))
   }
 
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {

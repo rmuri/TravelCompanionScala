@@ -1,0 +1,80 @@
+<lift:surround with="default" at="content">
+    <head>
+        <!-- required plugins -->
+        <!-- <script type="text/javascript" src="/scripts/date.js"></script> -->
+        <!--[if IE]>
+        <script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script><![endif]-->
+        <!-- <link rel="stylesheet" type="text/css" href="/style/datePicker.css" /> -->
+
+        <link rel="stylesheet" type="text/css" href="/style/ui.all.css"/>
+        <link rel="stylesheet" type="text/css" href="/style/ui.datepicker.css"/>
+
+        <!-- jquery.datePicker.js -->
+        <!--<script type="text/javascript" src="/scripts/jquery.datePicker.js"></script>-->
+        <script type="text/javascript" src="/scripts/jquery-ui.min.js"></script>
+
+
+        <style>
+            a.dp-choose-date {
+                float: left;
+                width: 16px;
+                height: 16px;
+                padding: 0;
+                margin: 5px 3px 0;
+                display: block;
+                text-indent: -2000px;
+                overflow: hidden;
+                background: url(/scripts/calendar.png) no-repeat;
+            }
+
+            a.dp-choose-date.dp-disabled {
+                background-position: 0 -20px;
+                cursor: default;
+            }
+
+            input.dp-applied {
+                width: 140px;
+                float: left;
+            }
+        </style>
+    </head>
+
+    <div class="content">
+        <p>F&uuml;llen Sie das folgende Formular aus, um einen neuen Reiseabschnitt zu erstellen (mit * markierte Felder
+            sind obligatorisch):</p>
+        <lift:StageSnippet:editStage form="POST">
+            <table class="form">
+                <tbody>
+                <tr>
+                    <td class="desc"><label for="title">Titel*</label></td>
+                    <td>
+                        <stage:title/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tour"><label for="description">Beschreibung</label></td>
+                    <td>
+                        <stage:description/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tour"><label for="dateOf">Startdatum</label></td>
+                    <td>
+                        <stage:dateOf id="startdate"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="bottomnavi">
+                <stage:submit/>
+                <lift:Menu.item name="tour" a:class="button">Abbrechen</lift:Menu.item>
+            </div>
+        </lift:StageSnippet:editStage>
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+            $('#startdate').datepicker({dateFormat:'dd/mm/yy'});
+        });
+    </script>
+</lift:surround>

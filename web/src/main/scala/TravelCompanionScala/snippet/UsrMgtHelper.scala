@@ -13,12 +13,24 @@ import net.liftweb.util.Helpers._
  */
 
 class UsrMgtHelper {
-  def showIfAuthenticated(html: NodeSeq): NodeSeq = {
-    if (UserManagement.loggedIn_?) {
+  def showIf(html: NodeSeq, cond: Boolean): NodeSeq = {
+    if (cond)
       html
-    } else {
+    else
       NodeSeq.Empty
-    }
+  }
+
+  def showIfAuthenticated(html: NodeSeq): NodeSeq = {
+    showIf(html, UserManagement.loggedIn_?)
+
+  }
+
+  def showIfTourOwner(html: NodeSeq): NodeSeq = {
+    showIf(html, tourVar.is.owner == UserManagement.currentUser)
+  }
+
+  def showIfBlogEntryOwner(html: NodeSeq): NodeSeq = {
+    showIf(html, blogEntryVar.is.owner == UserManagement.currentUser)
   }
 
   def currentUser(html: NodeSeq): NodeSeq = {

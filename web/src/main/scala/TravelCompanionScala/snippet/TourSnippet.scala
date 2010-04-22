@@ -38,8 +38,14 @@ class TourSnippet {
     S.redirectTo("/tour/list")
   }
 
-  def viewTour(html: NodeSeq): NodeSeq = {
-    bind("tour", html, "name" -> tour.name, "description" -> tour.description)
+  def showTour(html: NodeSeq): NodeSeq = {
+    val currentTour = tour
+
+    bind("tour", html,
+      "name" -> currentTour.name,
+      "description" -> currentTour.description,
+      "edit" -%> SHtml.link("edit", () => tourVar(currentTour), Text(?("tour.editTour"))),
+      "newStage" -%> SHtml.link("stage/edit", () => tourVar(currentTour), Text(?("tour.newStage"))))
   }
 
   def editTour(html: NodeSeq): NodeSeq = {
