@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat
 
 object Util {
 
-  val noSlashDate = new SimpleDateFormat("yyyyMMdd")
+  val noSlashDate = new SimpleDateFormat("ddMMyyyy")
 
-  val slashDate = new SimpleDateFormat("yyyy/MM/dd")
+  val slashDate = new SimpleDateFormat("dd.MM.yyyy")
 
   def splitEvery[A](as : List[A], n : Int) : List[List[A]] = as.splitAt(n) match {
     case (a, Nil) => a :: Nil

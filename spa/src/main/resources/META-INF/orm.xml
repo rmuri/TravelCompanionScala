@@ -30,6 +30,12 @@
         </named-query>
     </entity>
 
+    <entity class="Comment">
+        <named-query name="findCommentsByEntry">
+            <query><![CDATA[SELECT c from Comment c where c.blogEntry = :entry order by c.dateCreated]]></query>
+        </named-query>
+    </entity>
+
     <entity class="Member">
         <named-query name="findAllMembers">
             <query><![CDATA[SELECT m from Member m order by m.name]]></query>
