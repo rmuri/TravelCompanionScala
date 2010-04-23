@@ -32,11 +32,7 @@ class UsrMgtHelper {
   def showIfBlogEntryOwner(html: NodeSeq): NodeSeq = {
     showIf(html, blogEntryVar.is.owner == UserManagement.currentUser)
   }
-
-  def showIfCommentOwner(html: NodeSeq): NodeSeq = {
-    showIf(html, commentVar.is.member == UserManagement.currentUser)
-  }
-
+  
   def currentUser(html: NodeSeq): NodeSeq = {
     bind("user", html, "name" -> UserManagement.currentUser.name)
   }
