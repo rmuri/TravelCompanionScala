@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat
 
 // Set up a requestVar to track the STAGE object for edits and adds
 object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
+object commentVar extends RequestVar[Comment](new Comment())
 
 class BlogSnippet {
   def blogEntry = blogEntryVar.is
@@ -88,12 +89,27 @@ class BlogSnippet {
       "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
   }
 
+  def doRemoveComment(comment: Comment) {
+    val c = Model.merge(comment)
+    Model.remove(c)
+    S.redirectTo("/blog/view", () => blogEntryVar(c.blogEntry))
+  }
+
   def showComments(html: NodeSeq): NodeSeq = {
     val comments = Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> blogEntry).findAll.toList
-    comments.flatMap(comment => bind("comment", html,
-      "member" -> comment.member.name,
-      "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
-      "content" -> comment.content))
+    comments.flatMap(comment => {
+      commentVar(comment);
+      bind("comment", html,
+        "member" -> comment.member.name,
+        "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
+        "content" -> comment.content,
+        "options" -> {
+          if ((comment.member == UserManagement.currentUser) || (blogEntry.owner == UserManagement.currentUser))
+            bind("link", chooseTemplate("option", "list", html), "remove" -> SHtml.link("remove", () => {blogEntryVar(comment.blogEntry); doRemoveComment(comment)}, Text(?("remove"))))
+          else
+            NodeSeq.Empty
+        })
+    })
   }
 
   def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {

@@ -29,7 +29,7 @@ class StageSnippet {
   def editStage(html: NodeSeq): NodeSeq = {
     def doEdit() = {
       Model.mergeAndFlush(stage)
-      S.redirectTo("/tour/list") //??
+      S.redirectTo("/tour/list")
     }
 
     val currentStage = stage
@@ -44,20 +44,23 @@ class StageSnippet {
   def doRemove() {
     val s = Model.merge(stage)
     Model.remove(s)
-    S.redirectTo("/tour/view")
+    val currentTour = tourVar.is
+    S.redirectTo("/tour/view", () => tourVar(currentTour))
   }
 
   def showStagesFromTour(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
 
-    stages.flatMap(stage => bind("stage", html,
-      "startdate" -> new SimpleDateFormat("dd.MM.yyyy").format(stage.startdate),
-      "title" -> SHtml.link("/tour/stage/view", () => stageVar(stage), Text(stage.name)),
-      //      "destination" -> stage.destination.name,
-      "description" -> stage.description,
-      "edit" -%> SHtml.link("/tour/stage/edit", () => stageVar(stage), Text(?("edit"))),
-      "remove" -%> SHtml.link("remove", () => {stageVar(stage); tourVar(currentTour); doRemove}, Text(?("remove")))))
-
+    stages.flatMap(stage => {
+      stageVar(stage);
+      bind("stage", html,
+        "startdate" -> new SimpleDateFormat("dd.MM.yyyy").format(stage.startdate),
+        "title" -> SHtml.link("/tour/stage/view", () => stageVar(stage), Text(stage.name)),
+        //      "destination" -> stage.destination.name,
+        "description" -> stage.description,
+        "edit" -%> SHtml.link("/tour/stage/edit", () => stageVar(stage), Text(?("edit"))),
+        "remove" -%> SHtml.link("remove", () => {stageVar(stage); tourVar(currentTour); doRemove}, Text(?("remove"))))
+    })
   }
 }
