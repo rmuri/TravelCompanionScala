@@ -1,10 +1,90 @@
 <lift:surround with="default" at="content">
-    <lift:TourSnippet.viewTour>
-        <h1>
-            <tour:name/>
-        </h1>
-        <span>
+    <div class="content">
+        <lift:TourSnippet.showTour>
+            <h1>
+                <tour:name/>
+            </h1>
+        <pre>
             <tour:description/>
-        </span>
-    </lift:TourSnippet.viewTour>
+        </pre>
+
+            <table class="list">
+                <th class="startdate">Start</th>
+                <th class="name">Reiseabschnitt</th>
+                <th class="startdate">Zielort</th>
+                <th>Beschreibung</th>
+                <lift:UsrMgtHelper.showIfTourOwner>
+                    <th class="options">Optionen</th>
+                </lift:UsrMgtHelper.showIfTourOwner>
+                <lift:StageSnippet.showStagesFromTour>
+                    <tr>
+                        <td>
+                            <stage:startdate/>
+                        </td>
+                        <td>
+                            <stage:title/>
+                        </td>
+                        <td>
+                            <!--<stage:destination/>-->
+                        </td>
+                        <td>
+                            <stage:description/>
+                        </td>
+                        <lift:UsrMgtHelper.showIfTourOwner>
+                            <td>
+                                <stage:edit/>
+                                |
+                                <stage:remove/>
+                            </td>
+                        </lift:UsrMgtHelper.showIfTourOwner>
+                    </tr>
+                </lift:StageSnippet.showStagesFromTour>
+            </table>
+            <lift:UsrMgtHelper.showIfTourOwner>
+                <tour:edit class="button"/>
+                <tour:newStage class="button"/>
+            </lift:UsrMgtHelper.showIfTourOwner>
+            <lift:Menu.item name="tour" a:class="button">
+                <lift:loc locid="back">back</lift:loc>
+            </lift:Menu.item>
+
+        </lift:TourSnippet.showTour>
+
+        <div class="content">
+            <lift:BlogSnippet.showBlogEntriesFromTour>
+                <h2>Zugeh&ouml;rige Blogeintr&auml;ge</h2>
+                <table class="blog">
+                    <tr>
+                        <td>
+                            <entry:lastUpdated/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <entry:title/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <entry:preview/>
+                            [
+                            <entry:readOn/>
+                            ]
+                        </td>
+                    </tr>
+                    <lift:UsrMgtHelper.showIfTourOwner>
+                        <tr class="editieren">
+                            <td>[
+                                <entry:edit/>
+                                |
+                                <entry:remove/>
+                                ]
+                            </td>
+                        </tr>
+                    </lift:UsrMgtHelper.showIfTourOwner>
+                </table>
+            </lift:BlogSnippet.showBlogEntriesFromTour>
+        </div>
+
+    </div>
 </lift:surround>

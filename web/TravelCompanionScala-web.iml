@@ -49,8 +49,8 @@
     <orderEntry type="library" name="Maven: org.apache.derby:derby:10.4.2.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.liftweb:lift-widgets:2.0-scala280-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.23" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.23" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.24" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.24" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scala-lang:scala-compiler:2.8.0.Beta1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.7" level="project" />

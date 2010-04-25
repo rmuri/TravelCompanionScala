@@ -48,7 +48,11 @@ class Member() {
 
   @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
-}
 
+  override def equals(that: Any): Boolean = that match {
+    case other: Member => id == other.id
+    case _ => false
+  }
+}
 }
 }
