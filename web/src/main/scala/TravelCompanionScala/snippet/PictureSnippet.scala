@@ -80,6 +80,14 @@ class PictureSnippet {
       "submit" -%> SHtml.submit(?("save"), () => doSave(currentPicture)))
   }
 
+  def showPicturesFromTour(html: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
+    val pictures = Model.createNamedQuery[Picture]("findPicturesByTour").setParams("tour" -> currentTour).findAll.toList
+    pictures.flatMap(picture => bind("picture", html,
+      "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
+      "description" -> picture.description))
+  }
+
   def showPicture(html: NodeSeq): NodeSeq = {
     val currentPicture = pictureVar.is
     bind("picture", html,
@@ -91,7 +99,7 @@ class PictureSnippet {
 
   def listPictures(html: NodeSeq, pictures: List[Picture]): NodeSeq = {
     pictures.flatMap(picture => bind("picture", html,
-      "thumbnail" -> SHtml.link("view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
+      "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
       "description" -> picture.description,
       "owner" -> picture.owner.name,
       "belongsTo" -> {

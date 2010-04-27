@@ -1,4 +1,4 @@
-package TravelCompanionScala
+package TravelCompanionScala.model
 
 import net.liftweb.http._
 import net.liftweb.common._

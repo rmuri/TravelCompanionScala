@@ -52,6 +52,9 @@
         <named-query name="findPicturesByOthers">
             <query><![CDATA[SELECT p from Picture p where not p.owner = :owner order by p.name]]></query>
         </named-query>
+        <named-query name="findPicturesByTour">
+            <query><![CDATA[SELECT p from Picture p where p.tour = :tour order by p.name]]></query>
+        </named-query>
     </entity>
 
     <entity class="Member">

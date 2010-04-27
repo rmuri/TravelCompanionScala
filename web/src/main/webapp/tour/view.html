@@ -51,8 +51,8 @@
         </lift:TourSnippet.showTour>
 
         <div class="content">
+            <h2>Zugeh&ouml;rige Blogeintr&auml;ge</h2>
             <lift:BlogSnippet.showBlogEntriesFromTour>
-                <h2>Zugeh&ouml;rige Blogeintr&auml;ge</h2>
                 <table class="blog">
                     <tr>
                         <td>
@@ -84,6 +84,24 @@
                     </lift:UsrMgtHelper.showIfTourOwner>
                 </table>
             </lift:BlogSnippet.showBlogEntriesFromTour>
+        </div>
+
+        <div class="content">
+            <h2>Zugeh&ouml;rige Bilder</h2>
+            <table class="list">
+                <th class="name">Bild</th>
+                <th>Beschreibung</th>
+                <lift:PictureSnippet.showPicturesFromTour>
+                    <tr>
+                        <td>
+                            <picture:thumbnail/>
+                        </td>
+                        <td>
+                            <picture:description/>
+                        </td>
+                    </tr>
+                </lift:PictureSnippet.showPicturesFromTour>
+            </table>
         </div>
 
     </div>
