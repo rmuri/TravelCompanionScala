@@ -10,6 +10,13 @@
           <module name="TravelCompanionScala-web" />
         </modules>
       </facet-type>
+      <facet-type id="Scala">
+        <modules>
+          <module name="TravelCompanionScala" />
+          <module name="TravelCompanionScala-web" />
+          <module name="TravelCompanionScala-spa" />
+        </modules>
+      </facet-type>
     </autodetection-disabled>
   </component>
   <component name="IdProvider" IDEtalkID="CE313CB3EDAF88C549A4BA642350B975" />

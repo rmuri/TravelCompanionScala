@@ -14,7 +14,8 @@ import _root_.java.util._
 
 @Entity
 @Table(name = "members")
-class Member() {
+class
+Member() {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
@@ -48,6 +49,14 @@ class Member() {
 
   @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
+
+//  @ManyToMany
+//  @JoinTable(name = "member_roles", joinColumns = {
+//    JoinColumn(name = "member")
+//  }, inverseJoinColumns = {
+//    JoinColumn(name = "role")
+//  })
+//  val roles: List[Role] = new ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {
     case other: Member => id == other.id

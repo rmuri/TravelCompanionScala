@@ -11,10 +11,10 @@
             <query><![CDATA[SELECT t from Tour t order by t.name]]></query>
         </named-query>
         <named-query name="findTourByOwner">
-            <query><![CDATA[SELECT t from Tour t where t.owner.id = :id order by t.name]]></query>
+            <query><![CDATA[SELECT t from Tour t where t.owner = :owner order by t.name]]></query>
         </named-query>
         <named-query name="findTourByOthers">
-            <query><![CDATA[SELECT t from Tour t where not t.owner.id = :id order by t.name]]></query>
+            <query><![CDATA[SELECT t from Tour t where not t.owner = :owner order by t.name]]></query>
         </named-query>
     </entity>
 
@@ -29,10 +29,10 @@
             <query><![CDATA[SELECT e from BlogEntry e order by e.lastUpdated]]></query>
         </named-query>
         <named-query name="findEntriesByOwner">
-            <query><![CDATA[SELECT e from BlogEntry e where e.owner.id = :id order by e.lastUpdated]]></query>
+            <query><![CDATA[SELECT e from BlogEntry e where e.owner = :owner order by e.lastUpdated]]></query>
         </named-query>
         <named-query name="findEntriesByOthers">
-            <query><![CDATA[SELECT e from BlogEntry e where not e.owner.id = :id order by e.lastUpdated]]></query>
+            <query><![CDATA[SELECT e from BlogEntry e where not e.owner = :owner order by e.lastUpdated]]></query>
         </named-query>
         <named-query name="findEntriesByTour">
             <query><![CDATA[SELECT e from BlogEntry e where e.tour = :tour order by e.lastUpdated]]></query>
@@ -42,6 +42,18 @@
     <entity class="Comment">
         <named-query name="findCommentsByEntry">
             <query><![CDATA[SELECT c from Comment c where c.blogEntry = :entry order by c.dateCreated]]></query>
+        </named-query>
+    </entity>
+
+    <entity class="Picture">
+        <named-query name="findPicturesByOwner">
+            <query><![CDATA[SELECT p from Picture p where p.owner = :owner order by p.name]]></query>
+        </named-query>
+        <named-query name="findPicturesByOthers">
+            <query><![CDATA[SELECT p from Picture p where not p.owner = :owner order by p.name]]></query>
+        </named-query>
+        <named-query name="findPicturesByTour">
+            <query><![CDATA[SELECT p from Picture p where p.tour = :tour order by p.name]]></query>
         </named-query>
     </entity>
 
