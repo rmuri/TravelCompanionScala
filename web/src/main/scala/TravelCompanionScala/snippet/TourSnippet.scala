@@ -39,6 +39,7 @@ class TourSnippet {
   }
 
   def showTour(html: NodeSeq): NodeSeq = {
+    S.setHeader("Content-Type", "text/html; charset=utf-8")
     val currentTour = tour
 
     bind("tour", html,

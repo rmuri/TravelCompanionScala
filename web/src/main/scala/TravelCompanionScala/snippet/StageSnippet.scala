@@ -32,6 +32,8 @@ class StageSnippet {
       S.redirectTo("/tour/list")
     }
 
+    GeoCoder.findLocationsByName("Bern").foreach(loc => println(loc.name+"/"+loc.countryname))
+
     val currentStage = stage
     stage.tour = tourVar.is
     bind("stage", html,
