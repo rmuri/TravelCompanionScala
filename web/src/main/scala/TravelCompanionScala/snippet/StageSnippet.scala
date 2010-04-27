@@ -5,12 +5,14 @@ import _root_.scala.xml.{NodeSeq, Text}
 import _root_.net.liftweb._
 import common.{Box, Empty}
 import http._
+import jquery.JqSHtml
 import S._
 import util._
 import Helpers._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
+import widgets.autocomplete.AutoComplete
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,16 +34,18 @@ class StageSnippet {
       S.redirectTo("/tour/list")
     }
 
-    GeoCoder.findLocationsByName("Bern").foreach(loc => println(loc.name+"/"+loc.countryname))
+
 
     val currentStage = stage
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> SHtml.text(currentStage.name, currentStage.name = _),
+      "destination" -> AutoComplete("", (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", "+ loc.countryname)}, s => println("submit " + s)),
       "description" -> SHtml.textarea(currentStage.description, currentStage.description = _),
       "dateOf" -%> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)),
       "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); doEdit}))
   }
+
 
   def doRemove() {
     val s = Model.merge(stage)
