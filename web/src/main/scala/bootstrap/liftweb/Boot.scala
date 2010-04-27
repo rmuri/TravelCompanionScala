@@ -42,7 +42,7 @@ class Boot {
     }
 
     // Build SiteMap (used for navigation...)
-    val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
+    //val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
 
     // Build SiteMap
     val entries = Menu(Loc("index", "index" :: Nil, S.?("home"), LocGroup("main"))) ::
@@ -53,7 +53,9 @@ class Boot {
             Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))) ::
             Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))) ::
             Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
-            Menu(Loc("picture", "picture" :: Nil, S.?("pictures"), LocGroup("main"))) :: UserManagement.sitemap
+            Menu(Loc("picture", "picture" :: "list" :: Nil, S.?("pictures"), LocGroup("main"), LocGroup("picture"))) ::
+            Menu(Loc("picture_view", "picture" :: "view" :: Nil, "Bild anzeigen", LocGroup("picture"))) ::
+            Menu(Loc("picture_create", "picture" :: "create" :: Nil, "Bild hinzuf&uuml;gen", LocGroup("picture"))) :: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 

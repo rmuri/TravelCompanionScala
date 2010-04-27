@@ -82,8 +82,8 @@ class TourSnippet {
 
   private def tours(which: TourEnum.Value): List[Tour] = {
     which match {
-      case TourEnum.OWN_TOURS => Model.createNamedQuery[Tour]("findTourByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
-      case TourEnum.OTHERS_TOURS => Model.createNamedQuery[Tour]("findTourByOthers").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+      case TourEnum.OWN_TOURS => Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
+      case TourEnum.OTHERS_TOURS => Model.createNamedQuery[Tour]("findTourByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
     }
   }
 }

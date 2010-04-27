@@ -46,7 +46,7 @@ class BlogSnippet {
       currentEntry.owner = UserManagement.currentUser
     }
 
-    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
     val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     bind("entry", html,
@@ -144,12 +144,12 @@ class BlogSnippet {
   }
 
   def listOtherEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
     listEntries(html, entries)
   }
 
   def listOwnEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("id" -> UserManagement.currentUser.id).findAll.toList
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
     listEntries(html, entries)
   }
 }

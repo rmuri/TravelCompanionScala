@@ -1,0 +1,76 @@
+<lift:surround with="default" at="content">
+    <lift:UsrMgtHelper:showIfAuthenticated>
+        <div class="content">
+            <h1>Ihre Bilder</h1>
+
+            <p>Nachfolgend erhalten Sie eine Liste der von Ihnen hochgeladenen Bilder:</p>
+            <lift:PictureSnippet.listOwnPictures>
+                <table class="list">
+                    <th class="name">Bild</th>
+                    <th>Beschreibung</th>
+                    <th class="name">Geh&ouml;rt zu</th>
+                    <th class="options">Optionen</th>
+                    <tr>
+                        <td>
+                            <picture:thumbnail/>
+                        </td>
+                        <td>
+                            <picture:description/>
+                        </td>
+                        <td>
+                            <picture:belongsTo>
+                                <choose:belongsTo>
+                                    <br/>
+                                    <picture:title/>
+                                    <br/>
+                                    <picture:link/>
+                                </choose:belongsTo>
+                            </picture:belongsTo>
+                        </td>
+                        <td>
+                            <picture:remove/>
+                        </td>
+                    </tr>
+                </table>
+            </lift:PictureSnippet.listOwnPictures>
+
+            <lift:Menu.item name="picture_create" a:class="button">Bild Hinzuf&uuml;gen</lift:Menu.item>
+        </div>
+    </lift:UsrMgtHelper:showIfAuthenticated>
+
+    <div class="content">
+        <h1>Bilder anderer Mitglieder</h1>
+
+        <p>Nachfolgend erhalten Sie eine Anzeige der Bilder von anderen Mitgliedern</p>
+
+        <lift:PictureSnippet.listOtherPictures>
+            <table class="list">
+                <thead class="name">Bild</thead>
+                <thead>Beschreibung</thead>
+                <thead class="name">Besitzer</thead>
+                <thead class="name">Geh&ouml;rt zu</thead>
+                <tr>
+                    <td>
+                        <picture:thumbnail/>
+                    </td>
+                    <td>
+                        <picture:description/>
+                    </td>
+                    <td>
+                        <picture:owner/>
+                    </td>
+                    <td>
+                        <!--<picture:belongsTo>-->
+                            <!--<choose:belongsTo>-->
+                                <!--<br/>-->
+                                <!--<picture:title/>-->
+                                <!--<br/>-->
+                                <!--<picture:link/>-->
+                            <!--</choose:belongsTo>-->
+                        <!--</picture:belongsTo>-->
+                    </td>
+                </tr>
+            </table>
+        </lift:PictureSnippet.listOtherPictures>
+    </div>
+</lift:surround>
