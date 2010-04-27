@@ -1,0 +1,46 @@
+<lift:surround with="default" at="content">
+    <div class="content">
+        <h1>Neues Bild hinzuf&uuml;gen</h1>
+
+        <p>F&uuml;llen Sie das folgende Formular aus, um ein neues Bild hochzuladen (mit * markierte Felder sind
+            obligatorisch):</p>
+        <lift:PictureSnippet:addPicture form="POST" multipart="true">
+            <table class="form">
+                <tr>
+                    <td class="desc"><label for="name">Titel*</label></td>
+                    <td>
+                        <picture:name id="name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="file">Bild ausw&auml;hlen*</label></td>
+                    <td>
+                        <picture:file id="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="description">Beschreibung</label></td>
+                    <td>
+                        <picture:description id="description"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="tour">Reise</label></td>
+                    <td>
+                        <picture:tour id="tour"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="desc"><label for="blogEntry">Blogeintrag</label></td>
+                    <td>
+                        <picture:blogEntry id="blogEntry"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="bottomnavi">
+                <picture:submit/>
+                <lift:Menu.item name="picture" a:class="button">Abbrechen</lift:Menu.item>
+            </div>
+        </lift:PictureSnippet:addPicture>
+    </div>
+</lift:surround>

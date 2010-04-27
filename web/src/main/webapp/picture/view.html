@@ -1,0 +1,23 @@
+<lift:surround with="default" at="content">
+    <lift:PictureSnippet:showPicture>
+        <h1>
+            <picture:name/>
+        </h1>
+        <pre><picture:description/></pre>
+        <h2>Details</h2>
+        <table class="view">
+            <tr>
+                <td class="desc">Ersteller:</td>
+                <td>
+                    <picture:owner/>
+                </td>
+            </tr>
+            <tr>
+                <td class="desc">Bild:</td>
+                <td>
+                    <picture:image class="LimWidth"/>
+                </td>
+            </tr>
+        </table>
+    </lift:PictureSnippet:showPicture>
+</lift:surround>
