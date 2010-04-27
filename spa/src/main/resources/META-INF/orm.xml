@@ -18,6 +18,12 @@
         </named-query>
     </entity>
 
+    <entity class="Stage">
+        <named-query name="findStagesByTour">
+            <query><![CDATA[SELECT s from Stage s where s.tour = :tour order by s.startdate]]></query>
+        </named-query>
+    </entity>
+
     <entity class="BlogEntry">
         <named-query name="findAllEntries">
             <query><![CDATA[SELECT e from BlogEntry e order by e.lastUpdated]]></query>
@@ -27,6 +33,9 @@
         </named-query>
         <named-query name="findEntriesByOthers">
             <query><![CDATA[SELECT e from BlogEntry e where not e.owner.id = :id order by e.lastUpdated]]></query>
+        </named-query>
+        <named-query name="findEntriesByTour">
+            <query><![CDATA[SELECT e from BlogEntry e where e.tour = :tour order by e.lastUpdated]]></query>
         </named-query>
     </entity>
 

@@ -21,9 +21,11 @@ import java.text.SimpleDateFormat
  * To change this template use File | Settings | File Templates.
  */
 
+// Set up a requestVar to track the STAGE object for edits and adds
+object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
+object commentVar extends RequestVar[Comment](new Comment())
+
 class BlogSnippet {
-  // Set up a requestVar to track the STAGE object for edits and adds
-  object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
   def blogEntry = blogEntryVar.is
 
   def removeBlogEntry(entry: BlogEntry) {
@@ -87,12 +89,38 @@ class BlogSnippet {
       "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
   }
 
+  def doRemoveComment(comment: Comment) {
+    val c = Model.merge(comment)
+    Model.remove(c)
+    S.redirectTo("/blog/view", () => blogEntryVar(c.blogEntry))
+  }
+
   def showComments(html: NodeSeq): NodeSeq = {
     val comments = Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> blogEntry).findAll.toList
-    comments.flatMap(comment => bind("comment", html,
-      "member" -> comment.member.name,
-      "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
-      "content" -> comment.content))
+    comments.flatMap(comment =>
+      bind("comment", html,
+        "member" -> comment.member.name,
+        "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
+        "content" -> comment.content,
+        "options" -> {
+          if ((comment.member == UserManagement.currentUser) || (blogEntry.owner == UserManagement.currentUser))
+            bind("link", chooseTemplate("option", "list", html), "remove" -> SHtml.link("remove", () => {blogEntryVar(comment.blogEntry); doRemoveComment(comment)}, Text(?("remove"))))
+          else
+            NodeSeq.Empty
+        }))
+  }
+
+  def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByTour").setParams("tour" -> currentTour).findAll.toList
+
+    entries.flatMap(entry => bind("entry", html,
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
+      "title" -> entry.title,
+      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
+      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
+      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove")))))
   }
 
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {

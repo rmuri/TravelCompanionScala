@@ -8,12 +8,7 @@
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider </provider>
         
-        <class>TravelCompanionScala.model.BlogEntry</class>
-        <class>TravelCompanionScala.model.Comment</class>
-        <class>TravelCompanionScala.model.Location</class>
-        <class>TravelCompanionScala.model.Member</class>
-        <class>TravelCompanionScala.model.Stage</class>
-        <class>TravelCompanionScala.model.Tour</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
             <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>
