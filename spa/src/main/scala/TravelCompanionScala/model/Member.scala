@@ -44,10 +44,10 @@ Member() {
   @Column(name = "zipcode")
   var zipcode: String = ""
 
-  @OneToMany(mappedBy = "owner", targetEntity = classOf[Tour])
+  @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[Tour])
   var tours: List[Tour] = new ArrayList[Tour]()
 
-  @OneToMany(mappedBy = "owner", targetEntity = classOf[BlogEntry])
+  @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
 //  @ManyToMany

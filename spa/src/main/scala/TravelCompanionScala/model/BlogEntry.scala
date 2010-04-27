@@ -38,7 +38,7 @@ class BlogEntry {
   @ManyToOne
   var owner: Member = null
 
-  @OneToMany(mappedBy = "blogEntry", targetEntity = classOf[Comment])
+  @OneToMany(mappedBy = "blogEntry",cascade=Array(CascadeType.ALL), targetEntity = classOf[Comment])
   var comments: java.util.List[Comment] = new ArrayList[Comment]()
 }
 
