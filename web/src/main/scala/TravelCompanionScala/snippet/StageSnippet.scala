@@ -40,7 +40,7 @@ class StageSnippet {
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> SHtml.text(currentStage.name, currentStage.name = _),
-      "destination" -> AutoComplete("", (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", "+ loc.countryname)}, s => println("submit " + s)),
+      "destination" -> "", //AutoComplete("", (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", "+ loc.countryname)}, s => println("submit " + s)),
       "description" -> SHtml.textarea(currentStage.description, currentStage.description = _),
       "dateOf" -%> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)),
       "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); doEdit}))

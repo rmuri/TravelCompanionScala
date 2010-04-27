@@ -44,19 +44,19 @@ Member() {
   @Column(name = "zipcode")
   var zipcode: String = ""
 
-  @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[Tour])
+  @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL), targetEntity = classOf[Tour])
   var tours: List[Tour] = new ArrayList[Tour]()
 
-  @OneToMany(mappedBy = "owner", cascade=Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
+  @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
-//  @ManyToMany
-//  @JoinTable(name = "member_roles", joinColumns = {
-//    JoinColumn(name = "member")
-//  }, inverseJoinColumns = {
-//    JoinColumn(name = "role")
-//  })
-//  val roles: List[Role] = new ArrayList[Role]()
+  //  @ManyToMany
+  //  @JoinTable(name = "member_roles", joinColumns = {
+  //    JoinColumn(name = "member")
+  //  }, inverseJoinColumns = {
+  //    JoinColumn(name = "role")
+  //  })
+  //  val roles: List[Role] = new ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {
     case other: Member => id == other.id
