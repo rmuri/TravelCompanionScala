@@ -4,12 +4,12 @@
             <h1>Ihre Bilder</h1>
 
             <p>Nachfolgend erhalten Sie eine Liste der von Ihnen hochgeladenen Bilder:</p>
-            <lift:PictureSnippet.listOwnPictures>
-                <table class="list">
-                    <th class="name">Bild</th>
-                    <th>Beschreibung</th>
-                    <th class="name">Geh&ouml;rt zu</th>
-                    <th class="options">Optionen</th>
+            <table class="list">
+                <th class="name">Bild</th>
+                <th>Beschreibung</th>
+                <th class="name">Geh&ouml;rt zu</th>
+                <th class="options">Optionen</th>
+                <lift:PictureSnippet.listOwnPictures>
                     <tr>
                         <td>
                             <picture:thumbnail/>
@@ -21,9 +21,10 @@
                             <picture:belongsTo>
                                 <choose:belongsTo>
                                     <br/>
-                                    <picture:title/>
+                                    <link:title/>
                                     <br/>
-                                    <picture:link/>
+                                    <link:link/>
+                                    <br/>
                                 </choose:belongsTo>
                             </picture:belongsTo>
                         </td>
@@ -31,9 +32,8 @@
                             <picture:remove/>
                         </td>
                     </tr>
-                </table>
-            </lift:PictureSnippet.listOwnPictures>
-
+                </lift:PictureSnippet.listOwnPictures>
+            </table>
             <lift:Menu.item name="picture_create" a:class="button">Bild Hinzuf&uuml;gen</lift:Menu.item>
         </div>
     </lift:UsrMgtHelper:showIfAuthenticated>
@@ -42,13 +42,12 @@
         <h1>Bilder anderer Mitglieder</h1>
 
         <p>Nachfolgend erhalten Sie eine Anzeige der Bilder von anderen Mitgliedern</p>
-
-        <lift:PictureSnippet.listOtherPictures>
-            <table class="list">
-                <thead class="name">Bild</thead>
-                <thead>Beschreibung</thead>
-                <thead class="name">Besitzer</thead>
-                <thead class="name">Geh&ouml;rt zu</thead>
+        <table class="list">
+            <th class="name">Bild</th>
+            <th>Beschreibung</th>
+            <th class="name">Besitzer</th>
+            <th class="name">Geh&ouml;rt zu</th>
+            <lift:PictureSnippet.listOtherPictures>
                 <tr>
                     <td>
                         <picture:thumbnail/>
@@ -60,17 +59,18 @@
                         <picture:owner/>
                     </td>
                     <td>
-                        <!--<picture:belongsTo>-->
-                            <!--<choose:belongsTo>-->
-                                <!--<br/>-->
-                                <!--<picture:title/>-->
-                                <!--<br/>-->
-                                <!--<picture:link/>-->
-                            <!--</choose:belongsTo>-->
-                        <!--</picture:belongsTo>-->
+                        <picture:belongsTo>
+                            <choose:belongsTo>
+                                <br/>
+                                <link:title/>
+                                <br/>
+                                <link:link/>
+                                <br/>
+                            </choose:belongsTo>
+                        </picture:belongsTo>
                     </td>
                 </tr>
-            </table>
-        </lift:PictureSnippet.listOtherPictures>
+            </lift:PictureSnippet.listOtherPictures>
+        </table>
     </div>
 </lift:surround>

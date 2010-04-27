@@ -9,8 +9,12 @@ import S._
 import util._
 import Helpers._
 import net.liftweb.common._
+import net.liftweb.imaging._
 
 import TravelCompanionScala.model._
+import java.awt.image.BufferedImage
+import java.io.{ByteArrayOutputStream, ByteArrayInputStream, InputStream}
+import javax.imageio.ImageIO
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +23,8 @@ import TravelCompanionScala.model._
  * Time: 11:06:04
  * To change this template use File | Settings | File Templates.
  */
+
+object pictureVar extends RequestVar[Picture](new Picture)
 
 class PictureSnippet {
   def doRemove(picture: Picture) {
@@ -32,11 +38,21 @@ class PictureSnippet {
   def addPicture(html: NodeSeq): NodeSeq = {
     val currentPicture = new Picture
 
+    def createThumbnail(data: Array[Byte]): Array[Byte] = {
+      val in: InputStream = new ByteArrayInputStream(data)
+      val original: BufferedImage = ImageIO.read(in)
+      val thumbnail: BufferedImage = ImageResizer.square(None, original, 125)
+      val baos: ByteArrayOutputStream = new ByteArrayOutputStream()
+      ImageIO.write(thumbnail, "jpg", baos)
+      baos.toByteArray
+    }
+
     def doSave(picture: Picture) {
       picture.owner = UserManagement.currentUser
       fileHolder match {
         case Full(FileParamHolder(_, mime, _, data))
           if (mime.startsWith("image/")) => {
+          picture.thumbnail = createThumbnail(data)
           picture.image = data
           picture.imageType = mime
           Model.mergeAndFlush(picture)
@@ -49,21 +65,47 @@ class PictureSnippet {
       }
     }
 
+    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
+    val tchoices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
+
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
+    val echoices = List("" -> "- Keine -") ::: entries.map(entry => (entry.id.toString -> entry.title)).toList
+
     bind("picture", html,
       "name" -%> SHtml.text(currentPicture.name, currentPicture.name = _),
       "file" -%> SHtml.fileUpload(fh => fileHolder = Full(fh)),
       "description" -%> SHtml.textarea(currentPicture.description, currentPicture.description = _),
-      "tour" -> NodeSeq.Empty,
-      "blogEntry" -> NodeSeq.Empty,
+      "tour" -> SHtml.select(tchoices, Empty, (tourId: String) => {if (tourId != "") currentPicture.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentPicture.tour = null}),
+      "blogEntry" -> SHtml.select(echoices, Empty, (entryId: String) => {if (entryId != "") currentPicture.blogEntry = Model.getReference(classOf[BlogEntry], entryId.toLong) else currentPicture.blogEntry = null}),
       "submit" -%> SHtml.submit(?("save"), () => doSave(currentPicture)))
   }
 
+  def showPicture(html: NodeSeq): NodeSeq = {
+    val currentPicture = pictureVar.is
+    bind("picture", html,
+      "name" -> currentPicture.name,
+      "description" -> currentPicture.description,
+      "owner" -> currentPicture.owner.name,
+      "image" -> <img src={"/image/full/" + currentPicture.id}/>)
+  }
+
   def listPictures(html: NodeSeq, pictures: List[Picture]): NodeSeq = {
-    pictures.flatMap(picture => bind("pictures", html,
-      "thumbnail" -> picture.image.map(blob => InMemoryResponse(blob.im)),
+    pictures.flatMap(picture => bind("picture", html,
+      "thumbnail" -> SHtml.link("view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
       "description" -> picture.description,
       "owner" -> picture.owner.name,
-      "belongsTo" -> NodeSeq.Empty,
+      "belongsTo" -> {
+        var n: NodeSeq = NodeSeq.Empty
+        if (picture.tour != null)
+          n = n ++ bind("link", chooseTemplate("choose", "belongsTo", html),
+            "title" -> "Tour:",
+            "link" -> SHtml.link("/tour/view", () => tourVar(picture.tour), Text(picture.tour.name)))
+        if (picture.blogEntry != null)
+          n = n ++ bind("link", chooseTemplate("choose", "belongsTo", html),
+            "title" -> "Blog Eintrag:",
+            "link" -> SHtml.link("/blog/view", () => blogEntryVar(picture.blogEntry), Text(picture.blogEntry.title)))
+        n
+      },
       "remove" -> SHtml.link("remove", () => doRemove(picture), Text(?("remove")))))
   }
 

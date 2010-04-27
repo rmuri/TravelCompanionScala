@@ -22,7 +22,8 @@ import _root_.net.liftweb.util.{LoanWrapper, LogBoot}
 import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
-import TravelCompanionScala.model._
+import TravelCompanionScala._
+import model._
 import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
 
@@ -40,6 +41,8 @@ class Boot {
     ResourceServer.allow {
       case "css" :: _ => true
     }
+
+    LiftRules.dispatch.append(ImageLogic.matcher)
 
     // Build SiteMap (used for navigation...)
     //val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
