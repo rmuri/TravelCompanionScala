@@ -1,4 +1,5 @@
-package TravelCompanionScala.model
+package TravelCompanionScala {
+package model  {
 
 import javax.persistence._
 
@@ -24,4 +25,7 @@ class Role {
     case other: Role => id == other.id
     case _ => false
   }
+}
+
+}
 }

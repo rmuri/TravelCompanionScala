@@ -1,4 +1,5 @@
-package TravelCompanionScala.model
+package TravelCompanionScala {
+package model  {
 
 import javax.persistence._
 
@@ -45,4 +46,7 @@ class Picture {
 
   @ManyToOne
   var blogEntry: BlogEntry = null
+}
+  
+}
 }
