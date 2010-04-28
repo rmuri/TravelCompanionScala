@@ -51,7 +51,7 @@ Member() {
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
   @ManyToMany
-  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member")), inverseJoinColumns = Array(new JoinColumn(name = "role")))
+  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member",referencedColumnName="id")), inverseJoinColumns = Array(new JoinColumn(name = "roles",referencedColumnName="id")))
   val roles: List[Role] = new ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {
