@@ -7,8 +7,8 @@
     <persistence-unit name="jpaweb" transaction-type="RESOURCE_LOCAL">
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider </provider>
-
-         <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
             <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>

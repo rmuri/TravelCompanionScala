@@ -26,6 +26,7 @@ import TravelCompanionScala._
 import model._
 import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
+import net.liftweb.widgets.autocomplete.AutoComplete
 
 
 /**
@@ -71,6 +72,7 @@ class Boot {
 
     //Widgets
     TableSorter.init
+    AutoComplete.init
   }
 }
 
