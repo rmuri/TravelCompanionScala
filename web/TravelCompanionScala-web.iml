@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
+    <facet type="Scala" name="Scala">
+      <configuration>
+        <option name="takeFromSettings" value="true" />
+        <option name="myScalaCompilerJarPaths">
+          <array>
+            <option value="$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.8.0.Beta1/scala-compiler-2.8.0.Beta1.jar" />
+          </array>
+        </option>
+        <option name="myScalaSdkJarPaths">
+          <array>
+            <option value="$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.8.0.Beta1/scala-library-2.8.0.Beta1.jar" />
+          </array>
+        </option>
+      </configuration>
+    </facet>
     <facet type="web" name="Web">
       <configuration>
         <descriptors>
@@ -25,8 +40,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.22" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.22" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.6.0-RC0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-log4j12:1.6.0-RC0" level="project" />
     <orderEntry type="module" module-name="TravelCompanionScala-spa" exported="" />
     <orderEntry type="library" exported="" name="Maven: com.h2database:h2:1.2.133" level="project" />
     <orderEntry type="library" exported="" name="Maven: geronimo-spec:geronimo-spec-ejb:2.1-rc4" level="project" />

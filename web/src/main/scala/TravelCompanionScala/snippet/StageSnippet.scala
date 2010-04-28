@@ -63,7 +63,7 @@ class StageSnippet {
       bind("stage", html,
         "startdate" -> new SimpleDateFormat("dd.MM.yyyy").format(stage.startdate),
         "title" -> SHtml.link("/tour/stage/view", () => stageVar(stage), Text(stage.name)),
-        //      "destination" -> stage.destination.name,
+        "destination" -> stage.destination.name,
         "description" -> stage.description,
         "edit" -%> SHtml.link("/tour/stage/edit", () => stageVar(stage), Text(?("edit"))),
         "remove" -%> SHtml.link("remove", () => {stageVar(stage); tourVar(currentTour); doRemove}, Text(?("remove"))))

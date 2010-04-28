@@ -22,12 +22,10 @@ import _root_.net.liftweb.util.{LoanWrapper, LogBoot}
 import _root_.net.liftweb.http.provider._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
-import TravelCompanionScala._
-import model._
 import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
 import net.liftweb.widgets.autocomplete.AutoComplete
-
+import TravelCompanionScala.model._
 
 /**
  * A class that's instantiated early and run.  It allows the application

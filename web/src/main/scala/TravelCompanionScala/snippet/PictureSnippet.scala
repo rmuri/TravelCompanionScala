@@ -83,9 +83,10 @@ class PictureSnippet {
   def showPicturesFromTour(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val pictures = Model.createNamedQuery[Picture]("findPicturesByTour").setParams("tour" -> currentTour).findAll.toList
-    pictures.flatMap(picture => bind("picture", html,
-      "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
-      "description" -> picture.description))
+    //    pictures.flatMap(picture => bind("picture", html,
+    //      "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
+    //      "description" -> picture.description))
+    listPictures(html, pictures)
   }
 
   def showPicture(html: NodeSeq): NodeSeq = {
@@ -94,7 +95,7 @@ class PictureSnippet {
       "name" -> currentPicture.name,
       "description" -> currentPicture.description,
       "owner" -> currentPicture.owner.name,
-      "image" -> <img src={"/image/full/" + currentPicture.id}/>)
+      "image" -%> <img src={"/image/full/" + currentPicture.id}/>)
   }
 
   def listPictures(html: NodeSeq, pictures: List[Picture]): NodeSeq = {
