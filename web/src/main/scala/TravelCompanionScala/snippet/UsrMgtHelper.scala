@@ -3,6 +3,9 @@ package TravelCompanionScala.snippet
 import xml.NodeSeq
 import TravelCompanionScala.model.UserManagement
 import net.liftweb.util.Helpers._
+import net.liftweb.http.S
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +35,12 @@ class UsrMgtHelper {
   def showIfBlogEntryOwner(html: NodeSeq): NodeSeq = {
     showIf(html, blogEntryVar.is.owner == UserManagement.currentUser)
   }
-  
+
+  def showIfInRole(html: NodeSeq): NodeSeq = {
+    val role = S.attr("role").map(_.toString) openOr "Guest"
+    showIf(html, UserManagement.currentUser.roles.exists(_.name == role))
+  }
+
   def currentUser(html: NodeSeq): NodeSeq = {
     bind("user", html, "name" -> UserManagement.currentUser.name)
   }

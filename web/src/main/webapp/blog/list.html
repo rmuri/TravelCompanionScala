@@ -44,6 +44,10 @@
 
         <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
 
+        <lift:UsrMgtHelper:showIfInRole role="mod">
+            <p>shizzel in tha hizzle</p>
+        </lift:UsrMgtHelper:showIfInRole>
+
         <table class="blog">
             <thead>
             <tr>
