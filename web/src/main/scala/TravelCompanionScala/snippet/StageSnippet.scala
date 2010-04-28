@@ -5,13 +5,15 @@ import _root_.scala.xml.{NodeSeq, Text}
 import _root_.net.liftweb._
 import common.{Box, Empty}
 import http._
-import jquery.JqSHtml
-import js._
+
+import js.JsCmds._ 
 import js.JE.{JsRaw, JsArray}
 import js.JsCmds.JsCrVar
+import js.{JsObj, JsExp, JE, JsCmd}
 import S._
 import util._
 import Helpers._
+import JE._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -54,6 +56,26 @@ class StageSnippet {
       "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); doEdit}))
   }
 
+  def cvt(stage: Stage): JsObj = {
+    JsObj(("title" ,stage.destination.name),
+      ("lat" ,stage.destination.lat),
+      ("lng" ,stage.destination.lng))
+  }
+
+  def ajaxFunc(): JsCmd = {
+    val currentTour = tourVar.is
+    val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList 
+    val locobj = stages.map(stage => cvt(stage))
+
+
+    JsCrVar("locations", JsObj(("stages", JsArray(locobj:_*)))) & JsRaw("generate(locations)").cmd
+
+  }
+
+  def renderAjaxButton(xhtml: NodeSeq): NodeSeq = {
+    <head>{ Script(OnLoad(ajaxFunc)) }  </head>
+  }
+
 
   def doRemove() {
     val s = Model.merge(stage)
@@ -65,7 +87,6 @@ class StageSnippet {
   def showStagesFromTour(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
-
 
     stages.flatMap(stage => {
       stageVar(stage);
