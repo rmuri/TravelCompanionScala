@@ -85,3 +85,9 @@ function Tour() {
         return length;
     }
 }
+
+function Stage(n,la,ln) {
+    this.name = n;
+    this.lat = la;
+    this.lng = la;
+}
