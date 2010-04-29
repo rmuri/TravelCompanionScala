@@ -26,6 +26,7 @@ import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
 import net.liftweb.widgets.autocomplete.AutoComplete
 import TravelCompanionScala.model._
+import TravelCompanionScala.snippet.blogEntryVar
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -45,19 +46,23 @@ class Boot {
 
     // Build SiteMap (used for navigation...)
     //val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
+    val EntryOwner = If(() => UserManagement.currentUser == blogEntryVar.is.owner, () => RedirectResponse("/error"))
 
     // Build SiteMap
+    val blogMenuEntries: List[Menu] = List(
+      Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))),
+      Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))),
+      Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", EntryOwner, LocGroup("blog"))),
+      Menu(Loc("blog_remove", "blog" :: "remove" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))))
+
     val entries = Menu(Loc("index", "index" :: Nil, S.?("home"), LocGroup("main"))) ::
             Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))) ::
             Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
             Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
             Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))) ::
-            Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))) ::
-            Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))) ::
             Menu(Loc("picture", "picture" :: "list" :: Nil, S.?("pictures"), LocGroup("main"), LocGroup("picture"))) ::
             Menu(Loc("picture_view", "picture" :: "view" :: Nil, "Bild anzeigen", LocGroup("picture"))) ::
-            Menu(Loc("picture_create", "picture" :: "create" :: Nil, "Bild hinzuf&uuml;gen", LocGroup("picture"))) :: UserManagement.sitemap
+            Menu(Loc("picture_create", "picture" :: "create" :: Nil, "Bild hinzuf&uuml;gen", LocGroup("picture"))) :: UserManagement.sitemap ::: blogMenuEntries
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 

@@ -1,9 +1,7 @@
 package TravelCompanionScala.snippet
 
-import net.liftweb.widgets.tablesorter.TableSorter
 import xml.NodeSeq
 import net.liftweb.http.S
-import net.liftweb.common.Empty
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,12 +12,11 @@ import net.liftweb.common.Empty
  */
 
 
-
 class TableSorter {
   def render(xhtml: NodeSeq): NodeSeq = {
     val which = S.attr("for").map(_.toString) openOr ""
-    println("Tablesorter for: "+which)
-    TableSorter("#"+which)
+    println("Tablesorter for: " + which)
+    net.liftweb.widgets.tablesorter.TableSorter("#" + which)
   }
 
 

@@ -8,7 +8,6 @@ import http._
 import S._
 import util._
 import Helpers._
-import net.liftweb.common._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -54,24 +53,48 @@ class BlogSnippet {
       "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
       "tour" -> SHtml.select(choices, Empty, (tourId: String) => {if (tourId != "") currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentEntry.tour = null}),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
-      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
+      "submit" -> SHtml.submit(?("/blog/edit"), () => {blogEntryVar(currentEntry); doEdit}))
+  }
+
+  def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
+    entries.flatMap(entry => bind("entry", html,
+      "title" -> entry.title,
+      "tour" -> {
+        if (entry.tour == null) {
+          NodeSeq.Empty
+        } else {
+          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+        }
+      },
+      "content" -> entry.content,
+      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
+      "comments" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.comments"))),
+      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove"))),
+      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
+      "creator" -> entry.owner.name))
   }
 
   def showEntry(html: NodeSeq): NodeSeq = {
-
     val currentEntry = blogEntry
+    listEntries(html, List(blogEntry))
+  }
 
-    bind("entry", html,
-      "title" -> currentEntry.title,
-      "tour" -> {
-        if (currentEntry.tour == null) {
-          NodeSeq.Empty
-        } else {
-          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(currentEntry.tour), Text(currentEntry.tour.name))
-        }
-      },
-      "content" -> currentEntry.content,
-      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(currentEntry.lastUpdated))
+  def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByTour").setParams("tour" -> currentTour).findAll.toList
+    listEntries(html, entries)
+  }
+
+  def listOtherEntries(html: NodeSeq): NodeSeq = {
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
+    listEntries(html, entries)
+  }
+
+  def listOwnEntries(html: NodeSeq): NodeSeq = {
+    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
+    listEntries(html, entries)
   }
 
   def addComment(html: NodeSeq): NodeSeq = {
@@ -86,7 +109,7 @@ class BlogSnippet {
 
     bind("comment", html,
       "content" -> SHtml.textarea(newComment.content, newComment.content = _),
-      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
+      "submit" -> SHtml.submit(?("/blog/comment/save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
   }
 
   def doRemoveComment(comment: Comment) {
@@ -108,48 +131,5 @@ class BlogSnippet {
           else
             NodeSeq.Empty
         }))
-  }
-
-  def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {
-    val currentTour = tourVar.is
-    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByTour").setParams("tour" -> currentTour).findAll.toList
-
-    entries.flatMap(entry => bind("entry", html,
-      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
-      "title" -> entry.title,
-      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
-      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
-      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
-      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove")))))
-  }
-
-  def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
-    entries.flatMap(entry => bind("entry", html,
-      "title" -> entry.title,
-      "tour" -> {
-        if (entry.tour == null) {
-          NodeSeq.Empty
-        } else {
-          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
-        }
-      },
-      "content" -> entry.content,
-      "edit" -> SHtml.link("edit", () => blogEntryVar(entry), Text(?("edit"))),
-      "comments" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("blog.comments"))),
-      "remove" -> SHtml.link("remove", () => removeBlogEntry(entry), Text(?("remove"))),
-      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
-      "readOn" -> SHtml.link("view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
-      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
-      "creator" -> entry.owner.name))
-  }
-
-  def listOtherEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    listEntries(html, entries)
-  }
-
-  def listOwnEntries(html: NodeSeq): NodeSeq = {
-    val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    listEntries(html, entries)
   }
 }
