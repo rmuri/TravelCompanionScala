@@ -53,7 +53,7 @@ class BlogSnippet {
       "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
       "tour" -> SHtml.select(choices, Empty, (tourId: String) => {if (tourId != "") currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentEntry.tour = null}),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
-      "submit" -> SHtml.submit(?("/blog/edit"), () => {blogEntryVar(currentEntry); doEdit}))
+      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
   }
 
   def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -109,7 +109,7 @@ class BlogSnippet {
 
     bind("comment", html,
       "content" -> SHtml.textarea(newComment.content, newComment.content = _),
-      "submit" -> SHtml.submit(?("/blog/comment/save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
+      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doAdd(newComment)}))
   }
 
   def doRemoveComment(comment: Comment) {

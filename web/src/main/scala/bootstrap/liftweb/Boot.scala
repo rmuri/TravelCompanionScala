@@ -15,18 +15,15 @@
  */
 package bootstrap.liftweb
 
-import _root_.java.util.Locale
-
-import _root_.net.liftweb.common.{Box, Empty, Full}
-import _root_.net.liftweb.util.{LoanWrapper, LogBoot}
-import _root_.net.liftweb.http.provider._
+import _root_.net.liftweb.common.{Box}
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
 import net.liftweb.widgets.autocomplete.AutoComplete
 import TravelCompanionScala.model._
-import TravelCompanionScala.snippet.blogEntryVar
+import scala.collection.JavaConversions._
+import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -44,25 +41,53 @@ class Boot {
 
     LiftRules.dispatch.append(ImageLogic.matcher)
 
-    // Build SiteMap (used for navigation...)
-    //val AuthRequired = If(() => UserManagement.loggedIn_?, () => RedirectResponse(UserManagement.loginPageURL))
-    val EntryOwner = If(() => UserManagement.currentUser == blogEntryVar.is.owner, () => RedirectResponse("/error"))
+    // Build SiteMap (used for navigation, access control...)
+    val LoggedIn = If(
+      () => UserManagement.loggedIn_?,
+      () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.??("must.be.logged.in")))))
 
-    // Build SiteMap
+    val EntryModification = If(
+      () => {
+        (UserManagement.currentUser == blogEntryVar.is.owner) ||
+                (blogEntryVar.is.owner == null) ||
+                (UserManagement.currentUser.roles.exists(_ == "mod"))
+      },
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
+
+    val PictureModification = If(
+      () => {
+        (UserManagement.currentUser == pictureVar.is.owner) ||
+                (pictureVar.is.owner == null)
+      },
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
+
+    val TourModification = If(
+      () => {
+        (UserManagement.currentUser == tourVar.is.owner) ||
+                (tourVar.is.owner == null)
+      },
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
+
+    val tourMenuEntries: List[Menu] = List(
+      Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))),
+      Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))),
+      Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LoggedIn, TourModification, LocGroup("tour"))),
+      Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LoggedIn, TourModification, LocGroup("tour"))))
+
     val blogMenuEntries: List[Menu] = List(
       Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))),
-      Menu(Loc("blog_view", "blog" :: "view" :: Nil, "Eintrag anzeigen", LocGroup("blog"))),
-      Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, "Eintrag bearbeiten", EntryOwner, LocGroup("blog"))),
-      Menu(Loc("blog_remove", "blog" :: "remove" :: Nil, "Eintrag bearbeiten", LocGroup("blog"))))
+      Menu(Loc("blog_view", "blog" :: "view" :: Nil, S.?("saveElem", S.?("blog.entry")), LocGroup("blog"))),
+      Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, S.?("editElem", S.?("blog.entry")), LoggedIn, EntryModification, LocGroup("blog"))),
+      Menu(Loc("blog_remove", "blog" :: "remove" :: Nil, S.?("removeElem", S.?("blog.entry")), LoggedIn, EntryModification, LocGroup("blog"))))
+
+    val pictureMenuEntries: List[Menu] = List(
+      Menu(Loc("picture", "picture" :: "list" :: Nil, S.?("pictures"), LocGroup("main"), LocGroup("picture"))),
+      Menu(Loc("picture_view", "picture" :: "view" :: Nil, "Bild anzeigen", LocGroup("picture"))),
+      Menu(Loc("picture_create", "picture" :: "create" :: Nil, "Bild hinzuf&uuml;gen", LoggedIn, PictureModification, LocGroup("picture"))))
 
     val entries = Menu(Loc("index", "index" :: Nil, S.?("home"), LocGroup("main"))) ::
-            Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))) ::
-            Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))) ::
-            Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LocGroup("tour"))) ::
-            Menu(Loc("picture", "picture" :: "list" :: Nil, S.?("pictures"), LocGroup("main"), LocGroup("picture"))) ::
-            Menu(Loc("picture_view", "picture" :: "view" :: Nil, "Bild anzeigen", LocGroup("picture"))) ::
-            Menu(Loc("picture_create", "picture" :: "create" :: Nil, "Bild hinzuf&uuml;gen", LocGroup("picture"))) :: UserManagement.sitemap ::: blogMenuEntries
+            Menu(Loc("access_restricted", "accessrestricted" :: Nil, "Access Restricted")) ::
+            tourMenuEntries ::: blogMenuEntries ::: pictureMenuEntries ::: UserManagement.sitemap
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
