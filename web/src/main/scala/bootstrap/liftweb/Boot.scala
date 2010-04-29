@@ -72,7 +72,9 @@ class Boot {
       Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))),
       Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))),
       Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LoggedIn, TourModification, LocGroup("tour"))),
-      Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LoggedIn, TourModification, LocGroup("tour"))))
+      Menu(Loc("tour_stage_view", "tour" :: "stage" :: "view" :: Nil, "Abschnitt ansehen", LocGroup("tour"))),
+      Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LoggedIn, TourModification, LocGroup("tour")))
+      )
 
     val blogMenuEntries: List[Menu] = List(
       Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))),

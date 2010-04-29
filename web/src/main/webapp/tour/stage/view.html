@@ -1,0 +1,64 @@
+<lift:surround with="default" at="content">
+    <head>
+        <script type="text/javascript">
+                //<![CDATA[
+
+                var gm = null;
+
+                window.onunload = function () {
+                GUnload();
+                }
+
+                function generate(locations) {
+                    gm = new GoogleMap();
+                    gm.initialize("map_canvas");
+
+                    var arr = Array();
+                    $.each(locations.stages, function(i,stage){
+                        arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
+                        gm.setCenter(stage.lat, stage.lng);
+                    });
+                    var tour = gm.createTour(arr);
+                    gm.drawTour(tour);
+                }
+                //]]>
+            </script>
+        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA2-CB_ZSr_NKoegyNrzlTWxSQpo8EMaGL8axcu9eL4QRUKU6R0hRvg6dX4nE1T9pw9b423ZwN14Ti0Q&amp;sensor=true"
+                type="text/javascript"></script>
+        <script src="/scripts/googlemap.js" type="text/javascript"></script>
+
+    </head>
+    <div class="content">
+        <lift:StageSnippet:viewStage>
+            <h1><stage:title/></h1>
+            <pre></pre>
+            <h2>Details</h2>
+            <table class="view">
+                <tr>
+                    <td class="desc">Startdatum</td>
+                    <td><stage:date /></td>
+                </tr>
+                <tr>
+                    <td class="desc">Zielort</td>
+                    <td><stage:destination /></td>
+                </tr>
+
+                <tr>
+                    <td class="desc">Auf Karte</td>
+                    <td>
+
+                        <div class='' style='width:100%;'>
+                            <div id='map_canvas' style='width:100%; height:400px;' class=''>
+                                <lift:StageSnippet.renderGoogleMap type="SINGLE"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="bottomnavi">
+                <a href="javascript:;" onclick="history.back()">Zur&uuml;ck</a>
+            </div>
+        </lift:StageSnippet:viewStage>
+    </div>
+</lift:surround>

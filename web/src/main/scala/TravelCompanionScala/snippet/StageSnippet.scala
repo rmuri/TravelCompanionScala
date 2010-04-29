@@ -6,7 +6,7 @@ import _root_.net.liftweb._
 import common.{Box, Empty}
 import http._
 
-import js.JsCmds._ 
+import js.JsCmds._
 import js.JE.{JsRaw, JsArray}
 import js.JsCmds.JsCrVar
 import js.{JsObj, JsExp, JE, JsCmd}
@@ -56,24 +56,42 @@ class StageSnippet {
       "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); doEdit}))
   }
 
-  def cvt(stage: Stage): JsObj = {
-    JsObj(("title" ,stage.destination.name),
-      ("lat" ,stage.destination.lat),
-      ("lng" ,stage.destination.lng))
+  def viewStage(html: NodeSeq): NodeSeq = {
+    S.setHeader("Content-Type", "text/html; charset=utf-8")
+    stage.tour = tourVar.is
+    bind("stage", html,
+      "title" -> Text(stage.name),
+      "date" -> Text(Util.slashDate.format(stage.startdate)),
+      "destination" -> Text(stage.destination.name + ", " + stage.destination.countryname))
   }
 
-  def ajaxFunc(): JsCmd = {
-    val currentTour = tourVar.is
-    val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList 
+  def cvt(stage: Stage): JsObj = {
+    JsObj(("title", stage.destination.name),
+      ("lat", stage.destination.lat),
+      ("lng", stage.destination.lng))
+  }
+
+  def ajaxFunc(stages: List[Stage]): JsCmd = {
     val locobj = stages.map(stage => cvt(stage))
 
-
-    JsCrVar("locations", JsObj(("stages", JsArray(locobj:_*)))) & JsRaw("generate(locations)").cmd
+    JsCrVar("locations", JsObj(("stages", JsArray(locobj: _*)))) & JsRaw("generate(locations)").cmd
 
   }
 
-  def renderAjaxButton(xhtml: NodeSeq): NodeSeq = {
-    <head>{ Script(OnLoad(ajaxFunc)) }  </head>
+  def renderGoogleMap(xhtml: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
+    val maptype = S.attr("type").map(_.toString) openOr "SINGLE"
+    var stages : List[Stage] = List()
+
+    if (maptype.equals("ALL")) {
+      stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
+    } else {
+      stages = List(stage)
+    }
+
+    (<head>
+      {Script(OnLoad(ajaxFunc(stages)))}
+    </head>)
   }
 
 

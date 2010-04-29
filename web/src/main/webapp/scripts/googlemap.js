@@ -10,6 +10,10 @@ function GoogleMap() {
         map.setCenter(new GLatLng(47.3666667, 8.55), 3);
     }
 
+    this.setCenter = function(lat,lng) {
+         map.setCenter(new GLatLng(lat, lng), 3);
+    }
+
     this.createMarker = function(stage) {
         var point = new GLatLng(stage.lat, stage.lng);
         var marker = new GMarker(point);
