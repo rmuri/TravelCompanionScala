@@ -20,7 +20,7 @@
             <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />-->
             <property name="eclipselink.ddl-generation" value="create-tables" />
             <property name="eclipselink.ddl-generation.output-mode" value="database" />
-            
+
         </properties>
 
 
