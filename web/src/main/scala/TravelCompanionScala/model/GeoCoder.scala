@@ -15,7 +15,7 @@ import collection.mutable.Queue
 
 object GeoCoder {
   val wsAdress: String = "http://ws.geonames.org/search?"
-  var locations : Seq[Location] = _
+  var locations : Seq[Location] = List()
 
   def getCurrentLocations(): Seq[Location] = {
     locations

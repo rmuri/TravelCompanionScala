@@ -34,26 +34,34 @@ class StageSnippet {
   def stage = stageVar.is
 
   def editStage(html: NodeSeq): NodeSeq = {
+    val currentTour = tourVar.is
     val currentStage = stage
+    stage.tour = tourVar.is
 
     def doEdit() = {
       Model.mergeAndFlush(stage)
-      S.redirectTo("/tour/list")
+      val currentTour = tourVar.is
+      S.redirectTo("/tour/view", () => tourVar(currentTour))
     }
 
     def setLocation(name: String, s: Stage) = {
       val geos: List[String] = name.split(",").toList.map(str => str.trim)
-      var loc = GeoCoder.getCurrentLocations.find(loc => (geos.contains(loc.name) && geos.contains(loc.countryname))).get
+      var loc = GeoCoder.getCurrentLocations.find(
+        loc => (geos.contains(loc.name) && geos.contains(loc.countryname))
+        ).getOrElse(s.destination)
       s.destination = loc
     }
 
-    stage.tour = tourVar.is
+    if(currentStage.destination == null) {
+        currentStage.destination = new Location
+    }
+
     bind("stage", html,
       "title" -> SHtml.text(currentStage.name, currentStage.name = _),
-      "destination" -> AutoComplete("", (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", " + loc.countryname)}, s => setLocation(s, currentStage)),
+      "destination" -> AutoComplete(currentStage.destination.name, (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", " + loc.countryname)}, s => setLocation(s, currentStage)),
       "description" -> SHtml.textarea(currentStage.description, currentStage.description = _),
       "dateOf" -%> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)),
-      "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); doEdit}))
+      "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); tourVar(currentTour); doEdit}))
   }
 
   def viewStage(html: NodeSeq): NodeSeq = {
@@ -81,7 +89,7 @@ class StageSnippet {
   def renderGoogleMap(xhtml: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val maptype = S.attr("type").map(_.toString) openOr "SINGLE"
-    var stages : List[Stage] = List()
+    var stages: List[Stage] = List()
 
     if (maptype.equals("ALL")) {
       stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
@@ -113,8 +121,12 @@ class StageSnippet {
         "title" -> SHtml.link("/tour/stage/view", () => stageVar(stage), Text(stage.name)),
         "destination" -> stage.destination.name,
         "description" -> stage.description,
-        "edit" -%> SHtml.link("/tour/stage/edit", () => stageVar(stage), Text(?("edit"))),
-        "remove" -%> SHtml.link("remove", () => {stageVar(stage); tourVar(currentTour); doRemove}, Text(?("remove"))))
+        "edit" -%> SHtml.link("/tour/stage/edit", () => {stageVar(stage); tourVar(currentTour); }, Text(?("edit"))),
+        "remove" -%> SHtml.link("remove", () => {
+          stageVar(stage);
+          tourVar(currentTour);
+          doRemove
+        }, Text(?("remove"))))
     })
 
   }
