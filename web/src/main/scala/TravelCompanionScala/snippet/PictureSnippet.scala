@@ -65,7 +65,7 @@ class PictureSnippet {
           S.error("Invalid Attachment")
           S.redirectTo("/picture/create")
         }
-        case Failure(_,_,_) => {
+        case Failure(_, _, _) => {
           S.error("Invalid Attachment")
           S.redirectTo("/picture/create")
         }
@@ -97,17 +97,20 @@ class PictureSnippet {
   }
 
   def showPicture(html: NodeSeq): NodeSeq = {
-    val currentPicture = pictureVar.is
-    bind("picture", html,
-      "name" -> currentPicture.name,
-      "description" -> currentPicture.description,
-      "owner" -> currentPicture.owner.name,
-      "image" -%> <img src={"/image/full/" + currentPicture.id}/>)
+    //    val currentPicture = pictureVar.is
+    //    bind("picture", html,
+    //      "name" -> currentPicture.name,
+    //      "description" -> currentPicture.description,
+    //      "owner" -> currentPicture.owner.name,
+    //      "image" -%> <img src={"/image/full/" + currentPicture.id}/>)
+    listPictures(html, List(pictureVar.is))
   }
 
   def listPictures(html: NodeSeq, pictures: List[Picture]): NodeSeq = {
     pictures.flatMap(picture => bind("picture", html,
       "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
+      "image" -%> <img src={"/image/full/" + picture.id}/>,
+      "name" -> picture.name,
       "description" -> picture.description,
       "owner" -> picture.owner.name,
       "belongsTo" -> {
