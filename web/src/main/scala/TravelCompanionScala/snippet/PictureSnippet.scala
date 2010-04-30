@@ -49,7 +49,7 @@ class PictureSnippet {
     def doSave(picture: Picture) {
       picture.owner = UserManagement.currentUser
       fileHolder match {
-        case Full(FileParamHolder(_, mime, _, data))
+        case Full(FileParamHolder(_, mime: String, _, data))
           if (mime.startsWith("image/")) => {
           picture.thumbnail = createThumbnail(data)
           picture.image = data
@@ -90,19 +90,10 @@ class PictureSnippet {
   def showPicturesFromTour(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val pictures = Model.createNamedQuery[Picture]("findPicturesByTour").setParams("tour" -> currentTour).findAll.toList
-    //    pictures.flatMap(picture => bind("picture", html,
-    //      "thumbnail" -> SHtml.link("/picture/view", () => pictureVar(picture), <img src={"/image/thumbnail/" + picture.id}/>),
-    //      "description" -> picture.description))
     listPictures(html, pictures)
   }
 
   def showPicture(html: NodeSeq): NodeSeq = {
-    //    val currentPicture = pictureVar.is
-    //    bind("picture", html,
-    //      "name" -> currentPicture.name,
-    //      "description" -> currentPicture.description,
-    //      "owner" -> currentPicture.owner.name,
-    //      "image" -%> <img src={"/image/full/" + currentPicture.id}/>)
     listPictures(html, List(pictureVar.is))
   }
 
