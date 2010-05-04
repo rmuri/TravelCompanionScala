@@ -15,6 +15,11 @@ import collection.mutable.Queue
 
 object GeoCoder {
   val wsAdress: String = "http://ws.geonames.org/search?"
+  var locations : Seq[Location] = List()
+
+  def getCurrentLocations(): Seq[Location] = {
+    locations
+  }
 
   def findLocationsByName(locationName: String): Seq[Location] = {
     var root: Elem = getElement(locationName)
@@ -34,8 +39,8 @@ object GeoCoder {
           results.enqueue(loc)
         }
     }
-
-    results
+    locations = results
+    locations
   }
 
   def getElement(locationName: String): Elem = {

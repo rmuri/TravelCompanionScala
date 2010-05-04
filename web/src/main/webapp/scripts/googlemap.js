@@ -10,11 +10,15 @@ function GoogleMap() {
         map.setCenter(new GLatLng(47.3666667, 8.55), 3);
     }
 
-    this.createMarker = function(name, lat, lang) {
-        var point = new GLatLng(lat, lang);
+    this.setCenter = function(lat,lng) {
+         map.setCenter(new GLatLng(lat, lng), 3);
+    }
+
+    this.createMarker = function(stage) {
+        var point = new GLatLng(stage.lat, stage.lng);
         var marker = new GMarker(point);
         GEvent.addListener(marker, 'click', function() {
-            marker.openInfoWindowHtml(name);
+            marker.openInfoWindowHtml(stage.name);
         });
         return marker;
     }
@@ -84,4 +88,10 @@ function Tour() {
         }
         return length;
     }
+}
+
+function Stage(n,la,ln) {
+    this.name = n;
+    this.lat = la;
+    this.lng = ln;
 }

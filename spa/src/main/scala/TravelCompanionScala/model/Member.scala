@@ -50,8 +50,11 @@ Member() {
   @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
-  @ManyToMany
-  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member",referencedColumnName="id")), inverseJoinColumns = Array(new JoinColumn(name = "roles",referencedColumnName="id")))
+  @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL))
+  val pictures: List[Picture] = new ArrayList[Picture]()
+
+  @ManyToMany(cascade = Array(CascadeType.ALL))
+  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member", referencedColumnName = "id")), inverseJoinColumns = Array(new JoinColumn(name = "roles", referencedColumnName = "id")))
   val roles: List[Role] = new ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {

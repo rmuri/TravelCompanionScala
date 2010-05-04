@@ -3,7 +3,6 @@ package TravelCompanionScala.model
 import net.liftweb.http._
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
-import TravelCompanionScala.model.{Model, Picture}
 import net.liftweb.util.Helpers
 
 /**

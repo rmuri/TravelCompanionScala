@@ -3,12 +3,11 @@ package TravelCompanionScala.snippet
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
-import common.Empty
+import common._
 import http._
 import S._
 import util._
 import Helpers._
-import net.liftweb.common._
 import net.liftweb.imaging._
 
 import TravelCompanionScala.model._
@@ -59,6 +58,14 @@ class PictureSnippet {
           S.redirectTo("/picture/list")
         }
         case Full(_) => {
+          S.error("Invalid Attachment")
+          S.redirectTo("/picture/create")
+        }
+        case Empty => {
+          S.error("Invalid Attachment")
+          S.redirectTo("/picture/create")
+        }
+        case Failure(_,_,_) => {
           S.error("Invalid Attachment")
           S.redirectTo("/picture/create")
         }
