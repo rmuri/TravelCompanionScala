@@ -1,63 +1,82 @@
 function Gauge() {
 	var _self = this;
 	var objImg = new Image();
+	var objImg2 = new Image();
 	var canvas;
-	var phi;
+	var initvalue;
+	var finished = false;
 
-	
+
 	this.initialize = function(value,canvasid) {
 		canvas = canvasid;
-		calcRotation(value);
-	
+		initvalue = value;
+
+		objImg2.src = "/classpath/gauge/arrow.png";
+
 		objImg.src = "/classpath/gauge/gauge.png";
 		objImg.onload  	= initCanvas;
-		
+
+
+
 	}
-	
+
 	var initCanvas = function() {
 		var objCanvas = document.getElementById(canvas);
-	
+
 		if(objCanvas != null) {
 			if(objCanvas.getContext){
-				draw(objCanvas);
+				draw(objCanvas,0);
 			}
 		}
 	}
-	
+
 	var calcRotation = function(value) {
 		///todo
-		phi = value*Math.PI/50;
+		var phi = (value/1.51)*Math.PI/50+(0.57);
 		if(phi < 6) { phi += 0.5; }
 		if(phi > 6) { phi = 6; }
+
+		return phi;
 	}
-	
-	
-	var draw = function(objCanvas){
-	  
+
+
+	var draw = function(objCanvas,i){
+
+	  var phi = calcRotation(i);
+
 	  // Kontext-Objekt
 	  var objContext = objCanvas.getContext("2d");
-	
-	  objContext.clearRect(0, 0, 134, 134);  // Anzeigebereich leeren
+
+	  objContext.clearRect(0, 0, 269, 269);  // Anzeigebereich leeren
 	  objContext.drawImage(objImg, 0, 0);    // Ziffernblatt zeichnen
-	
+
+	  objContext.font = "20pt Arial";
+	  objContext.textAlign = 'center';
+	  objContext.textBaseline = 'middle';
+
+	  objContext.fillText(i+"%", 145, 220);
+
+
+
 	  objContext.save();                     // Ausgangszustand speichern
-	  objContext.translate(67, 67);          // Koordinatensystem in Mittelpkt des Ziffernblatts verschieben
-	
+	  objContext.translate(135, 135);          // Koordinatensystem in Mittelpkt des Ziffernblatts verschieben
+
 	  objContext.save();
 
 	  objContext.rotate(phi);
-	  
-	  objContext.beginPath();                // Neuen Pfad anlegen
-	  objContext.moveTo(0, 5);              // Zeiger Ueber Mitte hinaus zeichnen
-	  objContext.lineTo(0, 60);             // im Koord-Sys. um 60 Einheiten nach unten zeichnen
-	  // Linienstyle festlegen und zeichnen
-	  objContext.lineWidth = 3;
-	  objContext.strokeStyle = "#282828";
-	  objContext.stroke();
+	              // Zeiger Ì?ber Mitte hinaus zeichnen
+	  objContext.drawImage(objImg2, -10, -35);
+
 	  objContext.restore();
-		
+
 	  objContext.restore();
-	
-	
+
+	  if(i<initvalue) {
+		window.setTimeout(function() { draw(objCanvas,++i); },40);
+	  } else {
+			//alert(phi);
+	  }
+
+
 	}
 }
