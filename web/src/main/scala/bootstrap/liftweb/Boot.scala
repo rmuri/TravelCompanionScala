@@ -24,6 +24,7 @@ import net.liftweb.widgets.autocomplete.AutoComplete
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
+import TravelCompanionScala.widget.Gauge
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -103,6 +104,7 @@ class Boot {
     //Widgets
     TableSorter.init
     AutoComplete.init
+    Gauge.init
   }
 }
 

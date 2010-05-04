@@ -15,6 +15,7 @@
           <module name="TravelCompanionScala" />
           <module name="TravelCompanionScala-web" />
           <module name="TravelCompanionScala-spa" />
+          <module name="gauge" />
         </modules>
       </facet-type>
     </autodetection-disabled>
