@@ -27,6 +27,6 @@ object Gauge {
         {onLoad}
       </script>
     </head>
-              <canvas id="gauge" width="140" height="140"/>
+              <canvas id="gauge" width="269" height="269"/>
   }
 }
