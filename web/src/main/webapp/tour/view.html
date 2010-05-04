@@ -93,6 +93,11 @@
         </div>
 
         <div class="content">
+            <h2>Distanzmesser</h2>
+            <lift:TravelDistance/>
+        </div>
+
+        <div class="content">
             <h2>Zugeh&ouml;rige Bilder</h2>
             <table class="list">
                 <th class="name">Bild</th>
@@ -114,14 +119,15 @@
             <script type="text/javascript">
                 //<![CDATA[
                 window.onload =
-                        function () {
-                            var gm = new GoogleMap();
-                            gm.initialize("map_canvas");
-                            var tour = gm.createTour(new Array(gm.createMarker("Test", 37.4419, -10.231), gm.createMarker("Test2", 57.4419, -120.231)));
-                            gm.drawTour(tour);
-                        };
+                function () {
+                var gm = new GoogleMap();
+                gm.initialize("map_canvas");
+                var tour = gm.createTour(new Array(gm.createMarker("Test", 37.4419, -10.231), gm.createMarker("Test2",
+                57.4419, -120.231)));
+                gm.drawTour(tour);
+                };
                 window.onunload = function () {
-                    GUnload();
+                GUnload();
                 }
                 //]]>
             </script>
