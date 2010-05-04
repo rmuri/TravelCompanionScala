@@ -15,6 +15,6 @@ class TravelDistance {
   def render(html: NodeSeq): NodeSeq = {
     // calculate...
     val distance = 70
-    (<canvas id="gauge" width="140" height="140"/> ++ Gauge(distance, "gauge"))
+    Gauge(distance, "gauge")
   }
 }
