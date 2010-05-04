@@ -48,7 +48,7 @@ function Gauge() {
 	  objContext.rotate(phi);
 	  
 	  objContext.beginPath();                // Neuen Pfad anlegen
-	  objContext.moveTo(0, 5);              // Zeiger Ã¼ber Mitte hinaus zeichnen
+	  objContext.moveTo(0, 5);              // Zeiger Ueber Mitte hinaus zeichnen
 	  objContext.lineTo(0, 60);             // im Koord-Sys. um 60 Einheiten nach unten zeichnen
 	  // Linienstyle festlegen und zeichnen
 	  objContext.lineWidth = 3;
