@@ -11,7 +11,7 @@ import net.liftweb.http.{LiftRules, ResourceServer}
  */
 
 object Gauge {
-  def apply(value: Int, id: String) = renderOnLoad(value, id)
+  def apply(value: Int) = renderOnLoad(value)
 
   def init() {
     ResourceServer.allow({
@@ -19,8 +19,8 @@ object Gauge {
     })
   }
 
-  def renderOnLoad(value: Int, id: String) = {
-    val onLoad = "jQuery(document).ready(function() { var g = new Gauge(); g.initialize(" + value + ", '" + id + "'); });"
+  def renderOnLoad(value: Int) = {
+    val onLoad = "jQuery(document).ready(function() { var g = new Gauge(); g.initialize(" + value + ", 'gauge'); });"
     <head>
       <script type="text/javascript" src={"/" + LiftRules.resourceServerPath + "/gauge/gauge.js"}></script>
       <script type="text/javascript" charset="utf-8">
