@@ -20,7 +20,7 @@ object Gauge {
   }
 
   def renderOnLoad(value: Int, id: String) = {
-    val onLoad = "var g = new Gauge(); g.initialize(" + value + ", '" + id + "');"
+    val onLoad = "jQuery(document).ready(function() { var g = new Gauge(); g.initialize(" + value + ", '" + id + "'); });"
     <head>
       <script type="text/javascript" src={"/" + LiftRules.resourceServerPath + "/gauge/gauge.js"}></script>
       <script type="text/javascript" charset="utf-8">
