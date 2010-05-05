@@ -6,24 +6,24 @@
             var gm = null;
 
             window.onload =
-            function () {
+                    function () {
 
 
-            };
+                    };
             window.onunload = function () {
-            GUnload();
+                GUnload();
             }
 
             function generate(locations) {
-            gm = new GoogleMap();
-            gm.initialize("map_canvas");
+                gm = new GoogleMap();
+                gm.initialize("map_canvas");
 
-            var arr = Array();
-            $.each(locations.stages, function(i,stage){
-            arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
-            });
-            var tour = gm.createTour(arr);
-            gm.drawTour(tour);
+                var arr = Array();
+                $.each(locations.stages, function(i, stage) {
+                    arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
+                });
+                var tour = gm.createTour(arr);
+                gm.drawTour(tour);
             }
             //]]>
         </script>
@@ -37,9 +37,9 @@
             <h1>
                 <tour:name/>
             </h1>
-        <pre>
-            <tour:description/>
-        </pre>
+            <p>
+                <tour:description/>
+            </p>
 
             <table class="list">
                 <th class="startdate">Start</th>
@@ -120,6 +120,11 @@
         </div>
 
         <div class="content">
+            <h2>Distanzmesser</h2>
+            <lift:TravelDistance/>
+        </div>
+
+        <div class="content">
             <h2>Zugeh&ouml;rige Bilder</h2>
             <table class="list">
                 <th class="name">Bild</th>
@@ -140,6 +145,5 @@
         <div class="content" id="map_canvas" style="width:100%;height:400px;">
             <lift:StageSnippet.renderGoogleMap type="ALL"/>
         </div>
-
     </div>
 </lift:surround>

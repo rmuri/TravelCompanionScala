@@ -24,6 +24,7 @@ import net.liftweb.widgets.autocomplete.AutoComplete
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
+import TravelCompanionScala.widget.Gauge
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -78,7 +79,7 @@ class Boot {
 
     val blogMenuEntries: List[Menu] = List(
       Menu(Loc("blog", "blog" :: "list" :: Nil, S.?("blog"), LocGroup("main"), LocGroup("blog"))),
-      Menu(Loc("blog_view", "blog" :: "view" :: Nil, S.?("saveElem", S.?("blog.entry")), LocGroup("blog"))),
+      Menu(Loc("blog_view", "blog" :: "view" :: Nil, S.?("viewElem", S.?("blog.entry")), LocGroup("blog"))),
       Menu(Loc("blog_edit", "blog" :: "edit" :: Nil, S.?("editElem", S.?("blog.entry")), LoggedIn, EntryModification, LocGroup("blog"))),
       Menu(Loc("blog_remove", "blog" :: "remove" :: Nil, S.?("removeElem", S.?("blog.entry")), LoggedIn, EntryModification, LocGroup("blog"))))
 
@@ -103,6 +104,7 @@ class Boot {
     //Widgets
     TableSorter.init
     AutoComplete.init
+    Gauge.init
   }
 }
 
