@@ -15,9 +15,6 @@ function Gauge() {
 
 		objImg.src = "../classpath/gauge/gauge.png";
 		objImg.onload  	= initCanvas;
-
-
-
 	}
 
 	var initCanvas = function() {
