@@ -11,9 +11,9 @@ function Gauge() {
 		canvas = canvasid;
 		initvalue = value;
 
-		objImg2.src = "/classpath/gauge/arrow.png";
+		objImg2.src = "../classpath/gauge/arrow.png";
 
-		objImg.src = "/classpath/gauge/gauge.png";
+		objImg.src = "../classpath/gauge/gauge.png";
 		objImg.onload  	= initCanvas;
 
 
