@@ -37,7 +37,6 @@
             <version>1.0</version>
         </dependency>
 
-        
 
         <dependency>
             <groupId>geronimo-spec</groupId>
@@ -46,10 +45,10 @@
             <scope>provided</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-simple</artifactId>-->
-            <!--<version>1.4.2</version>-->
-            <!--<scope>runtime</scope>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>slf4j-simple</artifactId>-->
+        <!--<version>1.4.2</version>-->
+        <!--<scope>runtime</scope>-->
         <!--</dependency>-->
 
 

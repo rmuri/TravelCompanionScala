@@ -234,6 +234,9 @@ object UserManagement {
       <p>
         {S.?("member.register")}
       </p>
+      <lift:Msgs>
+          <lift:error_msg/>
+      </lift:Msgs>
       <table class="form">
         <tbody>
           <tr>
@@ -357,6 +360,8 @@ object UserManagement {
   def signup() =
     {
       def testSignup() {
+        //        val validationResult = validator.get.validate(tempUserVar.is)
+        //        println("validation result " + validationResult)
         if (is_valid_member_?(tempUserVar.is, true)) {
           logInUser(Model.mergeAndFlush(tempUserVar.is))
           S.notice(S.??("welcome"))

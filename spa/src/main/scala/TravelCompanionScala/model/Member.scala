@@ -3,6 +3,8 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+// Could be used for JSR 303 Validation
+import org.hibernate.validator.constraints.{NotEmpty, Email}
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +16,7 @@ import _root_.java.util._
 
 @Entity
 @Table(name = "members")
-class
-Member() {
+class Member() {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
@@ -24,15 +25,18 @@ Member() {
   var city: String = ""
 
   @Column(name = "email")
+  @Email
   var email: String = ""
 
   @Column(name = "forename")
   var forename: String = ""
 
   @Column(name = "name")
+  @NotEmpty
   var name: String = ""
 
   @Column(name = "password")
+  @NotEmpty
   var password: String = ""
 
   @Column(name = "street")
