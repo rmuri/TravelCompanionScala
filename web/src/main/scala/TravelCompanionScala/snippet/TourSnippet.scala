@@ -49,10 +49,17 @@ class TourSnippet {
       "newStage" -%> SHtml.link("stage/edit", () => tourVar(currentTour), Text(?("tour.newStage"))))
   }
 
+  // Utility methods for processing a submitted form
+  def is_valid_Tour_?(toCheck: Tour): Boolean =
+    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
+      (if (toCheck.owner == null) {S.error("You must provide a tour owner"); false} else true)).forall(_ == true)
+
   def editTour(html: NodeSeq): NodeSeq = {
     def doEdit() = {
-      Model.mergeAndFlush(tour)
-      S.redirectTo("/tour/list")
+      if (is_valid_Tour_?(tour)) {
+        Model.mergeAndFlush(tour)
+        S.redirectTo("/tour/list")
+      }
     }
 
     val currentTour = tour
@@ -60,7 +67,6 @@ class TourSnippet {
     if (currentTour.owner == null) {
       currentTour.owner = UserManagement.currentUser
     }
-
     bind("tour", html,
       "name" -> SHtml.text(currentTour.name, currentTour.name = _),
       "description" -> SHtml.textarea(currentTour.description, currentTour.description = _),

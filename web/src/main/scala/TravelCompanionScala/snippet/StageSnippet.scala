@@ -33,15 +33,23 @@ object stageVar extends RequestVar[Stage](new Stage())
 class StageSnippet {
   def stage = stageVar.is
 
+  // Utility methods for processing a submitted form
+  def is_valid_Stage_?(toCheck: Stage): Boolean =
+    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
+      (if (toCheck.tour == null) {S.error("You must provide a tour "); false} else true),
+      (if (toCheck.destination.geonameid == "") {S.error("You must provide a destination "); false} else true)).forall(_ == true)
+
   def editStage(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val currentStage = stage
     stage.tour = tourVar.is
 
     def doEdit() = {
-      Model.mergeAndFlush(stage)
-      val currentTour = tourVar.is
-      S.redirectTo("/tour/view", () => tourVar(currentTour))
+      if (is_valid_Stage_?(stage)) {
+        Model.mergeAndFlush(stage)
+        val currentTour = tourVar.is
+        S.redirectTo("/tour/view", () => tourVar(currentTour))
+      }
     }
 
     def setLocation(name: String, s: Stage) = {
@@ -52,8 +60,8 @@ class StageSnippet {
       s.destination = loc
     }
 
-    if(currentStage.destination == null) {
-        currentStage.destination = new Location
+    if (currentStage.destination == null) {
+      currentStage.destination = new Location
     }
 
     bind("stage", html,

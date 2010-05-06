@@ -69,12 +69,13 @@ class Boot {
       },
       () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
 
+    // new DSL Syntax for creating Menu Entries, since Lift2.0-M5
     val tourMenuEntries: List[Menu] = List(
-      Menu(Loc("tour", "tour" :: "list" :: Nil, S.?("tour"), LocGroup("main"), LocGroup("tour"))),
-      Menu(Loc("tour_view", "tour" :: "view" :: Nil, "Reise anzeigen", LocGroup("tour"))),
-      Menu(Loc("tour_edit", "tour" :: "edit" :: Nil, "Reise bearbeiten", LoggedIn, TourModification, LocGroup("tour"))),
-      Menu(Loc("tour_stage_view", "tour" :: "stage" :: "view" :: Nil, "Abschnitt ansehen", LocGroup("tour"))),
-      Menu(Loc("tour_stage_add", "tour" :: "stage" :: "edit" :: Nil, "Stage bearbeiten", LoggedIn, TourModification, LocGroup("tour")))
+      Menu("tour", S ? "tour") / "tour" / "list" >> LocGroup("main") >> LocGroup("tour"),
+      Menu("tour_view", "Reise anzeigen") / "tour" / "view" >> LocGroup("tour"),
+      Menu("tour_edit", "Reise bearbeiten") / "tour" / "edit" >> LoggedIn >> TourModification >> LocGroup("tour"),
+      Menu("tour_stage_add", "Abschnitt ansehen") / "tour" / "stage" / "view" >> LocGroup("tour"),
+      Menu("tour_stage_edit", "Abschnitt bearbeiten") / "tour" / "stage" / "edit" >> LoggedIn >> TourModification >> LocGroup("tour")
       )
 
     val blogMenuEntries: List[Menu] = List(

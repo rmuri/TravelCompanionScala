@@ -42,6 +42,9 @@
     <div class="content">
         <p>F&uuml;llen Sie das folgende Formular aus, um einen neuen Reiseabschnitt zu erstellen (mit * markierte Felder
             sind obligatorisch):</p>
+        <lift:Msgs>
+            <lift:error_msg/>
+        </lift:Msgs>
         <lift:StageSnippet:editStage form="POST">
             <table class="form">
                 <tbody>

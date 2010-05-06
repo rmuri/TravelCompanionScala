@@ -326,7 +326,13 @@ object UserManagement {
     </form>)
   }
 
-  def validateMember(m: Member, create: Boolean): Boolean =
+  //  // Utility methods for processing a submitted form
+  //  def is_valid_Stage_?(toCheck: Stage): Boolean =
+  //    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
+  //      (if (toCheck.tour == null) {S.error("You must provide a tour "); false} else true),
+  //      (if (toCheck.destination.geonameid == "") {S.error("You must provide a destination "); false} else true)).forall(_ == true)
+
+  def is_valid_member_?(m: Member, create: Boolean): Boolean =
     {
       var validation = true
       if (m.name == "") {
@@ -351,7 +357,7 @@ object UserManagement {
   def signup() =
     {
       def testSignup() {
-        if (validateMember(tempUserVar.is, true)) {
+        if (is_valid_member_?(tempUserVar.is, true)) {
           logInUser(Model.mergeAndFlush(tempUserVar.is))
           S.notice(S.??("welcome"))
           S.redirectTo("/")
@@ -383,7 +389,7 @@ object UserManagement {
   def editProfile =
     {
       def testSave() {
-        if (validateMember(tempUserVar.is, false)) {
+        if (is_valid_member_?(tempUserVar.is, false)) {
           tempUserVar(Model.mergeAndFlush(tempUserVar.is))
           S.notice(S.??("profile.updated"))
           curUsr.set(Full(tempUserVar.is))
