@@ -32,6 +32,10 @@ import TravelCompanionScala.widget.Gauge
  */
 class Boot {
   def boot {
+    ///http://groups.google.com/group/liftweb/browse_thread/thread/c95fcc4ce801b06c/d293bd49a9e68007
+    ///UTF8 vs. tomcat
+    LiftRules.early.append(_.setCharacterEncoding("UTF-8")) 
+
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: Nil
