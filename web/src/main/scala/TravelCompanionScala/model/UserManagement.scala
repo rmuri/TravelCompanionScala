@@ -10,6 +10,8 @@ import scala.xml.transform._
 
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
+import scala.collection.JavaConversions._
+import javax.persistence.{PersistenceException, EntityExistsException}
 
 /**
  * Created by IntelliJ IDEA.
@@ -329,45 +331,21 @@ object UserManagement {
     </form>)
   }
 
-  //  // Utility methods for processing a submitted form
-  //  def is_valid_Stage_?(toCheck: Stage): Boolean =
-  //    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
-  //      (if (toCheck.tour == null) {S.error("You must provide a tour "); false} else true),
-  //      (if (toCheck.destination.geonameid == "") {S.error("You must provide a destination "); false} else true)).forall(_ == true)
-
-  def is_valid_member_?(m: Member, create: Boolean): Boolean =
-    {
-      var validation = true
-      if (m.name == "") {
-        S.error(S.?("member.username"))
-        validation = false
-      }
-      if (m.email == "") {
-        S.error(S.??("email.address"))
-        validation = false
-      }
-      if (m.password == "") {
-        S.error(S.??("password"))
-        validation = false
-      }
-      if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
-        S.error(S.?("duplicated"))
-        validation = false
-      }
-      validation
-    }
-
   def signup() =
     {
       def testSignup() {
-        //        val validationResult = validator.get.validate(tempUserVar.is)
-        //        println("validation result " + validationResult)
-        if (is_valid_member_?(tempUserVar.is, true)) {
-          logInUser(Model.mergeAndFlush(tempUserVar.is))
-          S.notice(S.??("welcome"))
-          S.redirectTo("/")
+        val validationResult = validator.get.validate(tempUserVar.is)
+        if (validationResult.isEmpty) {
+          try {
+            logInUser(Model.mergeAndFlush(tempUserVar.is))
+            S.notice(S.??("welcome"))
+            S.redirectTo("/")
+          } catch {
+            case ee: EntityExistsException => S.error("That user already exists.")
+            case pe: PersistenceException => S.error("Error adding user")
+          }
         } else {
-          S.error(S.??("error"));
+          validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
         }
       }
 
@@ -394,13 +372,19 @@ object UserManagement {
   def editProfile =
     {
       def testSave() {
-        if (is_valid_member_?(tempUserVar.is, false)) {
-          tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-          S.notice(S.??("profile.updated"))
-          curUsr.set(Full(tempUserVar.is))
-          S.redirectTo("/")
+        val validationResult = validator.get.validate(tempUserVar.is)
+        if (validationResult.isEmpty) {
+          try {
+            tempUserVar(Model.mergeAndFlush(tempUserVar.is))
+            S.notice(S.??("profile.updated"))
+            curUsr.set(Full(tempUserVar.is))
+            S.redirectTo("/")
+          } catch {
+            case ee: EntityExistsException => S.error("That user already exists.")
+            case pe: PersistenceException => S.error("Error adding user")
+          }
         } else {
-          S.error(S.??("error"));
+          validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
         }
       }
 

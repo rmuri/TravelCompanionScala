@@ -3,8 +3,11 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
-// Could be used for JSR 303 Validation
-import org.hibernate.validator.constraints.{NotEmpty, Email}
+import org.hibernate.validator.constraints._
+import javax.validation.constraints._
+import reflect.BeanProperty
+import annotation.target.beanGetter
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,13 +28,13 @@ class Member() {
   var city: String = ""
 
   @Column(name = "email")
-  @Email
+  @NotEmpty@Email
   var email: String = ""
 
   @Column(name = "forename")
   var forename: String = ""
 
-  @Column(name = "name")
+  @Column(unique = true, name = "name")
   @NotEmpty
   var name: String = ""
 
