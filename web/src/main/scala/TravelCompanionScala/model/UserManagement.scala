@@ -2,6 +2,8 @@ package TravelCompanionScala.model
 
 import net.liftweb.http._
 
+import js.JE.{JsRaw}
+import js.JsCmds
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc._
 
@@ -248,7 +250,7 @@ object UserManagement {
               </label>
             </td>
             <td>
-                <user:username/>
+                <user:username id="username"/><span id="checkUsername"></span>
             </td>
           </tr>
 
@@ -331,9 +333,11 @@ object UserManagement {
     </form>)
   }
 
+
   def signup() =
     {
       def testSignup() {
+        println("entered")
         val validationResult = validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
           try {
@@ -349,13 +353,28 @@ object UserManagement {
         }
       }
 
-
       val current = tempUserVar.is
+
+      def checkUsername(username: String) = {
+
+        current.name = username
+        
+        val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name").setParams("name" -> username).findOne
+        var message: NodeSeq =  <img src="../images/tick.png" alt="Username ok" title="Username ok" />
+        var inputclass : String = ""
+        if (tryUser.isDefined) {
+          message = <img src="../images/cross.png" alt="Username exists" title="Username exists" />
+          inputclass = "inputerror"
+        }
+        JsCmds.SetHtml("checkUsername", message) &
+                JsRaw("$('#username').attr('class', '"+inputclass+"');").cmd &
+                JsCmds.JsHideId("lift__noticesContainer__")
+      }
 
       bind("user",
         memberXhtml,
         "title" -> S.??("sign.up"),
-        "username" -> SHtml.text(current.name, current.name = _),
+        "username" -%> SHtml.ajaxText(current.name, checkUsername),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
         "lastname" -> SHtml.text(current.surname, current.surname = _),
         "street" -> SHtml.text(current.street, current.street = _),
