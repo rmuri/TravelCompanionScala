@@ -32,6 +32,12 @@ class PictureSnippet {
     S.redirectTo("/picture/list")
   }
 
+  def is_valid_Picture_?(toCheck: Picture): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
+  }
+
   var fileHolder: Box[FileParamHolder] = Empty
 
   def addPicture(html: NodeSeq): NodeSeq = {
@@ -54,8 +60,6 @@ class PictureSnippet {
           picture.thumbnail = createThumbnail(data)
           picture.image = data
           picture.imageType = mime
-          Model.mergeAndFlush(picture)
-          S.redirectTo("/picture/list")
         }
         case Full(_) => {
           S.error("Invalid Attachment")
@@ -69,6 +73,10 @@ class PictureSnippet {
           S.error("Invalid Attachment")
           S.redirectTo("/picture/create")
         }
+      }
+      if (is_valid_Picture_?(picture)) {
+        Model.mergeAndFlush(picture)
+        S.redirectTo("/picture/list")
       }
     }
 

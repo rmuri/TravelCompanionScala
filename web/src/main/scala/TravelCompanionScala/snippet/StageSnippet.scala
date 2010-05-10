@@ -33,11 +33,11 @@ object stageVar extends RequestVar[Stage](new Stage())
 class StageSnippet {
   def stage = stageVar.is
 
-  // Utility methods for processing a submitted form
-  def is_valid_Stage_?(toCheck: Stage): Boolean =
-    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
-      (if (toCheck.tour == null) {S.error("You must provide a tour "); false} else true),
-      (if (toCheck.destination.geonameid == "") {S.error("You must provide a destination "); false} else true)).forall(_ == true)
+  def is_valid_Stage_?(toCheck: Stage): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
+  }
 
   def editStage(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is

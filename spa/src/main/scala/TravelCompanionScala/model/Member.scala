@@ -4,10 +4,6 @@ package model {
 import javax.persistence._
 import _root_.java.util._
 import org.hibernate.validator.constraints._
-import javax.validation.constraints._
-import reflect.BeanProperty
-import annotation.target.beanGetter
-
 
 /**
  * Created by IntelliJ IDEA.
