@@ -14,6 +14,7 @@ import TravelCompanionScala.model._
 import java.awt.image.BufferedImage
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream, InputStream}
 import javax.imageio.ImageIO
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.

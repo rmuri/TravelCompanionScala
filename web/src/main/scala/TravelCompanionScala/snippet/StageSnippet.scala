@@ -14,6 +14,7 @@ import S._
 import util._
 import Helpers._
 import JE._
+import scala.collection.JavaConversions._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -65,6 +66,9 @@ class StageSnippet {
 
     if (currentStage.destination == null) {
       currentStage.destination = new Location
+    }
+    if (currentStage.startdate == null) {
+      currentStage.startdate = TimeHelpers.now
     }
 
     bind("stage", html,

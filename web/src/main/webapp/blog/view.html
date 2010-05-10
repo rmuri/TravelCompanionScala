@@ -60,6 +60,9 @@
     </table>
     <lift:UsrMgtHelper:showIfAuthenticated>
         <lift:BlogSnippet:addComment form="POST">
+            <lift:Msgs>
+                <lift:error_msg/>
+            </lift:Msgs>
             <table class="form">
                 <tr>
                     <td class="desc">

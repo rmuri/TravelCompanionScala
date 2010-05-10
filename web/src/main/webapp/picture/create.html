@@ -4,6 +4,9 @@
 
         <p>F&uuml;llen Sie das folgende Formular aus, um ein neues Bild hochzuladen (mit * markierte Felder sind
             obligatorisch):</p>
+        <lift:Msgs>
+            <lift:error_msg/>
+        </lift:Msgs>
         <lift:PictureSnippet:addPicture form="POST" multipart="true">
             <table class="form">
                 <tr>

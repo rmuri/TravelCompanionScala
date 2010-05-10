@@ -29,7 +29,7 @@ class BlogEntry {
   @NotEmpty
   var content: String = ""
 
-  @Temporal(TemporalType.DATE)
+  @Temporal(TemporalType.TIMESTAMP)
   @Column
   @NotNull
   var lastUpdated: Date = null
@@ -38,7 +38,6 @@ class BlogEntry {
   var published: Boolean = false
 
   @ManyToOne
-  @NotNull
   var tour: Tour = null
 
   @ManyToOne
