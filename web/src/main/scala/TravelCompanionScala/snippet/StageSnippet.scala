@@ -57,6 +57,9 @@ class StageSnippet {
       var loc = GeoCoder.getCurrentLocations.find(
         loc => (geos.contains(loc.name) && geos.contains(loc.countryname))
         ).getOrElse(s.destination)
+
+      loc = Model.createQuery[Location]("SELECT l from Location l where l.geonameid = :geonameid").setParams("geonameid" -> loc.geonameid).findOne.getOrElse(loc)
+
       s.destination = loc
     }
 

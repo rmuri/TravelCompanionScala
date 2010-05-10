@@ -16,29 +16,31 @@
 
         <style>
             a.dp-choose-date {
-                float: left;
-                width: 16px;
-                height: 16px;
-                padding: 0;
-                margin: 5px 3px 0;
-                display: block;
-                text-indent: -2000px;
-                overflow: hidden;
-                background: url(/scripts/calendar.png) no-repeat;
+            float: left;
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            margin: 5px 3px 0;
+            display: block;
+            text-indent: -2000px;
+            overflow: hidden;
+            background: url(/scripts/calendar.png) no-repeat;
             }
 
             a.dp-choose-date.dp-disabled {
-                background-position: 0 -20px;
-                cursor: default;
+            background-position: 0 -20px;
+            cursor: default;
             }
 
             input.dp-applied {
-                width: 140px;
-                float: left;
+            width: 140px;
+            float: left;
             }
         </style>
     </head>
-
+    <lift:Msgs>
+        <lift:error_msg/>
+    </lift:Msgs>
     <div class="content">
         <p>F&uuml;llen Sie das folgende Formular aus, um einen neuen Reiseabschnitt zu erstellen (mit * markierte Felder
             sind obligatorisch):</p>
@@ -83,7 +85,7 @@
 
     <script type="text/javascript">
         $(function() {
-            $('#startdate').datepicker({dateFormat:'dd.mm.yy'});
+        $('#startdate').datepicker({dateFormat:'dd.mm.yy'});
         });
     </script>
 </lift:surround>

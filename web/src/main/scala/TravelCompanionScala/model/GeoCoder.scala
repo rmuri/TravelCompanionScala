@@ -1,9 +1,10 @@
 package TravelCompanionScala.model
 
 import java.net.{URLConnection, URL, URLEncoder}
-import java.io.{BufferedInputStream, DataInputStream}
-import xml.{Elem, XML}
 import collection.mutable.Queue
+import java.io.{IOException, BufferedInputStream, DataInputStream}
+import net.liftweb.http.S
+import xml.{Elem, XML}
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,8 +47,14 @@ object GeoCoder {
   def getElement(locationName: String): Elem = {
     val query: String = "name_equals=" + URLEncoder.encode(locationName,"UTF-8") + "&fclass=P&style=FULL"
     val url = new URL(wsAdress + "" + query)
-    val conn = url.openConnection
-    XML.load(conn.getInputStream)
+    try {
+      val conn = url.openConnection
+      XML.load(conn.getInputStream)
+    } catch {
+       case e: IOException => S.error("Verbindung zu geonames.org fehlgeschlagen.")
+       XML.loadString("<geoname />")
+    }
+
   }
 
 
