@@ -39,12 +39,15 @@ class DynamicBlogViews extends CometActor {
               JsCmds.JsShowId("blogentry")
     }
 
+
+    bind("entry" ->
     blog.flatMap(entry =>
-      bind("title" -> Text(entry.title),
+      bind("e", chooseTemplate("blog", "entry", defaultXml),
+        "title" -> Text(entry.title),
         "content" -> Text(entry.content.substring(0, Math.min(entry.content.length, 50))),
         "readon" -> SHtml.a(() => setEntry(entry), Text(?("blog.readOn"))),
         "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),
-        "owner" -> Text(entry.owner.name))): NodeSeq
+        "owner" -> Text(entry.owner.name)))): NodeSeq
   }
 
   // localSetup is the first thing run, we use it to setup the blogid or
