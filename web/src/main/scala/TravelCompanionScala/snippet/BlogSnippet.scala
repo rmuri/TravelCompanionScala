@@ -91,6 +91,7 @@ class BlogSnippet {
     //    ElemById(blogEntryDivIdPrefix + entry.id) ~> JsRemove
     val e = Model.merge(entry)
     Model.remove(e)
+    BlogCache.cache ! DeleteEntry(e)
     JqSetHtml(blogEntryDivIdPrefix + entry.id, Text("Dieser Eintrag wurde geloescht"))
   }
 
@@ -121,6 +122,7 @@ class BlogSnippet {
     def doEdit(entry: BlogEntry): JsCmd = {
       if (is_valid_Entry_?(entry)) {
         val merged = Model.mergeAndFlush(entry)
+        BlogCache.cache ! AddEntry(merged)
         Hide(errorDiv) &
                 Hide(entryForm) &
                 Show(newEntryLink) &
