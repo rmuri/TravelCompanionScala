@@ -44,42 +44,61 @@
 
         <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
 
-        <table class="blog">
-            <thead>
-            <tr>
-                <th>Titel</th>
-                <th>Vorschau</th>
-                <th>Letzte Aktualisierung</th>
-                <th>Autor</th>
-            </tr>
-            </thead>
-            <tbody>
-            <lift:BlogSnippet.listOtherEntries>
+        <lift:comet type="DynamicBlogViews" name="Other">
+            <table class="blog">
+                <thead>
                 <tr>
-                    <td>
-                        <entry:title/>
-                    </td>
-                    <td>
-                        <entry:preview/>
-                        [
-                        <entry:readOn/>
-                        ]
-                        <lift:UsrMgtHelper:showIfInRole role="mod">
-                            [
-                            <entry:remove/>
-                            ]
-                        </lift:UsrMgtHelper:showIfInRole>
-                    </td>
-                    <td>
-                        <entry:lastUpdated/>
-                    </td>
-                    <td>
-                        <entry:creator/>
-                    </td>
+                    <th>Titel</th>
+                    <th>Vorschau</th>
+                    <th>Letzte Aktualisierung</th>
+                    <th>Autor</th>
                 </tr>
-            </lift:BlogSnippet.listOtherEntries>
+                </thead>
+                <tbody>
+                <blog:entry>
+                        <tr>
+                            <td>
+                                <blog:title/>
+                            </td>
+                            <td>
+                                <blog:content/>
+
+                                [
+                                <blog:readon/>
+                                ]
+
+                            </td>
+                            <td>
+                                <blog:date/>
+                            </td>
+                            <td>
+                                <blog:owner/>
+                            </td>
+                        </tr>
+                </blog:entry>
+                </tbody>
+            </table>
+        </lift:comet>
+
+    </div>
+    <div id="blogentry" style="display:none;">
+        <table class="blog">
+            <tbody>
+            <tr>
+                <td id="blogentry_date"></td>
+            </tr>
+            <tr>
+                <th>
+                    <span id="blogentry_title"></span>
+                    <span id="blogentry_tour"></span>
+                </th>
+            </tr>
+            <tr>
+                <td id="blogentry_content"></td>
+            </tr>
             </tbody>
         </table>
 
     </div>
+
 </lift:surround>

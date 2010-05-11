@@ -12,6 +12,7 @@ import Helpers._
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import scala.collection.JavaConversions._
+import TravelCompanionScala.controller._
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +32,7 @@ class BlogSnippet {
   def removeBlogEntry(entry: BlogEntry) {
     val e = Model.merge(entry)
     Model.remove(e)
+    BlogCache.cache ! DeleteEntry(e)
     S.redirectTo("/blog/list")
   }
 
@@ -43,7 +45,8 @@ class BlogSnippet {
   def editBlogEntry(html: NodeSeq): NodeSeq = {
     def doEdit() = {
       if (is_valid_Entry_?(blogEntry)) {
-        Model.mergeAndFlush(blogEntry)
+        val newEntry = Model.mergeAndFlush(blogEntry)
+        BlogCache.cache ! AddEntry(newEntry)
         S.redirectTo("/blog/list")
       }
     }
