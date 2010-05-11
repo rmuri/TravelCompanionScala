@@ -1,8 +1,10 @@
 package TravelCompanionScala {
-package model  {
+package model {
 
 import javax.persistence._
 import _root_.java.util._
+import javax.validation.constraints._
+import org.hibernate.validator.constraints.NotEmpty
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,16 +22,20 @@ class Comment {
   var id: Long = _
 
   @Column
+  @NotEmpty
   var content: String = ""
 
   @OneToOne
+  @NotNull
   var member: Member = null
 
-  @Temporal(TemporalType.DATE)
+  @Temporal(TemporalType.TIMESTAMP)
   @Column
-  var dateCreated: Date = new Date()
+  @NotNull
+  var dateCreated: Date = null
 
   @ManyToOne
+  @NotNull
   var blogEntry: BlogEntry = null
 }
 

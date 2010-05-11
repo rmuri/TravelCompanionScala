@@ -1,7 +1,8 @@
 package TravelCompanionScala {
-package model  {
+package model {
 
 import javax.persistence._
+import org.hibernate.validator.constraints.NotEmpty
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +20,7 @@ class Role {
   var id: Long = _
 
   @Column
+  @NotEmpty
   var name: String = ""
 
   override def equals(that: Any): Boolean = that match {

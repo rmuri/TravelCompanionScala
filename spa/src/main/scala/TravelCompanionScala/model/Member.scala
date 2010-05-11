@@ -3,6 +3,7 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+import org.hibernate.validator.constraints._
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +15,7 @@ import _root_.java.util._
 
 @Entity
 @Table(name = "members")
-class
-Member() {
+class Member() {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
@@ -24,15 +24,18 @@ Member() {
   var city: String = ""
 
   @Column(name = "email")
+  @NotEmpty@Email
   var email: String = ""
 
   @Column(name = "forename")
   var forename: String = ""
 
-  @Column(name = "name")
+  @Column(unique = true, name = "name")
+  @NotEmpty
   var name: String = ""
 
   @Column(name = "password")
+  @NotEmpty
   var password: String = ""
 
   @Column(name = "street")

@@ -3,6 +3,8 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+import org.hibernate.validator.constraints._
+import javax.validation.constraints._
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,16 +25,20 @@ class Stage {
   var description: String = ""
 
   @Column(name = "name")
+  @NotEmpty
   var name: String = ""
 
   @Temporal(TemporalType.DATE)
   @Column(name = "startdate")
-  var startdate: Date = new Date();
+  @NotNull
+  var startdate: Date = null;
 
   @OneToOne
+  @NotNull
   var destination: Location = null;
 
   @ManyToOne
+  @NotNull
   var tour: Tour = null
 }
 

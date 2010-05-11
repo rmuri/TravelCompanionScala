@@ -3,6 +3,8 @@ package model {
 
 import javax.persistence._
 import _root_.java.util._
+import org.hibernate.validator.constraints._
+import javax.validation.constraints._
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,18 +22,20 @@ class Tour {
   var id: Long = _
 
   @Column(name = "name")
+  @NotEmpty
   var name: String = ""
 
   @Column(name = "description")
   var description: String = ""
 
   @ManyToOne
+  @NotNull
   var owner: Member = null
 
-  @OneToMany(mappedBy = "tour", cascade=Array(CascadeType.ALL), targetEntity = classOf[Stage])
+  @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[Stage])
   var stages: List[Stage] = new ArrayList[Stage]()
 
-  @OneToMany(mappedBy = "tour", cascade=Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
+  @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   var blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
 }

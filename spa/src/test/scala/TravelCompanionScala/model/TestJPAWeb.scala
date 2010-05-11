@@ -97,7 +97,7 @@ class TestJPAWeb {
     tx.begin()
 
     val member = new Member
-    member.name = "Hobi"
+    member.name = "Hobi2"
 
     em.persist(member)
 
@@ -121,13 +121,13 @@ class TestJPAWeb {
     ///assert
     em = emf.createEntityManager()
 
-    val retrieved = em.createQuery("SELECT m from Member m where m.name = :name").setParameter("name","Hobi").getResultList.asInstanceOf[java.util.List[Member]]
+    val retrieved = em.createQuery("SELECT m from Member m where m.name = :name").setParameter("name","Hobi2").getResultList.asInstanceOf[java.util.List[Member]]
 
-    assertEquals("Hobi", retrieved.get(0).name)
+    assertEquals("Hobi2", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
-    assertEquals("Hobi",retrieved.get(1).name)
-    println("Found member " + retrieved.get(1).name)
+//    assertEquals("Hobi2",retrieved.get(1).name)
+//    println("Found member " + retrieved.get(1).name)
 
      ///cleanup
     em.getTransaction().begin()

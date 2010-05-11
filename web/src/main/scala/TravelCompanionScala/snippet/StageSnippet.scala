@@ -14,6 +14,7 @@ import S._
 import util._
 import Helpers._
 import JE._
+import scala.collection.JavaConversions._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -33,15 +34,23 @@ object stageVar extends RequestVar[Stage](new Stage())
 class StageSnippet {
   def stage = stageVar.is
 
+  def is_valid_Stage_?(toCheck: Stage): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
+  }
+
   def editStage(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val currentStage = stage
     stage.tour = tourVar.is
 
     def doEdit() = {
-      Model.mergeAndFlush(stage)
-      val currentTour = tourVar.is
-      S.redirectTo("/tour/view", () => tourVar(currentTour))
+      if (is_valid_Stage_?(stage)) {
+        Model.mergeAndFlush(stage)
+        val currentTour = tourVar.is
+        S.redirectTo("/tour/view", () => tourVar(currentTour))
+      }
     }
 
     def setLocation(name: String, s: Stage) = {
@@ -49,11 +58,17 @@ class StageSnippet {
       var loc = GeoCoder.getCurrentLocations.find(
         loc => (geos.contains(loc.name) && geos.contains(loc.countryname))
         ).getOrElse(s.destination)
+
+      loc = Model.createQuery[Location]("SELECT l from Location l where l.geonameid = :geonameid").setParams("geonameid" -> loc.geonameid).findOne.getOrElse(loc)
+
       s.destination = loc
     }
 
-    if(currentStage.destination == null) {
-        currentStage.destination = new Location
+    if (currentStage.destination == null) {
+      currentStage.destination = new Location
+    }
+    if (currentStage.startdate == null) {
+      currentStage.startdate = TimeHelpers.now
     }
 
     bind("stage", html,

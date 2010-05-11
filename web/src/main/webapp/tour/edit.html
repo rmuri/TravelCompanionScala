@@ -3,6 +3,9 @@
         <p>F&uuml;llen Sie das folgende Formular aus, um eine neue Reise zu erstellen oder eine bestehende zu editieren
             (mit
             * markierte Felder sind obligatorisch):</p>
+        <lift:Msgs>
+            <lift:error_msg/>
+        </lift:Msgs>
         <lift:TourSnippet.editTour form="POST">
             <table class="form">
                 <tr>

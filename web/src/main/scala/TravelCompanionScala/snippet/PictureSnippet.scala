@@ -14,6 +14,7 @@ import TravelCompanionScala.model._
 import java.awt.image.BufferedImage
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream, InputStream}
 import javax.imageio.ImageIO
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +31,12 @@ class PictureSnippet {
     val p = Model.merge(picture)
     Model.remove(p)
     S.redirectTo("/picture/list")
+  }
+
+  def is_valid_Picture_?(toCheck: Picture): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
   }
 
   var fileHolder: Box[FileParamHolder] = Empty
@@ -54,8 +61,6 @@ class PictureSnippet {
           picture.thumbnail = createThumbnail(data)
           picture.image = data
           picture.imageType = mime
-          Model.mergeAndFlush(picture)
-          S.redirectTo("/picture/list")
         }
         case Full(_) => {
           S.error("Invalid Attachment")
@@ -69,6 +74,10 @@ class PictureSnippet {
           S.error("Invalid Attachment")
           S.redirectTo("/picture/create")
         }
+      }
+      if (is_valid_Picture_?(picture)) {
+        Model.mergeAndFlush(picture)
+        S.redirectTo("/picture/list")
       }
     }
 

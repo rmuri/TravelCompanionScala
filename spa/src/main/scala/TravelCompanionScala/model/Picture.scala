@@ -1,7 +1,9 @@
 package TravelCompanionScala {
-package model  {
+package model {
 
 import javax.persistence._
+import javax.validation.constraints._
+import org.hibernate.validator.constraints._
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +21,7 @@ class Picture {
   var id: Long = _
 
   @Column
+  @NotEmpty
   var name: String = ""
 
   @Column
@@ -26,16 +29,20 @@ class Picture {
 
   @Basic(fetch = FetchType.LAZY)
   @Lob
+  @NotNull
   var image: Array[Byte] = null
 
   @Basic(fetch = FetchType.LAZY)
   @Lob
+  @NotNull
   var thumbnail: Array[Byte] = null
 
   @Column
+  @NotEmpty
   var imageType: String = ""
 
   @ManyToOne
+  @NotNull
   var owner: Member = null
 
   @ManyToOne
@@ -47,6 +54,6 @@ class Picture {
   @ManyToOne
   var blogEntry: BlogEntry = null
 }
-  
+
 }
 }

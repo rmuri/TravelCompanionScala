@@ -2,6 +2,8 @@ package TravelCompanionScala.model
 
 import net.liftweb.http._
 
+import js.JE.{JsRaw}
+import js.JsCmds
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc._
 
@@ -10,6 +12,8 @@ import scala.xml.transform._
 
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
+import scala.collection.JavaConversions._
+import javax.persistence.{PersistenceException, EntityExistsException}
 
 /**
  * Created by IntelliJ IDEA.
@@ -234,6 +238,9 @@ object UserManagement {
       <p>
         {S.?("member.register")}
       </p>
+      <lift:Msgs>
+          <lift:error_msg/>
+      </lift:Msgs>
       <table class="form">
         <tbody>
           <tr>
@@ -243,7 +250,7 @@ object UserManagement {
               </label>
             </td>
             <td>
-                <user:username/>
+                <user:username id="username"/><span id="checkUsername"></span>
             </td>
           </tr>
 
@@ -326,47 +333,48 @@ object UserManagement {
     </form>)
   }
 
-  def validateMember(m: Member, create: Boolean): Boolean =
-    {
-      var validation = true
-      if (m.name == "") {
-        S.error(S.?("member.username"))
-        validation = false
-      }
-      if (m.email == "") {
-        S.error(S.??("email.address"))
-        validation = false
-      }
-      if (m.password == "") {
-        S.error(S.??("password"))
-        validation = false
-      }
-      if (create && !Model.createQuery[Tour]("SELECT m from Member m where m.name = :name or m.email = :email").setParams("name" -> m.name, "email" -> m.email).findAll.isEmpty) {
-        S.error(S.?("duplicated"))
-        validation = false
-      }
-      validation
-    }
 
   def signup() =
     {
       def testSignup() {
-        if (validateMember(tempUserVar.is, true)) {
-          logInUser(Model.mergeAndFlush(tempUserVar.is))
-          S.notice(S.??("welcome"))
-          S.redirectTo("/")
+        println("entered")
+        val validationResult = validator.get.validate(tempUserVar.is)
+        if (validationResult.isEmpty) {
+          try {
+            logInUser(Model.mergeAndFlush(tempUserVar.is))
+            S.notice(S.??("welcome"))
+            S.redirectTo("/")
+          } catch {
+            case ee: EntityExistsException => S.error("That user already exists.")
+            case pe: PersistenceException => S.error("Error adding user")
+          }
         } else {
-          S.error(S.??("error"));
+          validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
         }
       }
 
-
       val current = tempUserVar.is
+
+      def checkUsername(username: String) = {
+
+        current.name = username
+        
+        val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name").setParams("name" -> username).findOne
+        var message: NodeSeq =  <img src="../images/tick.png" alt="Username ok" title="Username ok" />
+        var inputclass : String = ""
+        if (tryUser.isDefined) {
+          message = <img src="../images/cross.png" alt="Username exists" title="Username exists" />
+          inputclass = "inputerror"
+        }
+        JsCmds.SetHtml("checkUsername", message) &
+                JsRaw("$('#username').attr('class', '"+inputclass+"');").cmd &
+                JsCmds.JsHideId("lift__noticesContainer__")
+      }
 
       bind("user",
         memberXhtml,
         "title" -> S.??("sign.up"),
-        "username" -> SHtml.text(current.name, current.name = _),
+        "username" -%> SHtml.ajaxText(current.name, checkUsername),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
         "lastname" -> SHtml.text(current.surname, current.surname = _),
         "street" -> SHtml.text(current.street, current.street = _),
@@ -383,13 +391,19 @@ object UserManagement {
   def editProfile =
     {
       def testSave() {
-        if (validateMember(tempUserVar.is, false)) {
-          tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-          S.notice(S.??("profile.updated"))
-          curUsr.set(Full(tempUserVar.is))
-          S.redirectTo("/")
+        val validationResult = validator.get.validate(tempUserVar.is)
+        if (validationResult.isEmpty) {
+          try {
+            tempUserVar(Model.mergeAndFlush(tempUserVar.is))
+            S.notice(S.??("profile.updated"))
+            curUsr.set(Full(tempUserVar.is))
+            S.redirectTo("/")
+          } catch {
+            case ee: EntityExistsException => S.error("That user already exists.")
+            case pe: PersistenceException => S.error("Error adding user")
+          }
         } else {
-          S.error(S.??("error"));
+          validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
         }
       }
 

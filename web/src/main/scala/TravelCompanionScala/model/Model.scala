@@ -18,10 +18,12 @@ package model {
 
 import _root_.org.scala_libs.jpa.LocalEMF
 import _root_.net.liftweb.jpa.RequestVarEM
-
+import javax.validation.{Validation, Validator}
 /* This object is left as a placeholder. Please modify to match your
  * configuration: */
 object Model extends LocalEMF("jpaweb") with RequestVarEM
+
+object validator {def get: Validator = Validation.buildDefaultValidatorFactory.getValidator}
 
 }
 }
