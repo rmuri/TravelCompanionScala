@@ -4,39 +4,75 @@
             <h1>Ihre Blogeintr&auml;ge</h1>
 
             <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge:</p>
-            <lift:BlogSnippet:listOwnEntries>
-                <table class="blog">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <entry:lastUpdated/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <entry:title/>
-                            <entry:tour/>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <entry:content/>
-                        </td>
-                    </tr>
-                    <tr class="editieren">
-                        <td>
-                            <entry:edit/>
-                            |
-                            <entry:comments/>
-                            |
-                            <entry:remove/>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </lift:BlogSnippet:listOwnEntries>
-
-            <lift:Menu.item name="blog_edit" a:class="button">Neuer Eintrag</lift:Menu.item>
+            <lift:BlogSnippet:ajaxForm>
+                <ajax:entriesList/>
+                <ajax:errors/>
+                <ajax:newEntry/>
+                <ajax:newEntryForm/>
+                <ajax:template>
+                    <choose:entry>
+                        <div entry:id="defaultId">
+                            <table class="blog">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <entry:lastUpdated/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <entry:title/>
+                                        <entry:tour/>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <entry:content/>
+                                    </td>
+                                </tr>
+                                <tr class="editieren">
+                                    <td>
+                                        <entry:edit/>
+                                        |
+                                        <entry:comments/>
+                                        |
+                                        <entry:remove/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </choose:entry>
+                    <choose:form>
+                        <table class="form">
+                            <tbody>
+                            <tr>
+                                <td class="desc"><label for="title">Titel*</label></td>
+                                <td>
+                                    <entry:title/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="desc"><label for="content">Blogeintrag*</label></td>
+                                <td>
+                                    <entry:content/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tour"><label for="tour">Reise</label></td>
+                                <td>
+                                    <entry:tour/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="bottomnavi">
+                            <entry:submit/>
+                            <entry:cancel/>
+                        </div>
+                    </choose:form>
+                </ajax:template>
+            </lift:BlogSnippet:ajaxForm>
         </div>
     </lift:UsrMgtHelper:showIfAuthenticated>
     <div class="content">
