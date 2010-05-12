@@ -37,6 +37,11 @@ class Comment {
   @ManyToOne
   @NotNull
   var blogEntry: BlogEntry = null
+
+  override def equals(that: Any): Boolean = that match {
+    case other: Comment => id == other.id
+    case _ => false
+  }
 }
 
 }

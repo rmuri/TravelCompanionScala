@@ -4,9 +4,8 @@
             <h1>Ihre Blogeintr&auml;ge</h1>
 
             <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge:</p>
-            <lift:BlogSnippet:ajaxForm>
+            <lift:BlogSnippet>
                 <ajax:entriesList/>
-                <ajax:errors/>
                 <ajax:newEntry/>
                 <ajax:newEntryForm/>
                 <ajax:template>
@@ -41,9 +40,12 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div entry:commentsId="defaultId"></div>
+                            <div entry:commentFormId="defaultId"></div>
                         </div>
                     </choose:entry>
                     <choose:form>
+                        <entry:error/>
                         <table class="form">
                             <tbody>
                             <tr>
@@ -71,8 +73,63 @@
                             <entry:cancel/>
                         </div>
                     </choose:form>
+                    <choose:comments>
+                        <table class="blog">
+                            <tbody>
+                            <tr>
+                                <th>Kommentare</th>
+                            </tr>
+                            <blog:comment>
+                                <tr>
+                                    <td class="header">
+                                        <comment:member/>
+                                        hat am
+                                        <comment:dateCreated/>
+                                        geschrieben:
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <comment:content/>
+                                        <br/></td>
+                                </tr>
+                                <comment:options>
+                                    <option:list>
+                                        <tr class="editieren">
+                                            <td>[
+                                                <link:remove/>
+                                                ]
+                                            </td>
+                                        </tr>
+                                    </option:list>
+                                </comment:options>
+                            </blog:comment>
+                            </tbody>
+                        </table>
+                    </choose:comments>
+                    <choose:commentForm>
+                        <lift:UsrMgtHelper:showIfAuthenticated>
+                            <blog:error/>
+                            <table class="form">
+                                <tr>
+                                    <td class="desc">
+                                        <label for="content">Ihr Kommentar:*</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <blog:newComment/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="bottomnavi">
+                                <blog:submit/>
+                                <blog:cancel/>
+                            </div>
+                        </lift:UsrMgtHelper:showIfAuthenticated>
+                    </choose:commentForm>
                 </ajax:template>
-            </lift:BlogSnippet:ajaxForm>
+            </lift:BlogSnippet>
         </div>
     </lift:UsrMgtHelper:showIfAuthenticated>
     <div class="content">
@@ -92,25 +149,25 @@
                 </thead>
                 <tbody>
                 <blog:entry>
-                        <tr>
-                            <td>
-                                <blog:title/>
-                            </td>
-                            <td>
-                                <blog:content/>
+                    <tr>
+                        <td>
+                            <e:title/>
+                        </td>
+                        <td>
+                            <e:content/>
 
-                                [
-                                <blog:readon/>
-                                ]
+                            [
+                            <e:readon/>
+                            ]
 
-                            </td>
-                            <td>
-                                <blog:date/>
-                            </td>
-                            <td>
-                                <blog:owner/>
-                            </td>
-                        </tr>
+                        </td>
+                        <td>
+                            <e:date/>
+                        </td>
+                        <td>
+                            <e:owner/>
+                        </td>
+                    </tr>
                 </blog:entry>
                 </tbody>
             </table>
