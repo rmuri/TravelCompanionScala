@@ -67,6 +67,7 @@ class BlogSnippet {
       val save = () => {
         if (is_valid_Entry_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
+          BlogCache.cache ! EditEntry(merged)
           JqSetHtml(blogEntryDivId + entry.id, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
         } else {
           Show(entryErrorDivId)
@@ -130,6 +131,7 @@ class BlogSnippet {
       //    JqId(JE.Str(blogEntryDivIdPrefix + entry.id)) ~> JqRemove
       val e = Model.merge(entry)
       Model.remove(e)
+      BlogCache.cache ! DeleteEntry(e)
       JqSetHtml(blogEntryDivId + entry.id, NodeSeq.Empty)
     }
 
@@ -176,6 +178,7 @@ class BlogSnippet {
       def save(entry: BlogEntry): JsCmd = {
         if (is_valid_Entry_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
+          BlogCache.cache ! AddEntry(merged)
           Hide(entryErrorDivId) &
                   Hide(entryFormDivId) &
                   Show(newEntryLink) &

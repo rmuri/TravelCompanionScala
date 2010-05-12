@@ -37,8 +37,24 @@ class DynamicBlogViews extends CometActor {
                 ) &
               JsCmds.SetHtml("blogentry_content", Text(entry.content)) &
               JsCmds.JsShowId("blogentry")
+      
     }
+    /*
+    def bindComment(c: Comment) = bind("comment", chooseTemplate("blog", "comment", html),
+        "member" -> c.member.name,
+        "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(c.dateCreated),
+        "content" -> c.content,
+        "options" -> {
+          if ((c.member == UserManagement.currentUser) || (entry.owner == UserManagement.currentUser))
+            bind("link", chooseTemplate("option", "list", html), "remove" -> SHtml.a(() => removeComment(c), Text(?("remove"))))
+          else
+            NodeSeq.Empty
+        })
 
+    def renderComments() = {
+        bind("blog", chooseTemplate("choose", "comments", html), "comment" -> entry.comments.flatMap(c => bindComment(c)))
+      }
+    */
 
     bind("entry" ->
     blog.flatMap(entry =>
