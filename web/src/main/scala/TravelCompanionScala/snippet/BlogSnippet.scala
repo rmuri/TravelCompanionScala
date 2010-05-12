@@ -178,24 +178,11 @@ class BlogSnippet {
       JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
     }
 
-    def doCreateBlogEntry(entry: BlogEntry): JsCmd = {
-      if (is_valid_Entry_?(entry)) {
-        val merged = Model.mergeAndFlush(entry)
-        Hide(entryErrorDivId) &
-                Hide(entryFormDivId) &
-                Show(newEntryLink) &
-                AppendHtml(entriesDivId, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
-      } else {
-        Show(entryErrorDivId)
-      }
-    }
-
     def doRemoveBlogEntry(entry: BlogEntry): JsCmd = {
       //    JqId(JE.Str(blogEntryDivIdPrefix + entry.id)) ~> JqRemove
-      //    ElemById(blogEntryDivIdPrefix + entry.id) ~> JsRemove
       val e = Model.merge(entry)
       Model.remove(e)
-      JqSetHtml(blogEntryDivId + entry.id, Text("Dieser Eintrag wurde geloescht"))
+      JqSetHtml(blogEntryDivId + entry.id, NodeSeq.Empty)
     }
 
     def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -234,21 +221,33 @@ class BlogSnippet {
         }),
         "owner" -> SHtml.text(e.owner.name, e.owner.name = _),
         "submit" -> SHtml.ajaxSubmit(?("save"), submitFunc),
-        "cancel" -> SHtml.a(cancelFunc, Text("Cancel"), "class" -> "button"))
+        "cancel" -> SHtml.a(cancelFunc, Text(?("cancel")), "class" -> "button"))
     }
 
-    def addEntryForm(html: NodeSeq): NodeSeq = {
-      val e = new BlogEntry
-      e.owner = UserManagement.currentUser
-      e.lastUpdated = TimeHelpers.now
-      getEntryForm(e, html, () => doCreateBlogEntry(e), () => Hide(entryFormDivId) & Hide(entryErrorDivId) & Show(newEntryLink))
-    }
+    def doNewEntry() = {
+      def save(entry: BlogEntry): JsCmd = {
+        if (is_valid_Entry_?(entry)) {
+          val merged = Model.mergeAndFlush(entry)
+          Hide(entryErrorDivId) &
+                  Hide(entryFormDivId) &
+                  Show(newEntryLink) &
+                  AppendHtml(entriesDivId, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
+        } else {
+          Show(entryErrorDivId)
+        }
+      }
 
-    def newEntryButton() = {
+      def addEntryForm(html: NodeSeq): NodeSeq = {
+        val e = new BlogEntry
+        e.owner = UserManagement.currentUser
+        e.lastUpdated = TimeHelpers.now
+        getEntryForm(e, html, () => save(e), () => Hide(entryFormDivId) & Hide(entryErrorDivId) & Show(newEntryLink))
+      }
+
       SHtml.a(
         () => Hide(newEntryLink) & Show(entryFormDivId) & JqSetHtml(entryFormDivId, addEntryForm(chooseTemplate("choose", "form", html))),
-        Text("Neuer Eintrag"),
-        "class" -> "button", "id" -> newEntryLink)
+        Text(?("blog.addEntry")),
+        "class" -> "button")
     }
 
     def listOwnEntries(html: NodeSeq): NodeSeq = {
@@ -261,8 +260,10 @@ class BlogSnippet {
         {listOwnEntries(chooseTemplate("choose", "entry", html))}
       </div>,
       "template" -> NodeSeq.Empty,
-      "newEntry" -> newEntryButton,
-      "newEntryForm" -> <div id="addEntryForm"></div>)
+      "newEntry" -> <div id={newEntryLink} class="content">
+        {doNewEntry}
+      </div>,
+      "newEntryForm" -> <div id={entryFormDivId}></div>)
   }
 
 
