@@ -32,71 +32,19 @@ object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
 object commentVar extends RequestVar[Comment](new Comment())
 
 class BlogSnippet {
-  def blogEntry = blogEntryVar.is
-
-  def removeBlogEntry(entry: BlogEntry) {
-    val e = Model.merge(entry)
-    Model.remove(e)
-    BlogCache.cache ! DeleteEntry(e)
-    S.redirectTo("/blog/list")
-  }
-
   def is_valid_Entry_?(toCheck: BlogEntry): Boolean = {
     val validationResult = validator.get.validate(toCheck)
     validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
     validationResult.isEmpty
   }
 
-  def editBlogEntry(html: NodeSeq): NodeSeq = {
-    def doEdit() = {
-      if (is_valid_Entry_?(blogEntry)) {
-        val newEntry = Model.mergeAndFlush(blogEntry)
-        BlogCache.cache ! AddEntry(newEntry)
-        S.redirectTo("/blog/list")
-      }
-    }
-
-    val currentEntry = blogEntry
-
-    currentEntry.owner = UserManagement.currentUser
-    currentEntry.lastUpdated = TimeHelpers.now
-
-    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
-
-    bind("entry", html,
-      "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
-      "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
-      "tour" -> SHtml.select(choices, if (currentEntry.tour == null) Empty else Full(currentEntry.tour.id.toString), (tourId: String) => {if (tourId != "") currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentEntry.tour = null}),
-      "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
-      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
+  def is_valid_Comment_?(toCheck: Comment): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
   }
 
-  def showEntry(html: NodeSeq): NodeSeq = {
-    val currentEntry = blogEntry
-    listEntries(html, List(blogEntry))
-  }
-
-  def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
-    entries.flatMap(entry => bind("entry", html,
-      "title" -> entry.title,
-      "tour" -> {
-        if (entry.tour == null) {
-          NodeSeq.Empty
-        } else {
-          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
-        }
-      },
-      "content" -> entry.content,
-      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
-      "comments" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.comments"))),
-      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove"))),
-      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
-      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
-      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
-      "creator" -> entry.owner.name))
-  }
-
+  /* Blog as single webpage Application */
 
   val entriesDivId = "entriesList"
   val entryFormDivId = "addEntryForm"
@@ -126,6 +74,7 @@ class BlogSnippet {
       val save = () => {
         if (is_valid_Entry_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
+          BlogCache.cache ! EditEntry(merged)
           JqSetHtml(blogEntryDivId + entry.id, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
         } else {
           Show(entryErrorDivId)
@@ -185,24 +134,12 @@ class BlogSnippet {
       JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
     }
 
-    def doCreateBlogEntry(entry: BlogEntry): JsCmd = {
-      if (is_valid_Entry_?(entry)) {
-        val merged = Model.mergeAndFlush(entry)
-        Hide(entryErrorDivId) &
-                Hide(entryFormDivId) &
-                Show(newEntryLink) &
-                AppendHtml(entriesDivId, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
-      } else {
-        Show(entryErrorDivId)
-      }
-    }
-
     def doRemoveBlogEntry(entry: BlogEntry): JsCmd = {
       //    JqId(JE.Str(blogEntryDivIdPrefix + entry.id)) ~> JqRemove
-      //    ElemById(blogEntryDivIdPrefix + entry.id) ~> JsRemove
       val e = Model.merge(entry)
       Model.remove(e)
-      JqSetHtml(blogEntryDivId + entry.id, Text("Dieser Eintrag wurde geloescht"))
+      BlogCache.cache ! DeleteEntry(e)
+      JqSetHtml(blogEntryDivId + entry.id, NodeSeq.Empty)
     }
 
     def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -241,21 +178,34 @@ class BlogSnippet {
         }),
         "owner" -> SHtml.text(e.owner.name, e.owner.name = _),
         "submit" -> SHtml.ajaxSubmit(?("save"), submitFunc),
-        "cancel" -> SHtml.a(cancelFunc, Text("Cancel"), "class" -> "button"))
+        "cancel" -> SHtml.a(cancelFunc, Text(?("cancel")), "class" -> "button"))
     }
 
-    def addEntryForm(html: NodeSeq): NodeSeq = {
-      val e = new BlogEntry
-      e.owner = UserManagement.currentUser
-      e.lastUpdated = TimeHelpers.now
-      getEntryForm(e, html, () => doCreateBlogEntry(e), () => Hide(entryFormDivId) & Hide(entryErrorDivId) & Show(newEntryLink))
-    }
+    def doNewEntry() = {
+      def save(entry: BlogEntry): JsCmd = {
+        if (is_valid_Entry_?(entry)) {
+          val merged = Model.mergeAndFlush(entry)
+          BlogCache.cache ! AddEntry(merged)
+          Hide(entryErrorDivId) &
+                  Hide(entryFormDivId) &
+                  Show(newEntryLink) &
+                  AppendHtml(entriesDivId, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
+        } else {
+          Show(entryErrorDivId)
+        }
+      }
 
-    def newEntryButton() = {
+      def addEntryForm(html: NodeSeq): NodeSeq = {
+        val e = new BlogEntry
+        e.owner = UserManagement.currentUser
+        e.lastUpdated = TimeHelpers.now
+        getEntryForm(e, html, () => save(e), () => Hide(entryFormDivId) & Hide(entryErrorDivId) & Show(newEntryLink))
+      }
+
       SHtml.a(
         () => Hide(newEntryLink) & Show(entryFormDivId) & JqSetHtml(entryFormDivId, addEntryForm(chooseTemplate("choose", "form", html))),
-        Text("Neuer Eintrag"),
-        "class" -> "button", "id" -> newEntryLink)
+        Text(?("blog.addEntry")),
+        "class" -> "button")
     }
 
     def listOwnEntries(html: NodeSeq): NodeSeq = {
@@ -268,10 +218,73 @@ class BlogSnippet {
         {listOwnEntries(chooseTemplate("choose", "entry", html))}
       </div>,
       "template" -> NodeSeq.Empty,
-      "newEntry" -> newEntryButton,
-      "newEntryForm" -> <div id="addEntryForm"></div>)
+      "newEntry" -> <div id={newEntryLink} class="content">
+        {doNewEntry}
+      </div>,
+      "newEntryForm" -> <div id={entryFormDivId}></div>)
   }
 
+
+  /* Blog as traditional multi page application */
+
+  def blogEntry = blogEntryVar.is
+
+  def removeBlogEntry(entry: BlogEntry) {
+    val e = Model.merge(entry)
+    Model.remove(e)
+    BlogCache.cache ! DeleteEntry(e)
+    S.redirectTo("/blog/list")
+  }
+
+  def editBlogEntry(html: NodeSeq): NodeSeq = {
+    def doEdit() = {
+      if (is_valid_Entry_?(blogEntry)) {
+        val newEntry = Model.mergeAndFlush(blogEntry)
+        BlogCache.cache ! AddEntry(newEntry)
+        S.redirectTo("/blog/list")
+      }
+    }
+
+    val currentEntry = blogEntry
+
+    currentEntry.owner = UserManagement.currentUser
+    currentEntry.lastUpdated = TimeHelpers.now
+
+    val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
+    val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
+
+    bind("entry", html,
+      "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
+      "content" -> SHtml.textarea(currentEntry.content, currentEntry.content = _),
+      "tour" -> SHtml.select(choices, if (currentEntry.tour == null) Empty else Full(currentEntry.tour.id.toString), (tourId: String) => {if (tourId != "") currentEntry.tour = Model.getReference(classOf[Tour], tourId.toLong) else currentEntry.tour = null}),
+      "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
+      "submit" -> SHtml.submit(?("save"), () => {blogEntryVar(currentEntry); doEdit}))
+  }
+
+  def showEntry(html: NodeSeq): NodeSeq = {
+    val currentEntry = blogEntry
+    listEntries(html, List(blogEntry))
+  }
+
+  def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
+    entries.flatMap(entry => bind("entry", html,
+      "title" -> entry.title,
+      "tour" -> {
+        if (entry.tour == null) {
+          NodeSeq.Empty
+        } else {
+          Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+        }
+      },
+      "content" -> entry.content,
+      "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
+      "comments" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.comments"))),
+      "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove"))),
+      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
+      "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
+      "creator" -> entry.owner.name))
+  }
 
   def showBlogEntriesFromTour(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
@@ -287,12 +300,6 @@ class BlogSnippet {
   def listOwnEntries(html: NodeSeq): NodeSeq = {
     val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
     listEntries(html, entries)
-  }
-
-  def is_valid_Comment_?(toCheck: Comment): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
   }
 
   def addComment(html: NodeSeq): NodeSeq = {

@@ -22,6 +22,9 @@ class BlogCache extends LiftActor {
       case AddEntry(e) =>
         cache = cache ::: List(e)
         sessions.foreach(_ ! BlogUpdate(cache))
+      case EditEntry(e) =>
+         cache = getEntries
+         sessions.foreach(_ ! BlogUpdate(cache))
       case DeleteEntry(e) =>
         println("Vorher:"+cache.size)
         cache = cache.filter(p =>  p.id != e.id)
@@ -33,6 +36,7 @@ class BlogCache extends LiftActor {
 
 case class AddBlogWatcher(me: SimpleActor[Any]) // id is the blog id
 case class AddEntry(entry: BlogEntry) // id is the blog id
+case class EditEntry(entry: BlogEntry) // id is the blog id
 case class DeleteEntry(entry: BlogEntry) // id is the blog id
 
 // A response sent to the cache listeners with the top 20 blog entries.
