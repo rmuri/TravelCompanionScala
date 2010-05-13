@@ -113,7 +113,14 @@ class BlogSnippet {
     </lift:Msgs>
   </div>
 
+  def printEntries(hookPoint: String) {
+    println("Printing BlogEntries at " + hookPoint)
+    val entries = Model.createNamedQuery[BlogEntry]("findAllEntries").findAll.toList
+    entries.foreach(e => {println(e.title); e.comments.foreach(c => println("---" + c.content))})
+  }
+
   def render(html: NodeSeq): NodeSeq = {
+    printEntries("render")
 
     def doEditBlogEntry(entry: BlogEntry): JsCmd = {
       val save = () => {
