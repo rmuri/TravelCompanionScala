@@ -5,14 +5,13 @@ import _root_.scala.xml.{NodeSeq, Text}
 import _root_.net.liftweb._
 import common.{Full, Empty}
 import http._
-import js.JE.ElemById
-import js.jquery.JqJE.{JqRemove, JqId}
-import js.jquery.{JqJE, JqJsCmds}
-import js.{JE, JsCmds, JsCmd}
+import js._
 import S._
 import util._
 import Helpers._
-import JqJsCmds._
+import net.liftweb.http.js.jquery._
+import net.liftweb.http.js.jquery.JqJE._
+import net.liftweb.http.js.jquery.JqJsCmds._
 
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
@@ -61,35 +60,32 @@ class BlogSnippet {
     </lift:Msgs>
   </div>
 
-  def printEntries(hookPoint: String) {
-    println("Printing BlogEntries at " + hookPoint)
-    val entries = Model.createNamedQuery[BlogEntry]("findAllEntries").findAll.toList
-    entries.foreach(e => {println(e.title); e.comments.foreach(c => println("---" + c.content))})
-  }
-
   def render(html: NodeSeq): NodeSeq = {
-    printEntries("render")
+
+    val entryTemplate = chooseTemplate("choose", "entry", html)
+    val entryFormTemplate = chooseTemplate("choose", "form", html)
+    val commentsTemplate = chooseTemplate("choose", "comments", html)
+    val commentFormTemplate = chooseTemplate("choose", "commentForm", html)
 
     def doEditBlogEntry(entry: BlogEntry): JsCmd = {
       val save = () => {
         if (is_valid_Entry_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
           BlogCache.cache ! EditEntry(merged)
-          JqSetHtml(blogEntryDivId + entry.id, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
+          JqSetHtml(blogEntryDivId + entry.id, listEntries(entryTemplate, List(merged)))
         } else {
           Show(entryErrorDivId)
         }
       }
-      val cancel = () => Hide(entryErrorDivId) & JqSetHtml(blogEntryDivId + entry.id, listEntries(chooseTemplate("choose", "entry", html), List(Model.getReference(classOf[BlogEntry], entry.id))))
-      JqSetHtml(blogEntryDivId + entry.id, getEntryForm(entry, chooseTemplate("choose", "form", html), save, cancel))
+      val cancel = () => Hide(entryErrorDivId) & JqSetHtml(blogEntryDivId + entry.id, listEntries(entryTemplate, List(Model.getReference(classOf[BlogEntry], entry.id))))
+      JqSetHtml(blogEntryDivId + entry.id, getEntryForm(entry, entryFormTemplate, save, cancel))
     }
 
     def doComments(entry: BlogEntry): JsCmd = {
 
       def removeComment(c: Comment): JsCmd = {
-        val merged = Model.merge(c)
-        entry.comments.remove(merged)
-        Model.remove(merged)
+        val mergedc = Model.merge(c)
+        Model.removeAndFlush(mergedc)
         JqSetHtml(commentDivId + entry.id, renderComments)
       }
 
@@ -105,14 +101,17 @@ class BlogSnippet {
         })
 
       def renderComments() = {
-        bind("blog", chooseTemplate("choose", "comments", html), "comment" -> entry.comments.flatMap(c => bindComment(c)))
+        val merged = Model.merge(entry)
+        Model.refresh(merged)
+        bind("blog", commentsTemplate, "comment" -> merged.comments.flatMap(c => bindComment(c)))
       }
 
       def renderNewCommentForm(): NodeSeq = {
         def doSaveComment(c: Comment): JsCmd = {
           if (is_valid_Comment_?(c)) {
-            entry.comments.add(c)
-            Model.mergeAndFlush(c)
+            val merged = Model.merge(entry)
+            merged.comments.add(c)
+            Model.mergeAndFlush(merged)
             Hide(commentErrorDivId) & JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
           } else {
             Show(commentErrorDivId)
@@ -123,23 +122,30 @@ class BlogSnippet {
         newComment.blogEntry = entry
         newComment.member = UserManagement.currentUser
         newComment.dateCreated = TimeHelpers.now
-        bind("blog", SHtml.ajaxForm(chooseTemplate("choose", "commentForm", html)),
+        bind("blog", SHtml.ajaxForm(commentFormTemplate),
           "error" -> getErrorDiv(commentErrorDivId),
           "newComment" -> SHtml.textarea(newComment.content, newComment.content = _),
           "submit" -> SHtml.ajaxSubmit(?("save"), () => doSaveComment(newComment)),
           "cancel" -> SHtml.a(() => Hide(commentErrorDivId) &
-                  JqSetHtml(blogEntryDivId + entry.id, listEntries(chooseTemplate("choose", "entry", html), List(entry))), Text(?("cancel")), "class" -> "button"))
+                  JqSetHtml(blogEntryDivId + entry.id, listEntries(entryTemplate, List(entry))), Text(?("cancel")), "class" -> "button"))
       }
 
       JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
     }
 
     def doRemoveBlogEntry(entry: BlogEntry): JsCmd = {
-      //    JqId(JE.Str(blogEntryDivIdPrefix + entry.id)) ~> JqRemove
       val e = Model.merge(entry)
-      Model.remove(e)
+      Model.removeAndFlush(e)
       BlogCache.cache ! DeleteEntry(e)
       JqSetHtml(blogEntryDivId + entry.id, NodeSeq.Empty)
+      //      object myRemoveHtml {
+      //        def apply(uid: String): JsCmd =
+      //          JqJE.JqId(JE.Str(uid)) ~> JqJE.JqRemove
+      //      }
+      //      case class myJqRemove(id: String) extends JsCmd {
+      //        override def toJsCmd = "jQuery('#'+" + id + ").remove()"
+      //      }
+      //      myJqRemove(blogEntryDivId)
     }
 
     def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
@@ -189,7 +195,7 @@ class BlogSnippet {
           Hide(entryErrorDivId) &
                   Hide(entryFormDivId) &
                   Show(newEntryLink) &
-                  AppendHtml(entriesDivId, listEntries(chooseTemplate("choose", "entry", html), List(merged)))
+                  AppendHtml(entriesDivId, listEntries(entryTemplate, List(merged)))
         } else {
           Show(entryErrorDivId)
         }
@@ -203,7 +209,7 @@ class BlogSnippet {
       }
 
       SHtml.a(
-        () => Hide(newEntryLink) & Show(entryFormDivId) & JqSetHtml(entryFormDivId, addEntryForm(chooseTemplate("choose", "form", html))),
+        () => Hide(newEntryLink) & Show(entryFormDivId) & JqSetHtml(entryFormDivId, addEntryForm(entryFormTemplate)),
         Text(?("blog.addEntry")),
         "class" -> "button")
     }
@@ -215,7 +221,7 @@ class BlogSnippet {
 
     bind("ajax", html,
       "entriesList" -> <div id={entriesDivId}>
-        {listOwnEntries(chooseTemplate("choose", "entry", html))}
+        {listOwnEntries(entryTemplate)}
       </div>,
       "template" -> NodeSeq.Empty,
       "newEntry" -> <div id={newEntryLink} class="content">
