@@ -38,11 +38,10 @@ class BlogCache extends LiftActor {
       case RemoveCommentWatcher(me) =>
         csessions = csessions.filter(p => me != p)
       case AddComment(e) =>
-        csessions.getOrElse(e.id,Nil).foreach(_ ! CommentUpdate(getComments(e)))
-        println(csessions)
-      case EditComment(e) =>
+        println("Comment added")
         csessions.getOrElse(e.id,Nil).foreach(_ ! CommentUpdate(getComments(e)))
       case DeleteComment(e) =>
+         println("Comment deleted")
         csessions.getOrElse(e.id,Nil).foreach(_ ! CommentUpdate(getComments(e)))
 
       case _ =>

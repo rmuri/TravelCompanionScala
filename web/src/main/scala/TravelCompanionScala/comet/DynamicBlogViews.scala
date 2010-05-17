@@ -12,6 +12,7 @@ import S._
 import java.text.SimpleDateFormat
 import TravelCompanionScala.snippet.tourVar
 import TravelCompanionScala.model.BlogEntry
+import TravelCompanionScala.model.Comment
 import TravelCompanionScala.controller._
 
 
@@ -19,11 +20,9 @@ class DynamicBlogViews extends CometActor {
   override def defaultPrefix = Full("blog")
 
   var blog: List[BlogEntry] = Nil
+  var comments: List[Comment] = Nil
 
 
-
-
-  // render draws the content on the screen.
   def render = {
 
     def bindEntryFull(e: BlogEntry): JsCmd = {
@@ -43,16 +42,17 @@ class DynamicBlogViews extends CometActor {
           "owner" -> Text(entry.owner.name))
       }
 
-      def getComments(e: BlogEntry, html: NodeSeq) = {
-        <lift:comet type="CommentView" name={e.id.toString}>
-          {html}
-        </lift:comet>
+      BlogCache.cache ! RemoveCommentWatcher(this)
+
+      (BlogCache.cache !? AddCommentWatcher(this, e)) match {
+        case CommentUpdate(entries) => this.comments = entries
       }
 
       JqSetHtml("blog_single", getEntry(e, chooseTemplate("blog", "entryfull", defaultXml))) &
-              JqSetHtml("blog_comments", getComments(e, chooseTemplate("blog", "comments", defaultXml)))
+              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml)))
     }
 
+    BlogCache.cache ! RemoveCommentWatcher(this)
 
     bind("entryfull" -> NodeSeq.Empty,
       "comments" -> NodeSeq.Empty,
@@ -66,17 +66,27 @@ class DynamicBlogViews extends CometActor {
                   "owner" -> Text(entry.owner.name)))): NodeSeq
   }
 
-  // localSetup is the first thing run, we use it to setup the blogid or
-  // redirect them to / if no blogid was given.
+  def getComments(html: NodeSeq) = {
+    bind("comment", html, "list" ->
+            this.comments.flatMap(comment =>
+              bind("c", chooseTemplate("comment", "list", html),
+                "member" -> comment.member.name,
+                "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
+                "content" -> comment.content)))
+  }
+
+
   override def localSetup {
-    // Let the BlogCache know that we are watching for updates for this blog.
     (BlogCache.cache !? AddBlogWatcher(this)) match {
       case BlogUpdate(entries) => this.blog = entries
     }
   }
 
-  // lowPriority will receive messages sent from the BlogCache
   override def lowPriority: PartialFunction[Any, Unit] = {
     case BlogUpdate(entries: List[BlogEntry]) => this.blog = entries; reRender(false);
+    case CommentUpdate(entries: List[Comment]) => {
+      this.comments = entries;
+      partialUpdate(JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml))))
+    }
   }
 }
