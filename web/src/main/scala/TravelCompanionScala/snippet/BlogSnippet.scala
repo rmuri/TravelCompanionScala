@@ -83,6 +83,7 @@ class BlogSnippet {
         val merged = Model.merge(c)
         entry.comments.remove(merged)
         Model.remove(merged)
+        BlogCache.cache ! DeleteComment(entry)
         JqSetHtml(commentDivId + entry.id, renderComments)
       }
 
@@ -106,6 +107,7 @@ class BlogSnippet {
           if (is_valid_Comment_?(c)) {
             entry.comments.add(c)
             Model.mergeAndFlush(c)
+            BlogCache.cache ! AddComment(entry)
             Hide(commentErrorDivId) & JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
           } else {
             Show(commentErrorDivId)
