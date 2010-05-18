@@ -25,6 +25,7 @@ import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
 import TravelCompanionScala.widget.Gauge
+import TravelCompanionScala.api.RestAPI
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -34,7 +35,7 @@ class Boot {
   def boot {
     ///http://groups.google.com/group/liftweb/browse_thread/thread/c95fcc4ce801b06c/d293bd49a9e68007
     ///UTF8 vs. tomcat
-    LiftRules.early.append(_.setCharacterEncoding("UTF-8")) 
+    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
@@ -44,7 +45,9 @@ class Boot {
       case "css" :: _ => true
     }
 
+    LiftRules.dispatch.append(RestAPI)
     LiftRules.dispatch.append(ImageLogic.matcher)
+
 
     // Build SiteMap (used for navigation, access control...)
     val LoggedIn = If(
