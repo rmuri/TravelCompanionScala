@@ -60,10 +60,10 @@ class EntityConverter(o: Object) {
             {e.published}
           </published>
           <tour>
-            {e.tour.id}
+            {if (e.tour != null) e.tour.id else "null"}
           </tour>
           <owner>
-            {e.owner.id}
+            {if (e.owner != null) e.owner.id else "null"}
           </owner>
           <comments>
             {e.comments.flatMap(c => new EntityConverter(c).toXml)}

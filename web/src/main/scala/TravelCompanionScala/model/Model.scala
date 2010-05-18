@@ -19,11 +19,20 @@ package model {
 import _root_.org.scala_libs.jpa.LocalEMF
 import _root_.net.liftweb.jpa.RequestVarEM
 import javax.validation.{Validation, Validator}
-/* This object is left as a placeholder. Please modify to match your
- * configuration: */
+import net.liftweb.http.S
+import scala.collection.JavaConversions._
+
 object Model extends LocalEMF("jpaweb") with RequestVarEM
 
-object validator {def get: Validator = Validation.buildDefaultValidatorFactory.getValidator}
+object validator {
+  def get: Validator = Validation.buildDefaultValidatorFactory.getValidator
+
+  def is_valid_entity_?(toCheck: Object): Boolean = {
+    val validationResult = validator.get.validate(toCheck)
+    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
+    validationResult.isEmpty
+  }
+}
 
 }
 }
