@@ -4,79 +4,89 @@ import _root_.net.liftweb.http._
 import _root_.net.liftweb.common._
 import _root_.net.liftweb.util._
 import _root_.scala.xml._
-import js.JsCmds
+import js.jquery.JqJsCmds.JqSetHtml
+import js.{JsCmd, JsCmds}
 import S._
 
 
 import java.text.SimpleDateFormat
-import TravelCompanionScala.snippet.{tourVar, blogEntryVar}
-import TravelCompanionScala.model.{Model, UserManagement, BlogEntry}
-import TravelCompanionScala.controller.{AddBlogWatcher, BlogUpdate, BlogCache}
+import TravelCompanionScala.snippet.tourVar
+import TravelCompanionScala.model.BlogEntry
+import TravelCompanionScala.model.Comment
+import TravelCompanionScala.controller._
+
 
 class DynamicBlogViews extends CometActor {
   override def defaultPrefix = Full("blog")
 
   var blog: List[BlogEntry] = Nil
+  var comments: List[Comment] = Nil
 
 
-
-  // render draws the content on the screen.
   def render = {
 
-    def setEntry(entry: BlogEntry) = {
-      JsCmds.SetHtml("blogentry_date", Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated))) &
-              JsCmds.SetHtml("blogentry_title", Text(entry.title)) &
-              JsCmds.SetHtml("blogentry_tour",
+    def bindEntryFull(e: BlogEntry): JsCmd = {
 
-                if (entry.tour == null) {
-                  NodeSeq.Empty
-                } else {
-                  Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
-                }
-
-                ) &
-              JsCmds.SetHtml("blogentry_content", Text(entry.content)) &
-              JsCmds.JsShowId("blogentry")
-      
-    }
-    /*
-    def bindComment(c: Comment) = bind("comment", chooseTemplate("blog", "comment", html),
-        "member" -> c.member.name,
-        "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(c.dateCreated),
-        "content" -> c.content,
-        "options" -> {
-          if ((c.member == UserManagement.currentUser) || (entry.owner == UserManagement.currentUser))
-            bind("link", chooseTemplate("option", "list", html), "remove" -> SHtml.a(() => removeComment(c), Text(?("remove"))))
-          else
-            NodeSeq.Empty
-        })
-
-    def renderComments() = {
-        bind("blog", chooseTemplate("choose", "comments", html), "comment" -> entry.comments.flatMap(c => bindComment(c)))
+      def getEntry(entry: BlogEntry, html: NodeSeq) = {
+        bind("b", html,
+          "title" -> Text(entry.title),
+          "content" -> Text(entry.content),
+          "tour" -> {
+            if (entry.tour == null) {
+              NodeSeq.Empty
+            } else {
+              Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+            }
+          },
+          "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),
+          "owner" -> Text(entry.owner.name))
       }
-    */
 
-    bind("entry" ->
-    blog.flatMap(entry =>
-      bind("e", chooseTemplate("blog", "entry", defaultXml),
-        "title" -> Text(entry.title),
-        "content" -> Text(entry.content.substring(0, Math.min(entry.content.length, 50))),
-        "readon" -> SHtml.a(() => setEntry(entry), Text(?("blog.readOn"))),
-        "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),
-        "owner" -> Text(entry.owner.name)))): NodeSeq
+      BlogCache.cache ! RemoveCommentWatcher(this)
+
+      (BlogCache.cache !? AddCommentWatcher(this, e)) match {
+        case CommentUpdate(entries) => this.comments = entries
+      }
+
+      JqSetHtml("blog_single", getEntry(e, chooseTemplate("blog", "entryfull", defaultXml))) &
+              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml)))
+    }
+
+    BlogCache.cache ! RemoveCommentWatcher(this)
+
+    bind("entryfull" -> NodeSeq.Empty,
+      "comments" -> NodeSeq.Empty,
+      "entry" ->
+              blog.flatMap(entry =>
+                bind("e", chooseTemplate("blog", "entry", defaultXml),
+                  "title" -> Text(entry.title),
+                  "content" -> Text(entry.content.substring(0, Math.min(entry.content.length, 50))),
+                  "readon" -> SHtml.a(() => bindEntryFull(entry), Text(?("blog.readOn"))),
+                  "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),
+                  "owner" -> Text(entry.owner.name)))): NodeSeq
   }
 
-  // localSetup is the first thing run, we use it to setup the blogid or
-  // redirect them to / if no blogid was given.
+  def getComments(html: NodeSeq) = {
+    bind("comment", html, "list" ->
+            this.comments.flatMap(comment =>
+              bind("c", chooseTemplate("comment", "list", html),
+                "member" -> comment.member.name,
+                "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
+                "content" -> comment.content)))
+  }
+
+
   override def localSetup {
-    // Let the BlogCache know that we are watching for updates for this blog.
     (BlogCache.cache !? AddBlogWatcher(this)) match {
       case BlogUpdate(entries) => this.blog = entries
     }
   }
 
-  // lowPriority will receive messages sent from the BlogCache
   override def lowPriority: PartialFunction[Any, Unit] = {
     case BlogUpdate(entries: List[BlogEntry]) => this.blog = entries; reRender(false);
+    case CommentUpdate(entries: List[Comment]) => {
+      this.comments = entries;
+      partialUpdate(JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml))))
+    }
   }
 }

@@ -1,197 +1,227 @@
 <lift:surround with="default" at="content">
-    <lift:UsrMgtHelper:showIfAuthenticated>
-        <div class="content">
-            <h1>Ihre Blogeintr&auml;ge</h1>
+<lift:UsrMgtHelper:showIfAuthenticated>
+    <div class="content">
+        <h1>Ihre Blogeintr&auml;ge</h1>
 
-            <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge:</p>
-            <lift:BlogSnippet>
-                <ajax:entriesList/>
-                <ajax:newEntry/>
-                <ajax:newEntryForm/>
-                <ajax:template>
-                    <choose:entry>
-                        <div entry:id="defaultId" class="content">
-                            <table class="blog">
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <entry:lastUpdated/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        <entry:title/>
-                                        <entry:tour/>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <entry:content/>
-                                    </td>
-                                </tr>
-                                <tr class="editieren">
-                                    <td>
-                                        <entry:edit/>
-                                        |
-                                        <entry:comments/>
-                                        |
-                                        <entry:remove/>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div entry:commentsId="defaultId" class="contentl2"></div>
-                            <div entry:commentFormId="defaultId" class="contentl2"></div>
-                        </div>
-                    </choose:entry>
-                    <choose:form>
-                        <entry:error/>
-                        <table class="form">
+        <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge:</p>
+        <lift:BlogSnippet>
+            <ajax:entriesList/>
+            <ajax:newEntry/>
+            <ajax:newEntryForm/>
+            <ajax:template>
+                <choose:entry>
+                    <div entry:id="defaultId" class="content">
+                        <table class="blog">
                             <tbody>
                             <tr>
-                                <td class="desc"><label for="title">Titel*</label></td>
                                 <td>
-                                    <entry:title/>
+                                    <entry:lastUpdated/>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="desc"><label for="content">Blogeintrag*</label></td>
+                                <th>
+                                    <entry:title/>
+                                    <entry:tour/>
+                                </th>
+                            </tr>
+                            <tr>
                                 <td>
                                     <entry:content/>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="tour"><label for="tour">Reise</label></td>
+                            <tr class="editieren">
                                 <td>
-                                    <entry:tour/>
+                                    <entry:edit/>
+                                    |
+                                    <entry:comments/>
+                                    |
+                                    <entry:remove/>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <div class="bottomnavi">
-                            <entry:submit/>
-                            <entry:cancel/>
-                        </div>
-                    </choose:form>
-                    <choose:comments>
-                        <table class="blog">
-                            <tbody>
+                        <div entry:commentsId="defaultId" class="contentl2"></div>
+                        <div entry:commentFormId="defaultId" class="contentl2"></div>
+                    </div>
+                </choose:entry>
+                <choose:form>
+                    <entry:error/>
+                    <table class="form">
+                        <tbody>
+                        <tr>
+                            <td class="desc"><label for="title">Titel*</label></td>
+                            <td>
+                                <entry:title/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="desc"><label for="content">Blogeintrag*</label></td>
+                            <td>
+                                <entry:content/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tour"><label for="tour">Reise</label></td>
+                            <td>
+                                <entry:tour/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="bottomnavi">
+                        <entry:submit/>
+                        <entry:cancel/>
+                    </div>
+                </choose:form>
+                <choose:comments>
+                    <table class="blog">
+                        <tbody>
+                        <tr>
+                            <th>Kommentare</th>
+                        </tr>
+                        <blog:comment>
                             <tr>
-                                <th>Kommentare</th>
+                                <td class="header">
+                                    <comment:member/>
+                                    hat am
+                                    <comment:dateCreated/>
+                                    geschrieben:
+                                </td>
                             </tr>
-                            <blog:comment>
-                                <tr>
-                                    <td class="header">
-                                        <comment:member/>
-                                        hat am
-                                        <comment:dateCreated/>
-                                        geschrieben:
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <comment:content/>
-                                        <br/></td>
-                                </tr>
-                                <comment:options>
-                                    <option:list>
-                                        <tr class="editieren">
-                                            <td>[
-                                                <link:remove/>
-                                                ]
-                                            </td>
-                                        </tr>
-                                    </option:list>
-                                </comment:options>
-                            </blog:comment>
-                            </tbody>
+                            <tr>
+                                <td>
+                                    <comment:content/>
+                                    <br/></td>
+                            </tr>
+                            <comment:options>
+                                <option:list>
+                                    <tr class="editieren">
+                                        <td>[
+                                            <link:remove/>
+                                            ]
+                                        </td>
+                                    </tr>
+                                </option:list>
+                            </comment:options>
+                        </blog:comment>
+                        </tbody>
+                    </table>
+                </choose:comments>
+                <choose:commentForm>
+                    <lift:UsrMgtHelper:showIfAuthenticated>
+                        <blog:error/>
+                        <table class="form">
+                            <tr>
+                                <td class="desc">
+                                    <label for="content">Ihr Kommentar:*</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <blog:newComment/>
+                                </td>
+                            </tr>
                         </table>
-                    </choose:comments>
-                    <choose:commentForm>
-                        <lift:UsrMgtHelper:showIfAuthenticated>
-                            <blog:error/>
-                            <table class="form">
-                                <tr>
-                                    <td class="desc">
-                                        <label for="content">Ihr Kommentar:*</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <blog:newComment/>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="bottomnavi">
-                                <blog:submit/>
-                                <blog:cancel/>
-                            </div>
-                        </lift:UsrMgtHelper:showIfAuthenticated>
-                    </choose:commentForm>
-                </ajax:template>
-            </lift:BlogSnippet>
-        </div>
-    </lift:UsrMgtHelper:showIfAuthenticated>
-    <div class="content">
-        <h1>Eingetragene Blogeintr&auml;ge</h1>
+                        <div class="bottomnavi">
+                            <blog:submit/>
+                            <blog:cancel/>
+                        </div>
+                    </lift:UsrMgtHelper:showIfAuthenticated>
+                </choose:commentForm>
+            </ajax:template>
+        </lift:BlogSnippet>
+    </div>
+</lift:UsrMgtHelper:showIfAuthenticated>
+<div class="content">
+    <h1>Eingetragene Blogeintr&auml;ge</h1>
 
-        <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
+    <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
 
-        <lift:comet type="DynamicBlogViews" name="Other">
-            <table class="blog">
-                <thead>
+    <lift:comet type="DynamicBlogViews" name="Other">
+        <table class="blog">
+            <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Vorschau</th>
+                <th>Letzte Aktualisierung</th>
+                <th>Autor</th>
+            </tr>
+            </thead>
+            <tbody>
+            <blog:entry>
                 <tr>
-                    <th>Titel</th>
-                    <th>Vorschau</th>
-                    <th>Letzte Aktualisierung</th>
-                    <th>Autor</th>
+                    <td>
+                        <e:title/>
+                    </td>
+                    <td>
+                        <e:content/>
+
+                        [
+                        <e:readon/>
+                        ]
+
+                    </td>
+                    <td>
+                        <e:date/>
+                    </td>
+                    <td>
+                        <e:owner/>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                <blog:entry>
+            </blog:entry>
+            <blog:entryfull>
+                <table class="blog">
+                    <tbody>
                     <tr>
                         <td>
-                            <e:title/>
-                        </td>
-                        <td>
-                            <e:content/>
-
-                            [
-                            <e:readon/>
-                            ]
-
-                        </td>
-                        <td>
-                            <e:date/>
-                        </td>
-                        <td>
-                            <e:owner/>
+                            <b:date/>
                         </td>
                     </tr>
-                </blog:entry>
-                </tbody>
-            </table>
-        </lift:comet>
-
-    </div>
-    <div id="blogentry" style="display:none;">
-        <table class="blog">
-            <tbody>
-            <tr>
-                <td id="blogentry_date"></td>
-            </tr>
-            <tr>
-                <th>
-                    <span id="blogentry_title"></span>
-                    <span id="blogentry_tour"></span>
-                </th>
-            </tr>
-            <tr>
-                <td id="blogentry_content"></td>
-            </tr>
+                    <tr>
+                        <th>
+                            <b:title/>
+                            <b:tour/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b:content/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </blog:entryfull>
+            <blog:comments>
+                <table xmlns="http://www.w3.org/1999/xhtml" class="blog">
+                    <tbody>
+                    <tr>
+                        <th>Kommentare</th>
+                    </tr>
+                    <comment:list>
+                    <tr>
+                        <td class="header">
+                            <c:member/>
+                            hat am
+                            <c:dateCreated />
+                            geschrieben:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <c:content/>
+                            <br/></td>
+                    </tr>
+                    </comment:list>
+                    </tbody>
+                </table>
+            </blog:comments>
             </tbody>
         </table>
+        <div id="blog_single" class="contentl2"></div>
+        <div id="blog_comments" class="contentl2"></div>
+    </lift:comet>
 
-    </div>
+</div>
+
 
 </lift:surround>
