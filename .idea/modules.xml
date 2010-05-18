@@ -8,6 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/TravelCompanionScala.iml" filepath="$PROJECT_DIR$/TravelCompanionScala.iml" />
       <module fileurl="file://$PROJECT_DIR$/TravelCompanionScala.iml" filepath="$PROJECT_DIR$/TravelCompanionScala.iml" />
       <module fileurl="file://$PROJECT_DIR$/spa/TravelCompanionScala-spa.iml" filepath="$PROJECT_DIR$/spa/TravelCompanionScala-spa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spa/TravelCompanionScala-spa.iml" filepath="$PROJECT_DIR$/spa/TravelCompanionScala-spa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/TravelCompanionScala-web.iml" filepath="$PROJECT_DIR$/web/TravelCompanionScala-web.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/TravelCompanionScala-web.iml" filepath="$PROJECT_DIR$/web/TravelCompanionScala-web.iml" />
     </modules>
   </component>
