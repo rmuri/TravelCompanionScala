@@ -2,9 +2,9 @@ package TravelCompanionScala.model
 
 
 import scala.collection.JavaConversions._
-import net.liftweb.json.Xml
-import net.liftweb.http.js.JsObj
-import xml.{Node, NodeSeq}
+import xml.{Elem, Node, NodeSeq}
+import net.liftweb.json.{DefaultFormats, Xml}
+import java.util.Date
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +19,28 @@ import xml.{Node, NodeSeq}
 
 
 class EntityConverter(o: Object) {
-  def toXml: NodeSeq = {
+  def entryFromXml: BlogEntry = {
+    o match {
+      case elem: Elem => {
+        val entry = new BlogEntry
+        entry.id = (elem \ "id" text).trim.toLong
+        entry.title = (elem \ "title" text).trim
+        entry.content = (elem \ "content" text).trim
+        entry.lastUpdated = new Date() /*new SimpleDateFormat("yyyy-mm-dd").parse((elem \ "lastUpdated" text))*/
+        entry.published = (elem \ "published" text).trim.toBoolean
+        entry.tour = Model.getReference(classOf[Tour], (elem \ "tour" text).trim.toLong)
+        entry.owner = Model.getReference(classOf[Member], (elem \ "owner" text).trim.toLong)
+        elem \ "comment" foreach {
+          (comment) => {
+            entry.comments.add(Model.getReference(classOf[Comment], (comment \ "id" text).trim.toLong))
+          }
+        }
+        entry
+      }
+    }
+  }
+
+  def toXml: Elem = {
     o match {
       case e: BlogEntry => {
         <BlogEntry>

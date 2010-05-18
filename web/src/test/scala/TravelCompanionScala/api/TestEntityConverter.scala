@@ -9,7 +9,7 @@ import java.util.Date
 import model.EntityConverter._
 import scala.collection.JavaConversions._
 import model.{Member, Tour, Comment, BlogEntry}
-import xml.{Utility, NodeSeq}
+import xml.{Elem, Utility, NodeSeq}
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +23,7 @@ class TestEntityConverter {
   var testEntry: BlogEntry = null
   val now: Date = new Date
 
-  def getCorrectXml(e: BlogEntry): NodeSeq = {
+  def getCorrectXml(e: BlogEntry): Elem = {
     <BlogEntry>
       <id>
         {e.id}
@@ -61,11 +61,11 @@ class TestEntityConverter {
     testEntry.content = "The quick brown fox jumps over the lazy old dog."
     testEntry.lastUpdated = now
     testEntry.tour = new Tour
-    testEntry.tour.id = 11
+    testEntry.tour.id = 352
     testEntry.owner = new Member
-    testEntry.owner.id = 11
+    testEntry.owner.id = 301
     val c = new Comment
-    c.id = 33
+    c.id = 2501
     c.content = "The quick brown fox jumps over the lazy old dog."
     c.member = null
     c.dateCreated = now
@@ -82,6 +82,18 @@ class TestEntityConverter {
   def convertXml() = {
     val asXml = testEntry.toXml
     assertEquals("XML", asXml.flatMap(n => Utility.trim(n)), getCorrectXml(testEntry).flatMap(n => Utility.trim(n)))
+  }
+
+  @Test
+  def fromXml() = {
+    val e = getCorrectXml(testEntry).entryFromXml
+    assertEquals(testEntry.id, e.id)
+    assertEquals(testEntry.title, e.title)
+    assertEquals(testEntry.content, e.content)
+    //    assertEquals(testEntry.lastUpdated, e.lastUpdated)
+    //    assertEquals(testEntry.tour, e.tour)
+    //    assertEquals(testEntry.owner, e.owner)
+    //    assertEquals(testEntry.comments, e.comments)
   }
 
   @Test

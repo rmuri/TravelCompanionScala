@@ -22,15 +22,23 @@ import xml.{Elem, NodeSeq, UnprefixedAttribute}
 
 object RestAPI extends RestHelper {
   serve {
-    case "api" :: "blog" :: Nil XmlGet _ => <b>hello</b>
-    case "api" :: "blog" :: Nil JsonGet _ => JString("hello")
+    //    case "api" :: "blog" :: Nil XmlGet _ => <b>hello</b>
+    //    case "api" :: "blog" :: Nil JsonGet _ => JString("hello")
     case "api" :: "blog" :: AsLong(entryid) :: _ XmlGet _ => {
       println(Model.getReference(classOf[BlogEntry], entryid).toXml);
       <error>error with id
         {entryid}
       </error>
     }
-    case "api" :: "blog" :: AsLong(entryid) :: _ JsonGet _ => Model.getReference(classOf[BlogEntry], entryid).toJson
-    case "api" :: "blog" :: entryid :: "comment" :: _ XmlGet _ => <b>hello</b>
+    //    case "api" :: "blog" :: AsLong(entryid) :: _ JsonGet _ => Model.getReference(classOf[BlogEntry], entryid).toJson
+    //    case "api" :: "blog" :: entryid :: "comment" :: _ XmlGet _ => <b>hello</b>
+    case "api" :: "blog" :: _ XmlPut xml -> _ => {
+      val e = xml.entryFromXml;
+      println(xml)
+      println(e.id)
+      println(e.title)
+      println(e.content)
+      <succesful>yes</succesful>
+    }
   }
 }
