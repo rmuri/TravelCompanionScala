@@ -3,11 +3,9 @@ package TravelCompanionScala.api
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.util.Helpers.toLong
 import TravelCompanionScala.model.EntityConverter._
-import net.liftweb.http._
 import net.liftweb.http.rest._
 import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
-import scala.collection.JavaConversions._
 import TravelCompanionScala.controller._
 import TravelCompanionScala.model.{Comment, validator, BlogEntry, Model}
 import net.liftweb.json.Xml
@@ -52,17 +50,28 @@ object RestAPI extends RestHelper {
     if (validator.is_valid_entity_?(e)) {
       val merged = Model.mergeAndFlush(e)
       BlogCache.cache ! EditEntry(merged)
-      <succesful>yes</succesful>
-    } else {
-      <succesful>no</succesful>
-    }
+      merged.toXml
+    } else <error/>
   }
 
   def createBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
-    println("new Entry")
-    println(e)
-    <succesful>yes</succesful>
+    if (validator.is_valid_entity_?(e)) {
+      val merged = Model.mergeAndFlush(e)
+      BlogCache.cache ! EditEntry(merged)
+      merged.toXml
+    } else <error/>
+  }
+
+  def createComment(xml: Node, entry: BlogEntry) = {
+    val c = xml.commentFromXml
+    if (validator.is_valid_entity_?(c)) {
+      val merged = Model.merge(entry)
+      merged.comments.add(c)
+      Model.mergeAndFlush(merged)
+      BlogCache.cache ! AddComment(merged)
+      c.toXml
+    } else <error/>
   }
 
   implicit def cvt: JxCvtPF[Object] = {
@@ -72,6 +81,17 @@ object RestAPI extends RestHelper {
     case (XmlSelect, o: Object, _) => o.toXml
   }
 
+  serve {
+    // POST /api/blog creates new entry with xml data from request body
+    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
+
+    // PUT /api/blog/<valid id> updates the respective entry with xml data from request body
+    //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
+
+    // POST /api/blog/<valid id>/comment creates a new comment on the respective entry
+    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
+  }
+
   serveJx {
     // GET /api/blog lists all entries
     case Get("api" :: "blog" :: Nil, _) => Full(listEntries)
@@ -79,14 +99,8 @@ object RestAPI extends RestHelper {
     // GET /api/blog/<valid id>/comment
     case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil, _) => Full(listComments(entry))
 
-    //    POST /api/blog creates new entry with xml data from request body
-    //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
-
-    //    GET /api/blog/<valid id> returns entry with given ID
+    // GET /api/blog/<valid id> returns entry with given ID
     case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
-
-    //    PUT /api/blog/<valid id> updates the respective entry with xml data from request body
-    //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
 
     // GET /api/blog/<valid id>/comment/<valid id> returns comment with given ID
     case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil, _) => Full(comment)

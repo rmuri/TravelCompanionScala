@@ -30,10 +30,8 @@ class EntityConverter(o: Object) {
         entry.published = toBoolean(elem \ "published" text)
         entry.tour = Model.find[Tour](classOf[Tour], toLong((elem \ "tour" text))).getOrElse(null)
         entry.owner = Model.find[Member](classOf[Member], toLong((elem \ "owner" text))).getOrElse(null)
-
         entry.lastUpdated = new Date()
         entry.comments.addAll(Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> entry).findAll.toList)
-
         entry
       }
     }
@@ -55,7 +53,7 @@ class EntityConverter(o: Object) {
     }
   }
 
-  def toXml : Node = {
+  def toXml: Node = {
     o match {
       case e: BlogEntry => {
         Utility.trim(
