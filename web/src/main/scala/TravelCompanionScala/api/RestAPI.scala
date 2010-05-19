@@ -36,9 +36,6 @@ object RestAPI extends RestHelper {
 
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
-    println(e.id)
-    println(e.title)
-    println(e.content)
     if (validator.is_valid_entity_?(e)) {
       val merged = Model.mergeAndFlush(e)
       BlogCache.cache ! EditEntry(merged)
