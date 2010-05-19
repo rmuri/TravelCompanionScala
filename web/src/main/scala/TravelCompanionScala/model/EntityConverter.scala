@@ -39,6 +39,22 @@ class EntityConverter(o: Object) {
     }
   }
 
+  def commentFromXml: Comment = {
+    o match {
+      case elem: Elem => {
+        val comment = new Comment
+        comment.id = toLong((elem \ "id" text))
+        comment.content = (elem \ "content" text)
+        comment.member = Model.find[Member](classOf[Member], toLong((elem \ "member" text))).getOrElse(null)
+        comment.blogEntry = Model.find[BlogEntry](classOf[BlogEntry], toLong((elem \ "blogEntry" text))).getOrElse(null)
+
+        comment.dateCreated = new Date()
+
+        comment
+      }
+    }
+  }
+
   def toXml: Node = {
     o match {
       case e: BlogEntry => {
