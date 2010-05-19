@@ -4,9 +4,9 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.http.{XmlResponse, Req}
 import TravelCompanionScala.model.EntityConverter._
-import net.liftweb.http._
+import net.liftweb.http._ 
 import net.liftweb.http.rest._
-import net.liftweb.common.{Box, Empty, Full}
+import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
 import TravelCompanionScala.model.{validator, BlogEntry, Model}
 import scala.collection.JavaConversions._
@@ -45,10 +45,15 @@ object RestAPI extends RestHelper {
     }
   }
 
-  serve {
+  implicit def cvt: JxCvtPF[Object] = {
+    case (JsonSelect, c : BlogEntry, _) => c.toJson
+    case (XmlSelect, c : BlogEntry, _) => c.toXml
+  }
+
+  serveJx {
     //case XmlPut("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
-    case XmlGet("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => entry.toXml
-    case XmlPost("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
-//    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
+    //case XmlPost("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
+    //    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
   }
 }

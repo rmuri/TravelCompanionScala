@@ -6,6 +6,7 @@ import net.liftweb.json.{DefaultFormats, Xml}
 import java.util.Date
 import xml.{Utility, Elem, Node, NodeSeq}
 import net.liftweb.util.Helpers._
+import net.liftweb.json.JsonAST.JValue
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,6 @@ import net.liftweb.util.Helpers._
 // implicit def serializeEntity (o: Object) = new EntityConverter (o)
 
 
-
 class EntityConverter(o: Object) {
   def entryFromXml: BlogEntry = {
     o match {
@@ -28,7 +28,7 @@ class EntityConverter(o: Object) {
         entry.title = (elem \ "title" text)
         entry.content = (elem \ "content" text)
         entry.published = toBoolean(elem \ "published" text)
-        entry.tour = Model.find[Tour](classOf[Tour],toLong((elem \ "tour" text))).getOrElse(null)
+        entry.tour = Model.find[Tour](classOf[Tour], toLong((elem \ "tour" text))).getOrElse(null)
         entry.owner = Model.find[Member](classOf[Member], toLong((elem \ "owner" text))).getOrElse(null)
 
         entry.lastUpdated = new Date()
@@ -46,7 +46,7 @@ class EntityConverter(o: Object) {
         comment.id = toLong((elem \ "id" text))
         comment.content = (elem \ "content" text)
         comment.member = Model.find[Member](classOf[Member], toLong((elem \ "member" text))).getOrElse(null)
-        comment.blogEntry = Model.find[BlogEntry](classOf[BlogEntry],toLong((elem \ "blogEntry" text))).getOrElse(null)
+        comment.blogEntry = Model.find[BlogEntry](classOf[BlogEntry], toLong((elem \ "blogEntry" text))).getOrElse(null)
 
         comment.dateCreated = new Date()
 
@@ -55,56 +55,56 @@ class EntityConverter(o: Object) {
     }
   }
 
-  def toXml: Node = {
+  def toXml : Node = {
     o match {
       case e: BlogEntry => {
         Utility.trim(
-        <BlogEntry>
-          <id>
-            {e.id}
-          </id>
-          <title>
-            {e.title}
-          </title>
-          <content>
-            {e.content}
-          </content>
-          <lastUpdated>
-            {e.lastUpdated}
-          </lastUpdated>
-          <published>
-            {e.published}
-          </published>
-          <tour>
-            {if (e.tour != null) e.tour.id else "null"}
-          </tour>
-          <owner>
-            {if (e.owner != null) e.owner.id else "null"}
-          </owner>
-          <comments>
-            {e.comments.flatMap(c => new EntityConverter(c).toXml)}
-          </comments>
-        </BlogEntry>)
+          <BlogEntry>
+            <id>
+              {e.id}
+            </id>
+            <title>
+              {e.title}
+            </title>
+            <content>
+              {e.content}
+            </content>
+            <lastUpdated>
+              {e.lastUpdated}
+            </lastUpdated>
+            <published>
+              {e.published}
+            </published>
+            <tour>
+              {if (e.tour != null) e.tour.id else "null"}
+            </tour>
+            <owner>
+              {if (e.owner != null) e.owner.id else "null"}
+            </owner>
+            <comments>
+              {e.comments.flatMap(c => new EntityConverter(c).toXml)}
+            </comments>
+          </BlogEntry>)
       }
       case c: Comment => {
         Utility.trim(
-        <comment>
-          <id>
-            {c.id}
-          </id>
-          <content>
-            {c.content}
-          </content>
-          <member>
-            {c.member.id}
-          </member>
-          <dateCreated>
-            {c.dateCreated}
-          </dateCreated>
-          <blogEntry>
-            {c.blogEntry.id}
-          </blogEntry>
-        </comment>)
+          <comment>
+            <id>
+              {c.id}
+            </id>
+            <content>
+              {c.content}
+            </content>
+            <member>
+              {c.member.id}
+            </member>
+            <dateCreated>
+              {c.dateCreated}
+            </dateCreated>
+            <blogEntry>
+              {c.blogEntry.id}
+            </blogEntry>
+          </comment>)
       }
     }
   }
