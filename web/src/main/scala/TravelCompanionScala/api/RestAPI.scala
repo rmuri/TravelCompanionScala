@@ -3,7 +3,7 @@ package TravelCompanionScala.api
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.util.Helpers.toLong
 import TravelCompanionScala.model.EntityConverter._
-import net.liftweb.http._ 
+import net.liftweb.http._
 import net.liftweb.http.rest._
 import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
@@ -65,22 +65,30 @@ object RestAPI extends RestHelper {
   }
 
   implicit def cvt: JxCvtPF[Object] = {
-    case (JsonSelect, c : BlogEntry, _) => c.toJson
-    case (XmlSelect, c : BlogEntry, _) => c.toXml
+    case (JsonSelect, c: BlogEntry, _) => c.toJson
+    case (XmlSelect, c: BlogEntry, _) => c.toXml
+
+    case (JsonSelect, c: Comment, _) => c.toJson
+    case (XmlSelect, c: Comment, _) => c.toXml
   }
-  
+
+  serve {
+    // GET /api/blog lists all entries
+    case "api" :: "blog" :: Nil XmlGet _ => listEntries
+    // GET /api/blog/<valid id>/comment
+    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlGet _ => listComments(entry)
+  }
+
   serveJx {
-    //    GET /api/blog lists all entries
-    // case "api" :: "blog" :: Nil XmlGet _ => listEntries
+
     //    POST /api/blog creates new entry with xml data from request body
     //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
     //    GET /api/blog/<valid id> returns entry with given ID
-    case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil , _) => Full(entry)
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
     //    PUT /api/blog/<valid id> updates the respective entry with xml data from request body
     //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
-    // GET /api/blog/<valid id>/comment
-    //case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlGet _ => listComments(entry)
+
     // GET /api/blog/<valid id>/comment/<valid id> returns comment with given ID
-    //case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlGet _ => comment.toXml
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil, _) => Full(comment)
   }
 }
