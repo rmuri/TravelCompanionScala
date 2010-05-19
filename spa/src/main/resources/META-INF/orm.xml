@@ -40,6 +40,10 @@
     </entity>
 
     <entity class="Comment">
+        <named-query name="findCommentByEntry">
+            <query>
+                <![CDATA[SELECT c from Comment c where c.id = :id AND c.blogEntry = :entry order by c.dateCreated]]></query>
+        </named-query>
         <named-query name="findCommentsByEntry">
             <query><![CDATA[SELECT c from Comment c where c.blogEntry = :entry order by c.dateCreated]]></query>
         </named-query>

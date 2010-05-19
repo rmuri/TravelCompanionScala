@@ -1,16 +1,15 @@
 package TravelCompanionScala.api
 
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.json.JsonAST.JString
-import net.liftweb.http.{XmlResponse, Req}
+import net.liftweb.util.Helpers.toLong
 import TravelCompanionScala.model.EntityConverter._
 import net.liftweb.http._ 
 import net.liftweb.http.rest._
 import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
-import TravelCompanionScala.model.{validator, BlogEntry, Model}
 import scala.collection.JavaConversions._
 import TravelCompanionScala.controller._
+import TravelCompanionScala.model.{Comment, validator, BlogEntry, Model}
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,7 +23,13 @@ import TravelCompanionScala.controller._
 object RestAPI extends RestHelper {
   object AsBlogEntry {
     def unapply(in: String): Option[BlogEntry] = {
-      Model.find(classOf[BlogEntry], in.toLong)
+      Model.find(classOf[BlogEntry], toLong(in))
+    }
+  }
+  object AsComment {
+    def unapply(in: String): Option[Comment] = {
+      //      Model.createNamedQuery[Comment]("findCommentByEntry", "id" -> toLong(in), "entry" -> entry).findOne
+      Model.find(classOf[Comment], toLong(in))
     }
   }
 
@@ -34,8 +39,15 @@ object RestAPI extends RestHelper {
     </BlogEntries>
   }
 
+  def listComments(entry: BlogEntry) = {
+    <Comments>
+      {Model.findAll[Comment]("findCommentsByEntry", "entry" -> entry).flatMap(e => e.toXml)}
+    </Comments>
+  }
+
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
+    println("saveEntry")
     if (validator.is_valid_entity_?(e)) {
       val merged = Model.mergeAndFlush(e)
       BlogCache.cache ! EditEntry(merged)
@@ -45,15 +57,30 @@ object RestAPI extends RestHelper {
     }
   }
 
+  def createBlogEntry(xml: Node) = {
+    val e = xml.entryFromXml
+    println("new Entry")
+    println(e)
+    <succesful>yes</succesful>
+  }
+
   implicit def cvt: JxCvtPF[Object] = {
     case (JsonSelect, c : BlogEntry, _) => c.toJson
     case (XmlSelect, c : BlogEntry, _) => c.toXml
   }
-
+  
   serveJx {
-    //case XmlPut("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
-    case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
-    //case XmlPost("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
-    //    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
+    //    GET /api/blog lists all entries
+    // case "api" :: "blog" :: Nil XmlGet _ => listEntries
+    //    POST /api/blog creates new entry with xml data from request body
+    //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
+    //    GET /api/blog/<valid id> returns entry with given ID
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil , _) => Full(entry)
+    //    PUT /api/blog/<valid id> updates the respective entry with xml data from request body
+    //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
+    // GET /api/blog/<valid id>/comment
+    //case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlGet _ => listComments(entry)
+    // GET /api/blog/<valid id>/comment/<valid id> returns comment with given ID
+    //case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlGet _ => comment.toXml
   }
 }
