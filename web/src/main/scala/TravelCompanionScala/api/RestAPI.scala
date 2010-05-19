@@ -34,12 +34,6 @@ object RestAPI extends RestHelper {
     </BlogEntries>
   }
 
-  def is_valid_Entry_?(toCheck: BlogEntry): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
-  }
-
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
     println(e.id)
@@ -55,9 +49,9 @@ object RestAPI extends RestHelper {
   }
 
   serve {
-    case "api" :: "blog" :: AsBlogEntry(entry) :: _ XmlPut xml -> _ => saveBlogEntry(xml)
-    case "api" :: "blog" :: AsBlogEntry(entry) :: _ XmlGet _ => entry.toXml
-    //    case "api" :: "blog" :: Nil XmlPost xml -> _ => saveBlogEntry(xml)
-    case "api" :: "blog" :: Nil XmlGet _ => listEntries
+    case XmlPut("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
+    case XmlGet("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => entry.toXml
+    case XmlPost("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
+    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
   }
 }
