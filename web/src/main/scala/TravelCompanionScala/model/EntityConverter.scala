@@ -27,7 +27,7 @@ class EntityConverter(o: Object) {
         entry.id = toLong((elem \ "id" text))
         entry.title = (elem \ "title" text)
         entry.content = (elem \ "content" text)
-        entry.published = (elem \ "published" text).toBoolean
+        entry.published = toBoolean(elem \ "published" text)
         entry.tour = Model.find[Tour](classOf[Tour],toLong((elem \ "tour" text))).getOrElse(null)
         entry.owner = Model.find[Member](classOf[Member], toLong((elem \ "owner" text))).getOrElse(null)
 
@@ -35,6 +35,22 @@ class EntityConverter(o: Object) {
         entry.comments.addAll(Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> entry).findAll.toList)
 
         entry
+      }
+    }
+  }
+
+  def commentFromXml: Comment = {
+    o match {
+      case elem: Elem => {
+        val comment = new Comment
+        comment.id = toLong((elem \ "id" text))
+        comment.content = (elem \ "content" text)
+        comment.member = Model.find[Member](classOf[Member], toLong((elem \ "member" text))).getOrElse(null)
+        comment.blogEntry = Model.find[BlogEntry](classOf[BlogEntry],toLong((elem \ "blogEntry" text))).getOrElse(null)
+
+        comment.dateCreated = new Date()
+
+        comment
       }
     }
   }

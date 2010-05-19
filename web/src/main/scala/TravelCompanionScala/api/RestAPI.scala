@@ -46,9 +46,9 @@ object RestAPI extends RestHelper {
   }
 
   serve {
-    case XmlPut("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
+    //case XmlPut("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
     case XmlGet("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => entry.toXml
     case XmlPost("api" :: "blog" :: Nil, xml -> _) => saveBlogEntry(xml)
-    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
+//    case XmlGet("api" :: "blog" :: Nil, _) => listEntries
   }
 }
