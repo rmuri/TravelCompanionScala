@@ -46,7 +46,6 @@ object RestAPI extends RestHelper {
 
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
-    println("saveEntry")
     if (validator.is_valid_entity_?(e)) {
       val merged = Model.mergeAndFlush(e)
       BlogCache.cache ! EditEntry(merged)
@@ -65,13 +64,21 @@ object RestAPI extends RestHelper {
 
   def createComment(xml: Node, entry: BlogEntry) = {
     val c = xml.commentFromXml
+    c.blogEntry = entry
     if (validator.is_valid_entity_?(c)) {
-      val merged = Model.merge(entry)
-      merged.comments.add(c)
-      Model.mergeAndFlush(merged)
-      BlogCache.cache ! AddComment(merged)
-      c.toXml
+      val mergedComment = Model.mergeAndFlush(c)
+      val mergedEntry = Model.merge(entry)
+      Model.refresh(mergedEntry)
+      BlogCache.cache ! AddComment(mergedEntry)
+      mergedComment.toXml
     } else <error/>
+  }
+
+  def removeComment(c: Comment, e: BlogEntry) = {
+    val mergedc = Model.merge(c)
+    Model.removeAndFlush(mergedc)
+    BlogCache.cache ! DeleteComment(e)
+    mergedc.toXml
   }
 
   implicit def cvt: JxCvtPF[Object] = {
@@ -83,13 +90,16 @@ object RestAPI extends RestHelper {
 
   serve {
     // POST /api/blog creates new entry with xml data from request body
-    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
+    //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
 
     // PUT /api/blog/<valid id> updates the respective entry with xml data from request body
     //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
 
     // POST /api/blog/<valid id>/comment creates a new comment on the respective entry
-    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
+    //    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
+
+    // DELETE /api/blog/<valid id>/comment/<valid id> removes the comment with the given id
+    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ => removeComment(comment, entry)
   }
 
   serveJx {
