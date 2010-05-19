@@ -99,7 +99,7 @@ object RestAPI extends RestHelper {
     //    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
 
     // DELETE /api/blog/<valid id>/comment/<valid id> removes the comment with the given id
-    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ => removeComment(comment, entry)
+    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ if entry.comments.contains(comment) => removeComment(comment, entry)
   }
 
   serveJx {
@@ -113,6 +113,6 @@ object RestAPI extends RestHelper {
     case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
 
     // GET /api/blog/<valid id>/comment/<valid id> returns comment with given ID
-    case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil, _) => Full(comment)
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil, _) if entry.comments.contains(comment) => Full(comment)
   }
 }
