@@ -10,6 +10,7 @@ import net.liftweb.common.{Box, Empty, Full}
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
 import TravelCompanionScala.model.{validator, BlogEntry, Model}
 import scala.collection.JavaConversions._
+import TravelCompanionScala.controller._
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,8 +42,12 @@ object RestAPI extends RestHelper {
 
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
+    println(e.id)
+    println(e.title)
+    println(e.content)
     if (validator.is_valid_entity_?(e)) {
-      Model.mergeAndFlush(e)
+      val merged = Model.mergeAndFlush(e)
+      BlogCache.cache ! EditEntry(merged)
       <succesful>yes</succesful>
     } else {
       <succesful>no</succesful>
