@@ -10,6 +10,7 @@ import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
 import scala.collection.JavaConversions._
 import TravelCompanionScala.controller._
 import TravelCompanionScala.model.{Comment, validator, BlogEntry, Model}
+import net.liftweb.json.Xml
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,26 +66,25 @@ object RestAPI extends RestHelper {
   }
 
   implicit def cvt: JxCvtPF[Object] = {
-    case (JsonSelect, c: BlogEntry, _) => c.toJson
-    case (XmlSelect, c: BlogEntry, _) => c.toXml
-
-    case (JsonSelect, c: Comment, _) => c.toJson
-    case (XmlSelect, c: Comment, _) => c.toXml
-  }
-
-  serve {
-    // GET /api/blog lists all entries
-    case "api" :: "blog" :: Nil XmlGet _ => listEntries
-    // GET /api/blog/<valid id>/comment
-    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlGet _ => listComments(entry)
+    case (JsonSelect, n: Elem, _) => Xml.toJson(n)
+    case (XmlSelect, n: Elem, _) => n
+    case (JsonSelect, o: Object, _) => o.toJson
+    case (XmlSelect, o: Object, _) => o.toXml
   }
 
   serveJx {
+    // GET /api/blog lists all entries
+    case Get("api" :: "blog" :: Nil, _) => Full(listEntries)
+
+    // GET /api/blog/<valid id>/comment
+    case Get("api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil, _) => Full(listComments(entry))
 
     //    POST /api/blog creates new entry with xml data from request body
     //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
+
     //    GET /api/blog/<valid id> returns entry with given ID
     case Get("api" :: "blog" :: AsBlogEntry(entry) :: Nil, _) => Full(entry)
+
     //    PUT /api/blog/<valid id> updates the respective entry with xml data from request body
     //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
 
