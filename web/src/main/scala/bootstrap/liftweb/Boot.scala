@@ -15,17 +15,20 @@
  */
 package bootstrap.liftweb
 
-import _root_.net.liftweb.common.{Box}
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import net.liftweb.http._
 import net.liftweb.widgets.tablesorter.TableSorter
 import net.liftweb.widgets.autocomplete.AutoComplete
+import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
 import TravelCompanionScala.widget.Gauge
 import TravelCompanionScala.api.RestAPI
+import net.liftweb.common._
+import java.util.Locale
+import net.liftweb.util.Helpers
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -43,6 +46,7 @@ class Boot {
 
     ResourceServer.allow {
       case "css" :: _ => true
+      case "images" :: _ => true
     }
 
     LiftRules.dispatch.append(RestAPI)
@@ -107,6 +111,33 @@ class Boot {
     //      ParsePath(List("tour", action, id), _, _, _), _, _) =>
     //        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
     //    }
+
+    ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
+    def localeCalculator(request: Box[HTTPRequest]): Locale = {
+      request.flatMap(r => {
+        def localeCookie(in: String): HTTPCookie =
+          HTTPCookie("language", Full(in),
+            Empty, Empty, Full(2629743), Empty, Empty)
+        def localeFromString(in: String): Locale = {
+          val x = in.split("_").toList;
+          new Locale(x.head, x.last)
+        }
+        def calcLocale: Box[Locale] =
+          S.findCookie("language").map(
+            _.value.map(localeFromString)
+            ).openOr(Full(LiftRules.defaultLocaleCalculator(request)))
+        S.param("locale") match {
+          case Full(null) => calcLocale
+          case f@Full(selectedLocale) =>
+            S.addCookie(localeCookie(selectedLocale))
+            Helpers.tryo(localeFromString(selectedLocale))
+          case _ => calcLocale
+        }
+      }).openOr(Locale.getDefault())
+    }
+
+    LiftRules.localeCalculator = localeCalculator _
+
 
 
     //Widgets
