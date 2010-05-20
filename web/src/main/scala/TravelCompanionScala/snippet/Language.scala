@@ -18,7 +18,7 @@ import net.liftweb.http.{LiftRules, S, SHtml}
 
 class Language {
   val cookiename = "lang"
-  val languages: Map[String, String] = Map("de_DE" -> "classpath/images/de.png", "en_US" -> "classpath/images/en.png")
+  val languages: Map[String, String] = Map("de_DE" -> "/classpath/images/de.png", "en_US" -> "/classpath/images/en.png")
 
   def render(html: NodeSeq): NodeSeq = {
     languages.flatMap(m =>
