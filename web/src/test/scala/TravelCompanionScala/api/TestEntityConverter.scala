@@ -11,13 +11,6 @@ import scala.collection.JavaConversions._
 import model.{Member, Tour, Comment, BlogEntry}
 import xml.{Elem, Utility, NodeSeq}
 
-/**
- * Created by IntelliJ IDEA.
- * User: dhobi
- * Date: 09.04.2010
- * Time: 09:06:08
- * To change this template use File | Settings | File Templates.
- */
 
 class TestEntityConverter {
   var testEntry: BlogEntry = null
@@ -67,7 +60,7 @@ class TestEntityConverter {
     val c = new Comment
     c.id = 2501
     c.content = "The quick brown fox jumps over the lazy old dog."
-    c.member = null
+    c.member = new Member
     c.dateCreated = now
     c.blogEntry = testEntry
     testEntry.comments.add(c)
@@ -88,8 +81,8 @@ class TestEntityConverter {
   def fromXml() = {
     val e = getCorrectXml(testEntry).entryFromXml
     assertEquals(testEntry.id, e.id)
-    assertEquals(testEntry.title, e.title)
-    assertEquals(testEntry.content, e.content)
+    assertEquals(testEntry.title.trim, e.title.trim)
+    assertEquals(testEntry.content.trim, e.content.trim)
     //    assertEquals(testEntry.lastUpdated, e.lastUpdated)
     //    assertEquals(testEntry.tour, e.tour)
     //    assertEquals(testEntry.owner, e.owner)
