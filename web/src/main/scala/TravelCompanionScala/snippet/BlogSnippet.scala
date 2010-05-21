@@ -31,6 +31,13 @@ import TravelCompanionScala.controller._
 object blogEntryVar extends RequestVar[BlogEntry](new BlogEntry())
 object commentVar extends RequestVar[Comment](new Comment())
 
+object myJqRemove {
+  def apply(uid: String): JsCmd = new Remove(uid)
+}
+class Remove(uid: String) extends JsCmd {
+  def toJsCmd = "try{jQuery(" + ("#" + uid).encJs + ").remove();} catch (e) {}"
+}
+
 class BlogSnippet {
   def is_valid_Entry_?(toCheck: BlogEntry): Boolean = {
     val validationResult = validator.get.validate(toCheck)
@@ -140,15 +147,7 @@ class BlogSnippet {
       val e = Model.merge(entry)
       Model.removeAndFlush(e)
       BlogCache.cache ! DeleteEntry(e)
-      JqSetHtml(blogEntryDivId + entry.id, NodeSeq.Empty)
-      //      object myRemoveHtml {
-      //        def apply(uid: String): JsCmd =
-      //          JqJE.JqId(JE.Str(uid)) ~> JqJE.JqRemove
-      //      }
-      //      case class myJqRemove(id: String) extends JsCmd {
-      //        override def toJsCmd = "jQuery('#'+" + id + ").remove()"
-      //      }
-      //      myJqRemove(blogEntryDivId)
+      myJqRemove(blogEntryDivId + entry.id)
     }
 
     def listEntries(html: NodeSeq, entries: List[BlogEntry]): NodeSeq = {
