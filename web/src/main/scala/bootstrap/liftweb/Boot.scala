@@ -117,7 +117,7 @@ class Boot {
       request.flatMap(r => {
         def localeCookie(in: String): HTTPCookie =
           HTTPCookie("language", Full(in),
-            Empty, Empty, Full(2629743), Empty, Empty)
+            Empty, Full("/"), Full(2629743), Empty, Empty)
         def localeFromString(in: String): Locale = {
           val x = in.split("_").toList;
           new Locale(x.head, x.last)

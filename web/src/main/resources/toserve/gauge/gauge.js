@@ -1,7 +1,5 @@
 function Gauge() {
 	var _self = this;
-	var objImg = new Image();
-	var objImg2 = new Image();
 	var canvas;
 	var initvalue;
 	var finished = false;
@@ -10,10 +8,6 @@ function Gauge() {
 	this.initialize = function(value,canvasid) {
 		canvas = canvasid;
 		initvalue = value;
-
-		objImg2.src = "../classpath/gauge/arrow.png";
-
-		objImg.src = "../classpath/gauge/gauge.png";
 		objImg.onload  	= initCanvas;
 	}
 
