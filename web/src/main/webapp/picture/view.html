@@ -4,16 +4,24 @@
             <picture:name/>
         </h1>
         <pre><picture:description/></pre>
-        <h2>Details</h2>
+        <h2>
+            <lift:loc locid="details">Details</lift:loc>
+        </h2>
         <table class="view">
             <tr>
-                <td class="desc">Ersteller:</td>
+                <td class="desc">
+                    <lift:loc locid="creator">Ersteller</lift:loc>
+                    :
+                </td>
                 <td>
                     <picture:owner/>
                 </td>
             </tr>
             <tr>
-                <td class="desc">Bild:</td>
+                <td class="desc">
+                    <lift:loc locid="picture">Bild</lift:loc>
+                    :
+                </td>
                 <td>
                     <picture:image class="LimWidth"/>
                 </td>

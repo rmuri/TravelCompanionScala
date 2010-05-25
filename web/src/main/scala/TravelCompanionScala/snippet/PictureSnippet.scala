@@ -33,12 +33,6 @@ class PictureSnippet {
     S.redirectTo("/picture/list")
   }
 
-  def is_valid_Picture_?(toCheck: Picture): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
-  }
-
   var fileHolder: Box[FileParamHolder] = Empty
 
   def addPicture(html: NodeSeq): NodeSeq = {
@@ -75,17 +69,17 @@ class PictureSnippet {
           S.redirectTo("/picture/create")
         }
       }
-      if (is_valid_Picture_?(picture)) {
+      if (validator.is_valid_entity_?(picture)) {
         Model.mergeAndFlush(picture)
         S.redirectTo("/picture/list")
       }
     }
 
     val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    val tchoices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
+    val tchoices = List("" -> ("- " + S.?("none") + " -")) ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     val entries = Model.createNamedQuery[BlogEntry]("findEntriesByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    val echoices = List("" -> "- Keine -") ::: entries.map(entry => (entry.id.toString -> entry.title)).toList
+    val echoices = List("" -> ("- " + S.?("none") + " -")) ::: entries.map(entry => (entry.id.toString -> entry.title)).toList
 
     bind("picture", html,
       "name" -%> SHtml.text(currentPicture.name, currentPicture.name = _),
@@ -117,11 +111,11 @@ class PictureSnippet {
         var n: NodeSeq = NodeSeq.Empty
         if (picture.tour != null)
           n = n ++ bind("link", chooseTemplate("choose", "belongsTo", html),
-            "title" -> "Tour:",
+            "title" -> Text(S.?("tour")),
             "link" -> SHtml.link("/tour/view", () => tourVar(picture.tour), Text(picture.tour.name)))
         if (picture.blogEntry != null)
           n = n ++ bind("link", chooseTemplate("choose", "belongsTo", html),
-            "title" -> "Blog Eintrag:",
+            "title" -> Text(S.?("blog.entry")),
             "link" -> SHtml.link("/blog/view", () => blogEntryVar(picture.blogEntry), Text(picture.blogEntry.title)))
         n
       },

@@ -1,14 +1,29 @@
 <lift:surround with="default" at="content">
     <lift:UsrMgtHelper:showIfAuthenticated>
         <div class="content">
-            <h1>Ihre Bilder</h1>
+            <h1>
+                <lift:loc locid="picture.yours">Ihre Bilder</lift:loc>
+            </h1>
 
-            <p>Nachfolgend erhalten Sie eine Liste der von Ihnen hochgeladenen Bilder:</p>
+            <p>
+                <lift:loc locid="picture.yours.desc">Nachfolgend erhalten Sie eine Liste der von Ihnen hochgeladenen
+                    Bilder
+                </lift:loc>
+                :
+            </p>
             <table class="list">
-                <th class="name">Bild</th>
-                <th>Beschreibung</th>
-                <th class="name">Geh&ouml;rt zu</th>
-                <th class="options">Optionen</th>
+                <th class="name">
+                    <lift:loc locid="picture">Bild</lift:loc>
+                </th>
+                <th>
+                    <lift:loc locid="description">Beschreibung</lift:loc>
+                </th>
+                <th class="name">
+                    <lift:loc locid="belongsTo">Geh&ouml;rt zu</lift:loc>
+                </th>
+                <th class="options">
+                    <lift:loc locid="operations">Operationen</lift:loc>
+                </th>
                 <lift:PictureSnippet.listOwnPictures>
                     <tr>
                         <td>
@@ -34,19 +49,36 @@
                     </tr>
                 </lift:PictureSnippet.listOwnPictures>
             </table>
-            <lift:Menu.item name="picture_create" a:class="button">Bild Hinzuf&uuml;gen</lift:Menu.item>
+            <lift:Menu.item name="picture_create" a:class="button">
+                <lift:loc locid="picture.addPicture">Bild Hinzuf&uuml;gen</lift:loc>
+            </lift:Menu.item>
         </div>
     </lift:UsrMgtHelper:showIfAuthenticated>
 
     <div class="content">
-        <h1>Bilder anderer Mitglieder</h1>
+        <h1>
+            <lift:loc locid="picture.others">Bilder anderer Mitglieder</lift:loc>
+        </h1>
 
-        <p>Nachfolgend erhalten Sie eine Anzeige der Bilder von anderen Mitgliedern</p>
+        <p>
+            <lift:loc locid="picture.others.desc">Nachfolgend erhalten Sie eine Anzeige der Bilder von anderen
+                Mitgliedern
+            </lift:loc>
+            :
+        </p>
         <table class="list">
-            <th class="name">Bild</th>
-            <th>Beschreibung</th>
-            <th class="name">Besitzer</th>
-            <th class="name">Geh&ouml;rt zu</th>
+            <th class="name">
+                <lift:loc locid="picture">Bild</lift:loc>
+            </th>
+            <th>
+                <lift:loc locid="description">Beschreibung</lift:loc>
+            </th>
+            <th class="name">
+                <lift:loc locid="owner">Besitzer</lift:loc>
+            </th>
+            <th class="name">
+                <lift:loc locid="belongsTo">Geh&ouml;rt zu</lift:loc>
+            </th>
             <lift:PictureSnippet.listOtherPictures>
                 <tr>
                     <td>

@@ -42,7 +42,7 @@ class Boot {
 
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
-    LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: Nil
+    LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: "Picture" :: Nil
 
     ResourceServer.allow {
       case "css" :: _ => true

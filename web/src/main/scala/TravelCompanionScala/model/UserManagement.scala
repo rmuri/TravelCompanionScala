@@ -186,7 +186,9 @@ object UserManagement {
               </table>
               <div class="bottomnavi">
                   <user:submit/>
-                <a href="/index">Abbrechen</a>
+                <a href="/index">
+                  {S.?("cancel")}
+                </a>
               </div>
             </form>)
   }
@@ -250,7 +252,7 @@ object UserManagement {
               </label>
             </td>
             <td>
-                <user:username id="username"/><span id="checkUsername"></span>
+                <user:username id="username"/> <span id="checkUsername"></span>
             </td>
           </tr>
 
@@ -337,7 +339,6 @@ object UserManagement {
   def signup() =
     {
       def testSignup() {
-        println("entered")
         val validationResult = validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
           try {
@@ -358,16 +359,16 @@ object UserManagement {
       def checkUsername(username: String) = {
 
         current.name = username
-        
+
         val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name").setParams("name" -> username).findOne
-        var message: NodeSeq =  <img src="../images/tick.png" alt="Username ok" title="Username ok" />
-        var inputclass : String = ""
+        var message: NodeSeq = <img src="../images/tick.png" alt="Username ok" title="Username ok"/>
+        var inputclass: String = ""
         if (tryUser.isDefined) {
-          message = <img src="../images/cross.png" alt="Username exists" title="Username exists" />
+          message = <img src="../images/cross.png" alt="Username exists" title="Username exists"/>
           inputclass = "inputerror"
         }
         JsCmds.SetHtml("checkUsername", message) &
-                JsRaw("$('#username').attr('class', '"+inputclass+"');").cmd &
+                JsRaw("$('#username').attr('class', '" + inputclass + "');").cmd &
                 JsCmds.JsHideId("lift__noticesContainer__")
       }
 
@@ -399,8 +400,8 @@ object UserManagement {
             curUsr.set(Full(tempUserVar.is))
             S.redirectTo("/")
           } catch {
-            case ee: EntityExistsException => S.error("That user already exists.")
-            case pe: PersistenceException => S.error("Error adding user")
+            case ee: EntityExistsException => S.error(S.?("userexists"))
+            case pe: PersistenceException => S.error(S.?("useradderr"))
           }
         } else {
           validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
