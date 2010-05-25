@@ -16,31 +16,37 @@
 
         <style>
             a.dp-choose-date {
-                float: left;
-                width: 16px;
-                height: 16px;
-                padding: 0;
-                margin: 5px 3px 0;
-                display: block;
-                text-indent: -2000px;
-                overflow: hidden;
-                background: url(/scripts/calendar.png) no-repeat;
+            float: left;
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            margin: 5px 3px 0;
+            display: block;
+            text-indent: -2000px;
+            overflow: hidden;
+            background: url(/scripts/calendar.png) no-repeat;
             }
 
             a.dp-choose-date.dp-disabled {
-                background-position: 0 -20px;
-                cursor: default;
+            background-position: 0 -20px;
+            cursor: default;
             }
 
             input.dp-applied {
-                width: 140px;
-                float: left;
+            width: 140px;
+            float: left;
             }
         </style>
     </head>
     <div class="content">
-        <p>F&uuml;llen Sie das folgende Formular aus, um einen neuen Reiseabschnitt zu erstellen (mit * markierte Felder
-            sind obligatorisch):</p>
+        <p>
+            <lift:loc locid="tour.stage.editForm">F&uuml;llen Sie das folgende Formular aus, um einen neuen
+                Reiseabschnitt zu erstellen
+            </lift:loc>
+            (
+            <lift:loc locid="mandatoryFields">mit * markierte Felder sind obligatorisch</lift:loc>
+            ):
+        </p>
         <lift:Msgs>
             <lift:error_msg/>
         </lift:Msgs>
@@ -48,25 +54,33 @@
             <table class="form">
                 <tbody>
                 <tr>
-                    <td class="desc"><label for="title">Titel*</label></td>
+                    <td class="desc"><label for="title">
+                        <lift:loc locid="title">Titel</lift:loc>
+                        *</label></td>
                     <td>
                         <stage:title/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="destination">Ziel*</label></td>
+                    <td class="desc"><label for="destination">
+                        <lift:loc locid="tour.stage.destination">Ziel</lift:loc>
+                        *</label></td>
                     <td>
                         <stage:destination/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tour"><label for="description">Beschreibung</label></td>
+                    <td class="tour"><label for="description">
+                        <lift:loc locid="description">Beschreibung</lift:loc>
+                    </label></td>
                     <td>
                         <stage:description/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tour"><label for="dateOf">Startdatum</label></td>
+                    <td class="tour"><label for="dateOf">
+                        <lift:loc locid="tour.stage.startdate">Startdatum</lift:loc>
+                    </label></td>
                     <td>
                         <stage:dateOf id="startdate"/>
                     </td>
@@ -75,14 +89,16 @@
             </table>
             <div class="bottomnavi">
                 <stage:submit/>
-                <lift:Menu.item name="tour" a:class="button">Abbrechen</lift:Menu.item>
+                <lift:Menu.item name="tour" a:class="button">
+                    <lift:loc locid="cancel">Abbrechen</lift:loc>
+                </lift:Menu.item>
             </div>
         </lift:StageSnippet:editStage>
     </div>
 
     <script type="text/javascript">
         $(function() {
-            $('#startdate').datepicker({dateFormat:'dd.mm.yy'});
+        $('#startdate').datepicker({dateFormat:'dd.mm.yy'});
         });
     </script>
 </lift:surround>

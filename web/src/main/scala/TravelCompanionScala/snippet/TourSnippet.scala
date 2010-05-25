@@ -4,7 +4,7 @@ package snippet {
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
-import common.{Full, Box, Empty}
+import common.{Box}
 import http._
 import S._
 import util._
@@ -51,8 +51,8 @@ class TourSnippet {
 
   // Utility methods for processing a submitted form
   def is_valid_Tour_?(toCheck: Tour): Boolean =
-    List((if (toCheck.name.length == 0) {S.error("You must provide a name"); false} else true),
-      (if (toCheck.owner == null) {S.error("You must provide a tour owner"); false} else true)).forall(_ == true)
+    List((if (toCheck.name.length == 0) {S.error(S.?("tour.noName")); false} else true),
+      (if (toCheck.owner == null) {S.error(S.?("tour.noOwner")); false} else true)).forall(_ == true)
 
   def editTour(html: NodeSeq): NodeSeq = {
     def doEdit() = {

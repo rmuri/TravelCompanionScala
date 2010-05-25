@@ -1,7 +1,14 @@
 <lift:surround with="default" at="content">
     <div class="content">
-        <p>F&uuml;llen Sie das folgende Formular aus, um den Blogeintrag zu editieren (mit * markierte Felder sind
-            obligatorisch):</p>
+        <p>
+            <lift:loc locid="mykey">F&uuml;llen Sie das folgende Formular aus, um den Blogeintrag zu editieren
+            </lift:loc>
+            (
+            <lift:loc locid="mandatoryFields">mit * markierte Felder sind
+                obligatorisch
+            </lift:loc>
+            ):
+        </p>
         <lift:Msgs>
             <lift:error_msg/>
         </lift:Msgs>
@@ -9,19 +16,25 @@
             <table class="form">
                 <tbody>
                 <tr>
-                    <td class="desc"><label for="title">Titel*</label></td>
+                    <td class="desc"><label for="title">
+                        <lift:loc locid="title">Titel</lift:loc>
+                        *</label></td>
                     <td>
                         <entry:title/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="content">Blogeintrag*</label></td>
+                    <td class="desc"><label for="content">
+                        <lift:loc locid="blog.entry">Blogeintrag</lift:loc>
+                        *</label></td>
                     <td>
                         <entry:content/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tour"><label for="tour">Reise</label></td>
+                    <td class="tour"><label for="tour">
+                        <lift:loc locid="tour">Reise</lift:loc>
+                    </label></td>
                     <td>
                         <entry:tour/>
                     </td>
@@ -30,7 +43,9 @@
             </table>
             <div class="bottomnavi">
                 <entry:submit/>
-                <lift:Menu.item name="blog" a:class="button">Abbrechen</lift:Menu.item>
+                <lift:Menu.item name="blog" a:class="button">
+                    <lift:loc locid="cancel">Abbrechen</lift:loc>
+                </lift:Menu.item>
             </div>
         </lift:BlogSnippet:editBlogEntry>
     </div>

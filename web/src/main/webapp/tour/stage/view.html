@@ -35,16 +35,16 @@
             <h2>Details</h2>
             <table class="view">
                 <tr>
-                    <td class="desc">Startdatum</td>
+                    <td class="desc"><lift:loc locid="tour.stage.startdate">Startdatum</lift:loc></td>
                     <td><stage:date /></td>
                 </tr>
                 <tr>
-                    <td class="desc">Zielort</td>
+                    <td class="desc"><lift:loc locid="tour.stage.destination">Zielort</lift:loc></td>
                     <td><stage:destination /></td>
                 </tr>
 
                 <tr>
-                    <td class="desc">Auf Karte</td>
+                    <td class="desc"><lift:loc locid="tour.stage.onMap">Auf Karte</lift:loc></td>
                     <td>
 
                         <div class='' style='width:100%;'>
@@ -57,7 +57,7 @@
 
             </table>
             <div class="bottomnavi">
-                <a href="javascript:;" onclick="history.back()">Zur&uuml;ck</a>
+                <a href="javascript:;" onclick="history.back()"><lift:loc locid="back">Zur&uuml;ck</lift:loc></a>
             </div>
         </lift:StageSnippet:viewStage>
     </div>

@@ -1,7 +1,14 @@
 <lift:surround with="default" at="content">
-    <h1>Ihr Blogeintrag</h1>
+    <h1>
+        <lift:loc locid="blog.your">Ihr Blogeintrag</lift:loc>
+    </h1>
 
-    <p>Nachfolgend erhalten Sie Ihren Blogeintrag sowie eine Liste der dazu erstellten Kommentare:</p>
+    <p>
+        <lift:loc locid="blog.your.desc">Nachfolgend erhalten Sie Ihren Blogeintrag sowie eine Liste der dazu erstellten
+            Kommentare
+        </lift:loc>
+        :
+    </p>
     <lift:BlogSnippet:showEntry>
         <table class="blog">
             <tbody>
@@ -27,16 +34,18 @@
     <table class="blog">
         <tbody>
         <tr>
-            <th>Kommentare</th>
+            <th>
+                <lift:loc locid="blog.comments">Kommentare</lift:loc>
+            </th>
         </tr>
         <lift:BlogSnippet:showComments>
 
             <tr>
                 <td class="header">
                     <comment:member/>
-                    hat am
+                    <lift:loc locid="wroteOn">schrieb am</lift:loc>
                     <comment:dateCreated/>
-                    geschrieben:
+                    :
                 </td>
             </tr>
             <tr>
@@ -66,7 +75,9 @@
             <table class="form">
                 <tr>
                     <td class="desc">
-                        <label for="content">Ihr Kommentar:*</label>
+                        <label for="content">
+                            <lift:loc locid="mykey">Ihr Kommentar</lift:loc>
+                            :*</label>
                     </td>
                 </tr>
                 <tr>
@@ -77,7 +88,9 @@
             </table>
             <div class="bottomnavi">
                 <comment:submit/>
-                <lift:Menu.item name="blog" a:class="button">Zur&uuml;ck</lift:Menu.item>
+                <lift:Menu.item name="blog" a:class="button">
+                    <lift:loc locid="back">Zur&uuml;ck</lift:loc>
+                </lift:Menu.item>
             </div>
         </lift:BlogSnippet:addComment>
 

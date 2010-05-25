@@ -39,17 +39,6 @@ class Remove(uid: String) extends JsCmd {
 }
 
 class BlogSnippet {
-  def is_valid_Entry_?(toCheck: BlogEntry): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
-  }
-
-  def is_valid_Comment_?(toCheck: Comment): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
-  }
 
   /* Blog as single webpage Application */
 
@@ -77,7 +66,7 @@ class BlogSnippet {
 
     def doEditBlogEntry(entry: BlogEntry): JsCmd = {
       val save = () => {
-        if (is_valid_Entry_?(entry)) {
+        if (validator.is_valid_entity_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
           BlogCache.cache ! EditEntry(merged)
           JqSetHtml(blogEntryDivId + entry.id, listEntries(entryTemplate, List(merged)))
@@ -117,7 +106,7 @@ class BlogSnippet {
 
       def renderNewCommentForm(): NodeSeq = {
         def doSaveComment(c: Comment): JsCmd = {
-          if (is_valid_Comment_?(c)) {
+          if (validator.is_valid_entity_?(c)) {
             val merged = Model.merge(entry)
             merged.comments.add(c)
             Model.mergeAndFlush(merged)
@@ -176,7 +165,7 @@ class BlogSnippet {
 
     def getEntryForm(e: BlogEntry, html: NodeSeq, submitFunc: () => JsCmd, cancelFunc: () => JsCmd): NodeSeq = {
       val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-      val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
+      val choices = List("" -> ("- " + S.?("none") + " -")) ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
       bind("entry", SHtml.ajaxForm(html),
         "error" -> getErrorDiv(entryErrorDivId),
         "title" -> SHtml.text(e.title, e.title = _),
@@ -191,7 +180,7 @@ class BlogSnippet {
 
     def doNewEntry() = {
       def save(entry: BlogEntry): JsCmd = {
-        if (is_valid_Entry_?(entry)) {
+        if (validator.is_valid_entity_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
           BlogCache.cache ! AddEntry(merged)
           Hide(entryErrorDivId) &
@@ -246,7 +235,7 @@ class BlogSnippet {
 
   def editBlogEntry(html: NodeSeq): NodeSeq = {
     def doEdit() = {
-      if (is_valid_Entry_?(blogEntry)) {
+      if (validator.is_valid_entity_?(blogEntry)) {
         val newEntry = Model.mergeAndFlush(blogEntry)
         BlogCache.cache ! AddEntry(newEntry)
         S.redirectTo("/blog/list")
@@ -259,7 +248,7 @@ class BlogSnippet {
     currentEntry.lastUpdated = TimeHelpers.now
 
     val tours = Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList
-    val choices = List("" -> "- Keine -") ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
+    val choices = List("" -> ("- " + S.?("none") + " -")) ::: tours.map(tour => (tour.id.toString -> tour.name)).toList
 
     bind("entry", html,
       "title" -> SHtml.text(currentEntry.title, currentEntry.title = _),
@@ -312,7 +301,7 @@ class BlogSnippet {
 
   def addComment(html: NodeSeq): NodeSeq = {
     def doAdd(c: Comment) = {
-      if (is_valid_Comment_?(c))
+      if (validator.is_valid_entity_?(c))
         Model.mergeAndFlush(c)
     }
 

@@ -3,19 +3,17 @@ package TravelCompanionScala.snippet
 import _root_.scala.xml.{NodeSeq, Text}
 
 import _root_.net.liftweb._
-import common.{Box, Empty}
+import common.{Box}
 import http._
 
 import js.JsCmds._
 import js.JE.{JsRaw, JsArray}
 import js.JsCmds.JsCrVar
-import js.{JsObj, JsExp, JE, JsCmd}
+import js.{JsObj, JE, JsCmd}
 import S._
 import util._
 import Helpers._
 import JE._
-import scala.collection.JavaConversions._
-
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import widgets.autocomplete.AutoComplete
@@ -34,19 +32,13 @@ object stageVar extends RequestVar[Stage](new Stage())
 class StageSnippet {
   def stage = stageVar.is
 
-  def is_valid_Stage_?(toCheck: Stage): Boolean = {
-    val validationResult = validator.get.validate(toCheck)
-    validationResult.foreach((e) => S.error(e.getPropertyPath + " " + e.getMessage))
-    validationResult.isEmpty
-  }
-
   def editStage(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val currentStage = stage
     stage.tour = tourVar.is
 
     def doEdit() = {
-      if (is_valid_Stage_?(stage)) {
+      if (validator.is_valid_entity_?(stage)) {
         Model.mergeAndFlush(stage)
         val currentTour = tourVar.is
         S.redirectTo("/tour/view", () => tourVar(currentTour))
@@ -76,7 +68,7 @@ class StageSnippet {
       "destination" -> AutoComplete(currentStage.destination.name, (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", " + loc.countryname)}, s => setLocation(s, currentStage)),
       "description" -> SHtml.textarea(currentStage.description, currentStage.description = _),
       "dateOf" -%> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)),
-      "submit" -> SHtml.submit("Speichern", () => {stageVar(currentStage); tourVar(currentTour); doEdit}))
+      "submit" -> SHtml.submit(S.?("save"), () => {stageVar(currentStage); tourVar(currentTour); doEdit}))
   }
 
   def viewStage(html: NodeSeq): NodeSeq = {

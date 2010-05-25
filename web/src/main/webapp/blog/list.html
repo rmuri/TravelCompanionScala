@@ -89,16 +89,16 @@
                         <tbody>
                         <tr>
                             <th>
-                                <lift:loc locid="mykey">Kommentare</lift:loc>
+                                <lift:loc locid="blog.comments">Kommentare</lift:loc>
                             </th>
                         </tr>
                         <blog:comment>
                             <tr>
                                 <td class="header">
                                     <comment:member/>
-                                    hat am
+                                    <lift:loc locid="wroteOn">schrieb am</lift:loc>
                                     <comment:dateCreated/>
-                                    geschrieben:
+                                    :
                                 </td>
                             </tr>
                             <tr>
@@ -126,7 +126,9 @@
                         <table class="form">
                             <tr>
                                 <td class="desc">
-                                    <label for="content">Ihr Kommentar:*</label>
+                                    <label for="content">
+                                        <lift:loc locid="blog.yourComment">Ihr Kommentar</lift:loc>
+                                        :*</label>
                                 </td>
                             </tr>
                             <tr>
@@ -147,11 +149,12 @@
 </lift:UsrMgtHelper:showIfAuthenticated>
 <div class="content">
     <h1>
-        <lift:loc locid="mykey">Eingetragene Blogeintr&auml;ge</lift:loc>
+        <lift:loc locid="blog.others">Eingetragene Blogeintr&auml;ge</lift:loc>
     </h1>
 
     <p>
-        <lift:loc locid="mykey">Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern</lift:loc>
+        <lift:loc locid="blog.others.desc">Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern
+        </lift:loc>
         :
     </p>
 
@@ -160,13 +163,17 @@
             <thead>
             <tr>
                 <th>
-                    <lift:loc locid="title">Titelt</lift:loc>
+                    <lift:loc locid="title">Titel</lift:loc>
                 </th>
-                <th>Vorschau</th>
+                <th>
+                    <lift:loc locid="preview">Vorschau</lift:loc>
+                </th>
                 <th>
                     <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>
                 </th>
-                <th>Autor</th>
+                <th>
+                    <lift:loc locid="creator">Ersteller</lift:loc>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -217,15 +224,17 @@
                 <table xmlns="http://www.w3.org/1999/xhtml" class="blog">
                     <tbody>
                     <tr>
-                        <th>Kommentare</th>
+                        <th>
+                            <lift:loc locid="blog.comments">Kommentare</lift:loc>
+                        </th>
                     </tr>
                     <comment:list>
                         <tr>
                             <td class="header">
                                 <c:member/>
-                                hat am
+                                <lift:loc locid="wroteOn">schrieb am</lift:loc>
                                 <c:dateCreated/>
-                                geschrieben:
+                                :
                             </td>
                         </tr>
                         <tr>
