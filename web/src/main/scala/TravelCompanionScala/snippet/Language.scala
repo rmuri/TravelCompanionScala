@@ -27,6 +27,4 @@ class Language {
 
   }
 
-  private def defineLoc(loc: Locale) = S.addCookie(HTTPCookie(cookiename, loc.toString))
-
 }
