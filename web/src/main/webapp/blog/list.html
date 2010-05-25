@@ -1,9 +1,14 @@
 <lift:surround with="default" at="content">
 <lift:UsrMgtHelper:showIfAuthenticated>
     <div class="content">
-        <h1>Ihre Blogeintr&auml;ge</h1>
+        <h1>
+            <lift:loc locid="blog.yours">Ihre Blogeintr&auml;ge</lift:loc>
+        </h1>
 
-        <p>Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge:</p>
+        <p>
+            <lift:loc locid="blog.yours.desc">Nachfolgend erhalten Sie eine Liste der von Ihnen erstellten Blogeintr&auml;ge</lift:loc>
+            :
+        </p>
         <lift:BlogSnippet>
             <ajax:entriesList/>
             <ajax:newEntry/>
@@ -49,19 +54,25 @@
                     <table class="form">
                         <tbody>
                         <tr>
-                            <td class="desc"><label for="title">Titel*</label></td>
+                            <td class="desc"><label for="title">
+                                <lift:loc locid="title">Titel</lift:loc>
+                                *</label></td>
                             <td>
                                 <entry:title/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="desc"><label for="content">Blogeintrag*</label></td>
+                            <td class="desc"><label for="content">
+                                <lift:loc locid="blog.entry">Blogeintrag</lift:loc>
+                                *</label></td>
                             <td>
                                 <entry:content/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="tour"><label for="tour">Reise</label></td>
+                            <td class="tour"><label for="tour">
+                                <lift:loc locid="tour">Reise</lift:loc>
+                            </label></td>
                             <td>
                                 <entry:tour/>
                             </td>
@@ -77,7 +88,9 @@
                     <table class="blog">
                         <tbody>
                         <tr>
-                            <th>Kommentare</th>
+                            <th>
+                                <lift:loc locid="mykey">Kommentare</lift:loc>
+                            </th>
                         </tr>
                         <blog:comment>
                             <tr>
@@ -133,17 +146,26 @@
     </div>
 </lift:UsrMgtHelper:showIfAuthenticated>
 <div class="content">
-    <h1>Eingetragene Blogeintr&auml;ge</h1>
+    <h1>
+        <lift:loc locid="mykey">Eingetragene Blogeintr&auml;ge</lift:loc>
+    </h1>
 
-    <p>Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern:</p>
+    <p>
+        <lift:loc locid="mykey">Nachfolgend erhalten Sie die Anzeige der Blogs von beliebigen Mitgliedern</lift:loc>
+        :
+    </p>
 
     <lift:comet type="DynamicBlogViews" name="Other">
         <table class="blog">
             <thead>
             <tr>
-                <th>Titel</th>
+                <th>
+                    <lift:loc locid="title">Titelt</lift:loc>
+                </th>
                 <th>Vorschau</th>
-                <th>Letzte Aktualisierung</th>
+                <th>
+                    <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>
+                </th>
                 <th>Autor</th>
             </tr>
             </thead>
@@ -198,19 +220,19 @@
                         <th>Kommentare</th>
                     </tr>
                     <comment:list>
-                    <tr>
-                        <td class="header">
-                            <c:member/>
-                            hat am
-                            <c:dateCreated />
-                            geschrieben:
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <c:content/>
-                            <br/></td>
-                    </tr>
+                        <tr>
+                            <td class="header">
+                                <c:member/>
+                                hat am
+                                <c:dateCreated/>
+                                geschrieben:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <c:content/>
+                                <br/></td>
+                        </tr>
                     </comment:list>
                     </tbody>
                 </table>

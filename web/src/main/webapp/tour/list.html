@@ -1,16 +1,29 @@
 <lift:surround with="default" at="content">
     <lift:UsrMgtHelper.showIfAuthenticated>
         <div class="content">
-            <h1>Ihre Reisen</h1>
+            <h1>
+                <lift:loc locid="tour.yours">Ihre Reisen</lift:loc>
+            </h1>
 
-            <p>Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen Reisen:</p>
+            <p>
+                <lift:loc locid="tour.yours.desc">Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen
+                    Reisen
+                </lift:loc>
+                :
+            </p>
             <lift:TableSorter for="listtours"/>
             <table class="tablesorter list" id="listtours">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Operations</th>
+                    <th>
+                        <lift:loc locid="name">Name</lift:loc>
+                    </th>
+                    <th>
+                        <lift:loc locid="description">Beschreibung</lift:loc>
+                    </th>
+                    <th>
+                        <lift:loc locid="operations">Operationen</lift:loc>
+                    </th>
                 </tr>
                 </thead>
 
@@ -35,22 +48,37 @@
                 </tbody>
             </table>
 
-            <lift:Menu.item name="tour_edit" a:class="button">Reise hinzuf&uuml;gen</lift:Menu.item>
+            <lift:Menu.item name="tour_edit" a:class="button">
+                <lift:loc locid="tour.add">Reise hinzuf&uuml;gen</lift:loc>
+            </lift:Menu.item>
 
         </div>
     </lift:UsrMgtHelper.showIfAuthenticated>
 
     <div class="content">
-        <h1>Reisen anderer Mitglieder</h1>
+        <h1>
+            <lift:loc locid="tour.others">Reisen anderer Mitglieder</lift:loc>
+        </h1>
 
-        <p>Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern eingetragenen Reisen:</p>
+        <p>
+            <lift:loc locid="tour.others.desc">Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern
+                eingetragenen Reisen
+            </lift:loc>
+            :
+        </p>
         <lift:TableSorter for="listtoursothers"/>
-            <table class="tablesorter list" id="listtoursothers">
+        <table class="tablesorter list" id="listtoursothers">
             <thead>
             <tr>
-                <th class="name">Name</th>
-                <th>Description</th>
-                <th class="name">Creator</th>
+                <th class="name">
+                    <lift:loc locid="name">Name</lift:loc>
+                </th>
+                <th>
+                    <lift:loc locid="description">Beschreibung</lift:loc>
+                </th>
+                <th class="creator">
+                    <lift:loc locid="creator">Ersteller</lift:loc>
+                </th>
             </tr>
             </thead>
 

@@ -12,7 +12,7 @@
 <body>
 <div class="body">
     <div class="logo">TravelCompanionScala</div>
-    <div class="version">Version: 0.1 | Letzte Aktualisierung: 29.04.2010</div>
+    <div class="version">Version: 0.1 | <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>: 22.05.2010</div>
     <div class="topnavi">
            <lift:Menu.group group="main">
             <menu:bind/>
@@ -22,7 +22,7 @@
     <div class="login">
 
         <lift:UsrMgtHelper.showIfAuthenticated>
-        <span>Willkommen, <lift:UsrMgtHelper.currentUser>
+        <span><lift:loc locid="welcome">Willkommen</lift:loc>, <lift:UsrMgtHelper.currentUser>
             <b><user:name/></b>
         </lift:UsrMgtHelper.currentUser>
         </span>

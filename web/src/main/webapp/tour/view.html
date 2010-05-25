@@ -42,12 +42,17 @@
             </p>
 
             <table class="list">
-                <th class="startdate">Start</th>
-                <th class="name">Reiseabschnitt</th>
-                <th class="startdate">Zielort</th>
-                <th>Beschreibung</th>
+                <th class="startdate">
+                    <lift:loc locid="tour.start">Start</lift:loc>
+                </th>
+                <th class="name">
+                    <lift:loc locid="tour.stage">Reiseabschnitt</lift:loc>
+                </th>
+                <th><lift:loc locid="description">Beschreibung</lift:loc></th>
                 <lift:UsrMgtHelper.showIfTourOwner>
-                    <th class="options">Optionen</th>
+                    <th class="options">
+                        <lift:loc locid="options">Optionen</lift:loc>
+                    </th>
                 </lift:UsrMgtHelper.showIfTourOwner>
                 <lift:StageSnippet.showStagesFromTour>
                     <tr>
@@ -84,7 +89,9 @@
         </lift:TourSnippet.showTour>
 
         <div class="content">
-            <h2>Zugeh&ouml;rige Blogeintr&auml;ge</h2>
+            <h2>
+                <lift:loc locid="tour.blogEntries">Zugeh&ouml;rige Blogeintr&auml;ge</lift:loc>
+            </h2>
             <lift:BlogSnippet.showBlogEntriesFromTour>
                 <table class="blog">
                     <tr>
@@ -120,15 +127,23 @@
         </div>
 
         <div class="content">
-            <h2>Distanzmesser</h2>
+            <h2>
+                <lift:loc locid="tour.gauge">Distanzmesser</lift:loc>
+            </h2>
             <lift:TravelDistance/>
         </div>
 
         <div class="content">
-            <h2>Zugeh&ouml;rige Bilder</h2>
+            <h2>
+                <lift:loc locid="tour.pictures">Zugeh&ouml;rige Bilder</lift:loc>
+            </h2>
             <table class="list">
-                <th class="name">Bild</th>
-                <th>Beschreibung</th>
+                <th class="name">
+                    <lift:loc locid="picture">Bilder</lift:loc>
+                </th>
+                <th>
+                    <lift:loc locid="description">Beschreibung</lift:loc>
+                </th>
                 <lift:PictureSnippet.showPicturesFromTour>
                     <tr>
                         <td>

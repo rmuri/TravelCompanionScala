@@ -1,21 +1,30 @@
 <lift:surround with="default" at="content">
     <div class="content">
-        <p>F&uuml;llen Sie das folgende Formular aus, um eine neue Reise zu erstellen oder eine bestehende zu editieren
-            (mit
-            * markierte Felder sind obligatorisch):</p>
+        <p>
+            <lift:loc locid="tour.editForm">F&uuml;llen Sie das folgende Formular aus, um eine neue Reise zu erstellen
+                oder eine bestehende zu editieren
+            </lift:loc>
+            (
+            <lift:loc locid="mandatoryFields">mit * markierte Felder sind obligatorisch</lift:loc>
+            ):
+        </p>
         <lift:Msgs>
             <lift:error_msg/>
         </lift:Msgs>
         <lift:TourSnippet.editTour form="POST">
             <table class="form">
                 <tr>
-                    <td class="desc"><label for="name">Titel*</label></td>
+                    <td class="desc"><label for="name">
+                        <lift:loc locid="title">Titel</lift:loc>
+                        *</label></td>
                     <td>
                         <tour:name/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="desciption">Beschreibung</label></td>
+                    <td class="desc"><label for="desciption">
+                        <lift:loc locid="description">Beschreibung</lift:loc>
+                    </label></td>
                     <td>
                         <tour:description/>
                     </td>
@@ -24,7 +33,9 @@
 
             <div class="bottomnavi">
                 <tour:submit/>
-                <lift:Menu.item name="tour" a:class="button">Abbrechen</lift:Menu.item>
+                <lift:Menu.item name="tour" a:class="button">
+                    <lift:loc locid="cancel">Abbrechen</lift:loc>
+                </lift:Menu.item>
             </div>
 
         </lift:TourSnippet.editTour>
