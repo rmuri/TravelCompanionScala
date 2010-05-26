@@ -24,11 +24,12 @@ import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
+import TravelCompanionScala.controller.ReWriter
 import TravelCompanionScala.widget.Gauge
 import TravelCompanionScala.api.RestAPI
 import net.liftweb.common._
 import java.util.Locale
-import net.liftweb.util.Helpers
+import net.liftweb.util.{NamedPF, Helpers}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -106,11 +107,21 @@ class Boot {
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
-    //    LiftRules.rewrite.append {
-    //      case RewriteRequest(
-    //      ParsePath(List("tour", action, id), _, _, _), _, _) =>
-    //        RewriteResponse("tour" :: action :: Nil, Map("id" -> id))
-    //    }
+
+    object AsTour {
+      def unapply(name: String): Option[Tour] = {
+        Model.createNamedQuery("findTourByName", "name" -> name).findOne
+      }
+    }
+
+    LiftRules.statelessRewrite.prepend(NamedPF("TourRewrite") {
+      case RewriteRequest(
+      ParsePath("tour" :: "view" :: AsTour(tour) :: Nil, _, _, _), _, _) => {
+        tourVar(tour)
+        RewriteResponse("tour" :: "view" :: Nil)
+      }
+    })
+
 
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
     def localeCalculator(request: Box[HTTPRequest]): Locale = {

@@ -78,12 +78,12 @@ class TourSnippet {
   def listTours(html: NodeSeq): NodeSeq = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"
     tours(TourEnum.withName(which)).flatMap(tour => bind("tour", html,
-      "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
+      "name" -> SHtml.link("view/" + tour.name + ".html", () => tourVar(tour), Text(tour.name)),
       "description" -> tour.description,
       "creator" -> tour.owner.name,
       "addStage" -> SHtml.link("stage/edit", () => tourVar(tour), Text(?("tour.addStage"))),
       "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))),
-      "view" -> SHtml.link("view", () => tourVar(tour), Text(?("view"))),
+      "view" -> SHtml.link("view/" + tour.name + ".html", () => tourVar(tour), Text(?("view"))),
       "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("remove")))))
   }
 

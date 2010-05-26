@@ -16,6 +16,9 @@
         <named-query name="findTourByOthers">
             <query><![CDATA[SELECT t from Tour t where not t.owner = :owner order by t.name]]></query>
         </named-query>
+        <named-query name="findTourByName">
+            <query><![CDATA[SELECT t from Tour t where t.name = :name]]></query>
+        </named-query>
     </entity>
 
     <entity class="Stage">
