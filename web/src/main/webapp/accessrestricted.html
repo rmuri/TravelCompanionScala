@@ -1,12 +1,12 @@
 <lift:surround with="default" at="content">
     <head><title>TravelCompanion Scala</title></head>
-    <h1>Kein Zugriff</h1>
+    <h1><lift:loc locid="noAccess">Kein Zugriff</lift:loc></h1>
 
     <div class="content">
         <lift:Msgs showAll="true"/>
     </div>
 
-    <div class="content">Der Zugriff auf die gew&auml;lte Seite oder Operation ist nicht gestattet.</div>
+    <div class="content"><lift:loc locid="noAccess.desc">Der Zugriff auf die gew&auml;lte Seite oder Operation ist nicht gestattet</lift:loc>.</div>
     <br/>
 
 </lift:surround>

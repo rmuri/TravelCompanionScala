@@ -7,29 +7,34 @@
     <script id="jquery" src="/classpath/jquery.js" type="text/javascript"/>
     <script id="json" src="/classpath/json.js" type="text/javascript"/>
 
-    <link rel="stylesheet" href="/classpath/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/classpath/css/style.css" type="text/css"/>
 </head>
 <body>
 <div class="body">
     <div class="logo">TravelCompanionScala</div>
-    <div class="version">Version: 0.1 | <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>: 22.05.2010</div>
+    <div class="version">Version: 0.8 |
+        <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>
+        : 26.05.2010
+    </div>
     <div class="topnavi">
-           <lift:Menu.group group="main">
+        <lift:Menu.group group="main">
             <menu:bind/>
-           </lift:Menu.group>
+        </lift:Menu.group>
     </div>
 
     <div class="login">
 
         <lift:UsrMgtHelper.showIfAuthenticated>
         <span><lift:loc locid="welcome">Willkommen</lift:loc>, <lift:UsrMgtHelper.currentUser>
-            <b><user:name/></b>
+            <b>
+                <user:name/>
+            </b>
         </lift:UsrMgtHelper.currentUser>
         </span>
         </lift:UsrMgtHelper.showIfAuthenticated>
               <span>
                 <lift:Menu.group group="user">
-                  <span>[<menu:bind/>]</span>
+                    <span>[<menu:bind/>]</span>
                 </lift:Menu.group>
               </span>
 
@@ -40,7 +45,10 @@
     </div>
 
     <div class="footer">
-        Autoren: Ralf Muri, Daniel Hobi | Hochschule für Technik Rapperswil | <lift:Language><lang:link/> </lift:Language>
+        Autoren: Ralf Muri, Daniel Hobi | Hochschule für Technik Rapperswil |
+        <lift:Language>
+            <lang:link/>
+        </lift:Language>
     </div>
 
 </div>
