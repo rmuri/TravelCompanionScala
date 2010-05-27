@@ -25,6 +25,9 @@
         <named-query name="findStagesByTour">
             <query><![CDATA[SELECT s from Stage s where s.tour = :tour order by s.startdate]]></query>
         </named-query>
+        <named-query name="findStageByName">
+            <query><![CDATA[SELECT s from Stage s where s.name = :name]]></query>
+        </named-query>
     </entity>
 
     <entity class="BlogEntry">
