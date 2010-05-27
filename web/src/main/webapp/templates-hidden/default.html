@@ -12,9 +12,12 @@
 <body>
 <div class="body">
     <div class="logo">TravelCompanionScala</div>
-    <div class="version">Version: 0.8 |
+    <div class="version">Version:
+        <lift:Props key="version"/>
+        |
         <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>
-        : 26.05.2010
+        :
+        <lift:Props key="lastUpdate"/>
     </div>
     <div class="topnavi">
         <lift:Menu.group group="main">
@@ -45,7 +48,9 @@
     </div>
 
     <div class="footer">
-        Autoren: Ralf Muri, Daniel Hobi | Hochschule für Technik Rapperswil |
+        Autoren:
+        <lift:Props key="authors"/>
+        | Hochschule für Technik Rapperswil |
         <lift:Language>
             <lang:link/>
         </lift:Language>
