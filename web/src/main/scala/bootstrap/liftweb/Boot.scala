@@ -24,7 +24,6 @@ import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
-import TravelCompanionScala.controller.ReWriter
 import TravelCompanionScala.widget.Gauge
 import TravelCompanionScala.api.RestAPI
 import net.liftweb.common._
