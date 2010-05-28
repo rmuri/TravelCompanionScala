@@ -6,7 +6,7 @@ import xml.{Text, NodeSeq}
 import net.liftweb.http.provider.HTTPCookie
 import javax.servlet.http.HttpServletRequest
 import net.liftweb.common.{Failure, Empty, Box, Full}
-import net.liftweb.http.{LiftRules, S, SHtml}
+import net.liftweb.http.{SessionVar, LiftRules, S, SHtml}
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,6 @@ import net.liftweb.http.{LiftRules, S, SHtml}
  */
 
 class Language {
-  val cookiename = "lang"
   val languages: Map[String, String] = Map("de_DE" -> "/classpath/images/de.png", "en_US" -> "/classpath/images/en.png")
 
   def render(html: NodeSeq): NodeSeq = {

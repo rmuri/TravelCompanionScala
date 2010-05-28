@@ -23,12 +23,12 @@ import net.liftweb.widgets.autocomplete.AutoComplete
 import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
-import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
 import TravelCompanionScala.widget.Gauge
 import TravelCompanionScala.api.RestAPI
 import net.liftweb.common._
 import java.util.Locale
 import net.liftweb.util.{NamedPF, Helpers}
+import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -121,21 +121,24 @@ class Boot {
       }
     })
 
-
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
     def localeCalculator(request: Box[HTTPRequest]): Locale = {
+
+      object sessionLanguage extends SessionVar[Locale](LiftRules.defaultLocaleCalculator(request))
+
       request.flatMap(r => {
         def localeCookie(in: String): HTTPCookie =
           HTTPCookie("language", Full(in),
             Empty, Full("/"), Full(2629743), Empty, Empty)
         def localeFromString(in: String): Locale = {
           val x = in.split("_").toList;
-          new Locale(x.head, x.last)
+          sessionLanguage(new Locale(x.head, x.last))
+          sessionLanguage.is
         }
         def calcLocale: Box[Locale] =
           S.findCookie("language").map(
             _.value.map(localeFromString)
-            ).openOr(Full(LiftRules.defaultLocaleCalculator(request)))
+            ).openOr(Full(sessionLanguage.is))
         S.param("locale") match {
           case Full(null) => calcLocale
           case f@Full(selectedLocale) =>
@@ -143,7 +146,7 @@ class Boot {
             Helpers.tryo(localeFromString(selectedLocale))
           case _ => calcLocale
         }
-      }).openOr(Locale.getDefault())
+      }).openOr(sessionLanguage.is)
     }
 
     LiftRules.localeCalculator = localeCalculator _
