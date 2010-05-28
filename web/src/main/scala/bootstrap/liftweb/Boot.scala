@@ -28,7 +28,7 @@ import TravelCompanionScala.api.RestAPI
 import net.liftweb.common._
 import java.util.Locale
 import net.liftweb.util.{NamedPF, Helpers}
-import TravelCompanionScala.snippet.{tourVar, pictureVar, blogEntryVar}
+import TravelCompanionScala.snippet.{stageVar, tourVar, pictureVar, blogEntryVar}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -113,12 +113,32 @@ class Boot {
       }
     }
 
-    LiftRules.statelessRewrite.prepend(NamedPF("TourRewrite") {
+    object AsStage {
+      def unapply(name: String): Option[Stage] = {
+        Model.createNamedQuery("findStageByName", "name" -> name).findOne
+      }
+    }
+
+    LiftRules.statefulRewrite.prepend(NamedPF("TourRewrite") {
       case RewriteRequest(
       ParsePath("tour" :: "view" :: AsTour(tour) :: Nil, _, _, _), _, _) => {
         tourVar(tour)
         RewriteResponse("tour" :: "view" :: Nil)
       }
+      case RewriteRequest(
+      ParsePath("tour" :: "view" :: AsTour(tour) :: AsStage(stage) :: Nil, _, _, _), _, _) => {
+        tourVar(tour)
+        stageVar(stage)
+        RewriteResponse("tour" :: "stage" :: "view" :: Nil)
+      }
+      //      case RewriteRequest(
+      //      ParsePath("tour" :: "view" :: Nil, _, _, _), _, _) => {
+      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: Nil)
+      //      }
+      //      case RewriteRequest(
+      //      ParsePath("tour" :: "stage" :: "view" :: Nil, _, _, _), _, _) => {
+      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: stageVar.get.name :: Nil)
+      //      }
     })
 
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
@@ -143,6 +163,8 @@ class Boot {
           case Full(null) => calcLocale
           case f@Full(selectedLocale) =>
             S.addCookie(localeCookie(selectedLocale))
+            //hacky?
+            S.session.map(_.findComet("DynamicBlogViews").foreach(_ ! ReRender(true)))
             Helpers.tryo(localeFromString(selectedLocale))
           case _ => calcLocale
         }

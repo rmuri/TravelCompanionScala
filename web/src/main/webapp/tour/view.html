@@ -6,24 +6,24 @@
             var gm = null;
 
             window.onload =
-                    function () {
+            function () {
 
 
-                    };
+            };
             window.onunload = function () {
-                GUnload();
+            GUnload();
             }
 
             function generate(locations) {
-                gm = new GoogleMap();
-                gm.initialize("map_canvas");
+            gm = new GoogleMap();
+            gm.initialize("map_canvas");
 
-                var arr = Array();
-                $.each(locations.stages, function(i, stage) {
-                    arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
-                });
-                var tour = gm.createTour(arr);
-                gm.drawTour(tour);
+            var arr = Array();
+            $.each(locations.stages, function(i, stage) {
+            arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
+            });
+            var tour = gm.createTour(arr);
+            gm.drawTour(tour);
             }
             //]]>
         </script>
@@ -48,7 +48,12 @@
                 <th class="name">
                     <lift:loc locid="tour.stage">Reiseabschnitt</lift:loc>
                 </th>
-                <th><lift:loc locid="description">Beschreibung</lift:loc></th>
+                <th>
+                    <lift:loc locid="tour.stage.destination">Zielort</lift:loc>
+                </th>
+                <th>
+                    <lift:loc locid="description">Beschreibung</lift:loc>
+                </th>
                 <lift:UsrMgtHelper.showIfTourOwner>
                     <th class="options">
                         <lift:loc locid="options">Optionen</lift:loc>
