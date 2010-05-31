@@ -90,16 +90,16 @@ object RestAPI extends RestHelper {
 
   serve {
     // POST /api/blog creates new entry with xml data from request body
-    //    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
+    case "api" :: "blog" :: Nil XmlPost xml -> _ => createBlogEntry(xml)
 
     // PUT /api/blog/<valid id> updates the respective entry with xml data from request body
-    //    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
+    case "api" :: "blog" :: AsBlogEntry(entry) :: Nil XmlPut xml -> _ => saveBlogEntry(xml)
 
     // POST /api/blog/<valid id>/comment creates a new comment on the respective entry
-    //    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
+    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: Nil XmlPost xml -> _ => createComment(xml, entry)
 
     // DELETE /api/blog/<valid id>/comment/<valid id> removes the comment with the given id
-    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ if entry.comments.contains(comment) => removeComment(comment, entry)
+    //    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ if entry.comments.contains(comment) => removeComment(comment, entry)
   }
 
   serveJx {

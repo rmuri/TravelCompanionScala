@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
     <inceptionYear>2010</inceptionYear>
     <properties>
-        <scala.version>2.8.0.Beta1</scala.version>
+        <scala.version>2.8.0.RC3</scala.version>
     </properties>
 
     <!-- Set up repo for ScalaJPA -->
@@ -101,7 +101,7 @@
                     <args>
                         <!-- arg>-unchecked</arg -->
                         <arg>-deprecation</arg>
-                        <arg>-Xno-varargs-conversion</arg>
+                        <!--<arg>-Xno-varargs-conversion</arg>-->
                     </args>
                 </configuration>
             </plugin>
