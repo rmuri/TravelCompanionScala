@@ -43,7 +43,13 @@ class Boot {
     //Have a central control for forcing mimetype
     //http://groups.google.com/group/liftweb/browse_thread/thread/85721b2134db5203/8dd1529cd9eaf315?lnk=raot
     LiftRules.determineContentType = {
-      case (Full(Req("tour" :: "list" :: Nil, _,
+      case (Full(Req("tour" :: "list" :: Nil, _, //jqgrid
+      GetRequest)), _) =>
+        "text/html; charset=utf-8"
+      case (Full(Req("tour" :: "view" :: Nil, _, //google maps
+      GetRequest)), _) =>
+        "text/html; charset=utf-8"
+      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _,  //google maps
       GetRequest)), _) =>
         "text/html; charset=utf-8"
       case (_, Full(accept))

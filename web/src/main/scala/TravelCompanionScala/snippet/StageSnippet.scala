@@ -73,7 +73,7 @@ class StageSnippet {
   }
 
   def viewStage(html: NodeSeq): NodeSeq = {
-    S.setHeader("Content-Type", "text/html; charset=utf-8") //TODO manage in boot
+    //S.setHeader("Content-Type", "text/html; charset=utf-8") //now managed in boot
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> Text(stage.name),

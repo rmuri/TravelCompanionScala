@@ -40,7 +40,7 @@ class TourSnippet {
   }
 
   def showTour(html: NodeSeq): NodeSeq = {
-    S.setHeader("Content-Type", "text/html; charset=utf-8") //TODO handle in boot.scala
+    //S.setHeader("Content-Type", "text/html; charset=utf-8") //now managed in boot
     var currentTour = tour
 
     //The requestVar is filled with a default tour, because Request comes from GridAPI via the sessionVar
