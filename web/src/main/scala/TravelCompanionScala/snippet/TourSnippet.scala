@@ -11,6 +11,7 @@ import util._
 import Helpers._
 
 import TravelCompanionScala.model._
+import api.tourVarFromAPI
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,8 +40,13 @@ class TourSnippet {
   }
 
   def showTour(html: NodeSeq): NodeSeq = {
-    S.setHeader("Content-Type", "text/html; charset=utf-8")
-    val currentTour = tour
+    S.setHeader("Content-Type", "text/html; charset=utf-8") //TODO handle in boot.scala
+    var currentTour = tour
+
+    //The requestVar is filled with a default tour, because Request comes from GridAPI via the sessionVar
+    if (currentTour.id == 0) {
+      currentTour = tourVarFromAPI.is
+    }
 
     bind("tour", html,
       "name" -> currentTour.name,

@@ -1,4 +1,37 @@
 <lift:surround with="default" at="content">
+    <head>
+        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.all.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.jqgrid.css" />
+        <script src="/scripts/i18n/grid.locale-en.js" type="text/javascript"></script>
+        <script src="/scripts/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            //<![CDATA[
+            $(document).ready(function() {
+                jQuery("#tourtable").jqGrid({
+                    url:'/gridapi/tour.xml?',
+                    datatype: "xml",
+                    colNames:['ID','Name', 'Description'],
+                    colModel:[
+                        {name:'ID', sortable:false, width:5},
+                        {name:'Name', sortable:false, width:20, formatter:MyLinkFormater},
+                        {name:'Description', sortable:false, width: 75}
+                    ],
+                    autowidth: true,
+                    rowList:[10,20,30],
+                    pager: '#tourpager',
+                    viewrecords: true,
+                    caption: "Reisen anderer Mitglieder"
+                });
+                //jQuery("#tourtable").jqGrid('navGrid', '#tourpager', {edit:false,add:false,del:false});
+                function MyLinkFormater(cellvalue, options, rowObject) {
+                    //TODO fix cellvalue from api (it contains </a>> at the end, it shout be a </a>
+                    return cellvalue.html = cellvalue.replace(/\<\/a\>\>/,'</a>');
+                };
+            });
+            //]]>
+        </script>
+    </head>
+
     <lift:UsrMgtHelper.showIfAuthenticated>
         <div class="content">
             <h1>
@@ -66,37 +99,7 @@
             </lift:loc>
             :
         </p>
-        <lift:TableSorter for="listtoursothers"/>
-        <table class="tablesorter list" id="listtoursothers">
-            <thead>
-            <tr>
-                <th class="name">
-                    <lift:loc locid="name">Name</lift:loc>
-                </th>
-                <th>
-                    <lift:loc locid="description">Beschreibung</lift:loc>
-                </th>
-                <th class="creator">
-                    <lift:loc locid="creator">Ersteller</lift:loc>
-                </th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <lift:TourSnippet.listTours which="OthersTours">
-                <tr>
-                    <td>
-                        <tour:name/>
-                    </td>
-                    <td>
-                        <tour:description/>
-                    </td>
-                    <td>
-                        <tour:creator/>
-                    </td>
-                </tr>
-            </lift:TourSnippet.listTours>
-            </tbody>
-        </table>
+        <table id="tourtable"></table>
+        <div id="tourpager"></div>
     </div>
 </lift:surround>

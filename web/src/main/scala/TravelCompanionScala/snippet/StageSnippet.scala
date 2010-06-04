@@ -17,6 +17,7 @@ import JE._
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import widgets.autocomplete.AutoComplete
+import TravelCompanionScala.api.tourVarFromAPI
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +73,7 @@ class StageSnippet {
   }
 
   def viewStage(html: NodeSeq): NodeSeq = {
-    S.setHeader("Content-Type", "text/html; charset=utf-8")
+    S.setHeader("Content-Type", "text/html; charset=utf-8") //TODO manage in boot
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> Text(stage.name),
@@ -118,7 +119,12 @@ class StageSnippet {
   }
 
   def showStagesFromTour(html: NodeSeq): NodeSeq = {
-    val currentTour = tourVar.is
+    var currentTour = tourVar.is
+
+    if (currentTour.id == 0) {
+      currentTour = tourVarFromAPI.is
+    }
+
     val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
 
     stages.flatMap(stage => {
