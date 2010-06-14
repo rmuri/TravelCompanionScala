@@ -12,7 +12,7 @@
       <Arg>
           <New class="org.mortbay.jetty.nio.SelectChannelConnector">
             <Set name="host"><SystemProperty name="jetty.host" default="localhost"/></Set>
-            <Set name="port"><SystemProperty name="jetty.port" default="1976"/></Set>
+            <Set name="port"><SystemProperty name="jetty.port" default="9090"/></Set>
             <Set name="maxIdleTime">30000</Set>
             <Set name="Acceptors">2</Set>
             <Set name="statsOn">false</Set>

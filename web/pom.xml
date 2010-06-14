@@ -119,7 +119,7 @@
         </plugins>
       </build>
       <dependencies>
-        <!-- logging ... -->
+        <!-- logging ...
         <dependency>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
@@ -131,6 +131,7 @@
           <version>1.2.15</version>
           <scope>runtime</scope>
         </dependency>
+        -->
         <!-- embedded jetty -->
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
