@@ -1,8 +1,8 @@
 package TravelCompanionScala.snippet
 
-import net.liftweb.util.Props
 import net.liftweb.http.S
 import xml.{Text, NodeSeq}
+import _root_.net.liftweb.util.Props
 
 /**
  * Created by IntelliJ IDEA.

@@ -24,8 +24,7 @@
                 });
                 //jQuery("#tourtable").jqGrid('navGrid', '#tourpager', {edit:false,add:false,del:false});
                 function MyLinkFormater(cellvalue, options, rowObject) {
-                    //TODO fix cellvalue from api (it contains </a>> at the end, it shout be a </a>
-                    return cellvalue.html = cellvalue.replace(/\<\/a\>\>/,'</a>');
+                    return cellvalue;
                 };
             });
             //]]>

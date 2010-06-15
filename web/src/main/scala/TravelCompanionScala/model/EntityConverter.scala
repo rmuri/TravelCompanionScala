@@ -192,7 +192,7 @@ class EntityConverter(o: Object) {
             <cell>
               { e.id }
             </cell>
-            <tour:name>{e.name}</tour:name>
+            <tour:name/>
             <cell>
               {e.description}
             </cell>

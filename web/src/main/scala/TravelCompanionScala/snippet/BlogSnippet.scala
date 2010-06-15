@@ -155,7 +155,7 @@ class BlogSnippet {
         "edit" -> SHtml.a(() => doEditBlogEntry(entry), Text(?("edit"))),
         "comments" -> SHtml.a(() => doComments(entry), Text(?("blog.comments"))),
         "remove" -> SHtml.a(() => doRemoveBlogEntry(entry), Text(?("remove"))),
-        "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+        "preview" -> entry.content.substring(0, math.min(entry.content.length, 50)),
         "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
         "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
         "creator" -> entry.owner.name,
@@ -277,7 +277,7 @@ class BlogSnippet {
       "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
       "comments" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.comments"))),
       "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove"))),
-      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "preview" -> entry.content.substring(0, math.min(entry.content.length, 50)),
       "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
       "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
       "creator" -> entry.owner.name))

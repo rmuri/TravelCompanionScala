@@ -60,7 +60,7 @@ class DynamicBlogViews extends CometActor {
               blog.flatMap(entry =>
                 bind("e", chooseTemplate("blog", "entry", defaultXml),
                   "title" -> Text(entry.title),
-                  "content" -> Text(entry.content.substring(0, Math.min(entry.content.length, 50))),
+                  "content" -> Text(entry.content.substring(0, math.min(entry.content.length, 50))),
                   "readon" -> SHtml.a(() => bindEntryFull(entry), Text(?("blog.readOn"))),
                   "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),
                   "owner" -> Text(entry.owner.name)))): NodeSeq
