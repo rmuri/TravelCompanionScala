@@ -31,6 +31,9 @@ import TravelCompanionScala.api.tourVarFromAPI
 object stageVar extends RequestVar[Stage](new Stage())
 
 class StageSnippet {
+
+  lazy val slashDate = new SimpleDateFormat("dd.MM.yyyy")
+
   def stage = stageVar.is
 
   def editStage(html: NodeSeq): NodeSeq = {
@@ -68,7 +71,7 @@ class StageSnippet {
       "title" -> SHtml.text(currentStage.name, currentStage.name = _),
       "destination" -> AutoComplete(currentStage.destination.name, (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", " + loc.countryname)}, s => setLocation(s, currentStage)),
       "description" -> SHtml.textarea(currentStage.description, currentStage.description = _),
-      "dateOf" -%> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)),
+      "dateOf" -%> SHtml.text(slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = slashDate.parse(p)),
       "submit" -> SHtml.submit(S.?("save"), () => {stageVar(currentStage); tourVar(currentTour); doEdit}))
   }
 
@@ -77,7 +80,7 @@ class StageSnippet {
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> Text(stage.name),
-      "date" -> Text(Util.slashDate.format(stage.startdate)),
+      "date" -> Text(slashDate.format(stage.startdate)),
       "destination" -> Text(stage.destination.name + ", " + stage.destination.countryname))
   }
 

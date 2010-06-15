@@ -16,33 +16,47 @@ import scala.collection.JavaConversions._
 import javax.persistence.{PersistenceException, EntityExistsException}
 
 /**
- * Created by IntelliJ IDEA.
- * User: dhobi
- * Date: 25.03.2010
- * Time: 15:08:12
- * To change this template use File | Settings | File Templates.
+ * The UserManagement object provides login and registering mechanism.
+ *
+ * Further information on user management can be found on:
+ * - Technologiestudium (github link) Chapter 4.2 [German]
+ *
+ * Specials:
+ * Certain parts of the user management class are copied from ProtoUser class
+ * http://github.com/dpp/liftweb/blob/master/framework/lift-persistence/lift-mapper/src/main/scala/net/liftweb/mapper/ProtoUser.scala
+ *
+ * @author Daniel Hobi
+ *
  */
 
 object UserManagement {
-  ///
-  val basePath: List[String] = "user" :: Nil
-
   lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
 
-  // this object holds the logged-in user or is empty. Access is only permitted within this class.
+  /**
+   *  this object holds the logged-in user or is empty. Access is only permitted within this class.
+   */
   private object curUsr extends SessionVar[Box[Member]](Empty)
 
-  // this object holds a temporary user which is used for binding form fields (Signup, login...) to the user.
-  // its not an entity from the datebase and should never come in touch with the EntityManager.
+  /**
+   * This object holds a temporary user which is used for binding form fields (Signup, login...) to the user.
+   * its not an entity from the datebase and should never come in touch with the EntityManager.
+   */
   private object tempUserVar extends RequestVar[Member](new Member)
 
+  /**
+   * This method gives back a new or already defined Member object.
+   */
   def currentUser: Member = {
     if (curUsr.is.isDefined)
       curUsr.is.open_!
     else
       new Member
-
   }
+
+  /**
+   *  every URL starting with "user" is handled by this object
+   */
+  val basePath: List[String] = "user" :: Nil
 
   def loginSuffix = "login"
 
@@ -64,12 +78,14 @@ object UserManagement {
 
 
   /**
-   * Return the URL of the "login" page
+   * Returns the URL of the "login" page
    */
   def loginPageURL = loginPath.mkString("/", "/", "")
 
 
-  /// Menues
+  /**
+   * Creating menues
+   */
   def loginMenuLoc: Box[Menu] =
     Full(Menu(Loc("Login", loginPath, S.??("login"), loginMenuLocParams)))
 
@@ -122,18 +138,23 @@ object UserManagement {
             Nil
 
 
-
-  ///Menu sitemap
+  /**
+   * Defines menu sitemap
+   */
   def menus: List[Menu] = sitemap
 
   lazy val sitemap: List[Menu] = List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc, profileMenuLoc).flatten(a => a)
 
-  ///Login function
+  /**
+   * Checks if user is logged in or not
+   */
   def notLoggedIn_? = !loggedIn_?
 
   def loggedIn_? = !curUsr.get.isEmpty
 
-  ///wrap it
+  /**
+   * Defines a wrapper for binding purposes
+   */
   def screenWrap: Box[Node] = Full(<lift:surround with="default" at="content">
       <lift:bind/>
   </lift:surround>)
@@ -147,7 +168,9 @@ object UserManagement {
     })) openOr in
 
 
-  ///Login form
+  /**
+   * Login form
+   */
   def loginXhtml = {
     (<p>
       {S.?("member.login")}
@@ -193,23 +216,32 @@ object UserManagement {
             </form>)
   }
 
+  /**
+   * Logs in user
+   * @param in a member
+   */
   def logInUser(user: Member) = {
     curUsr.set(Full(user))
     tempUserVar(user)
     S.redirectTo("/")
   }
 
-
-  ///Functions
-
+  /**
+   * Logs out the current user
+   */
   def logout = {
     curUsr.set(Empty)
     tempUserVar(new Member)
     S.redirectTo("/")
   }
 
-
+  /**
+   * Authentification
+   */
   def login = {
+    /**
+     * Tries to authentificate the user and logs him in if he was found in the database
+     */
     def checkLogin() {
       val tryUser = Model.createQuery[Member]("SELECT m from Member m where m.name = :name and m.password = :password").setParams("name" -> tempUserVar.is.name, "password" -> tempUserVar.is.password).findOne
       if (tryUser.isDefined) {
@@ -223,6 +255,9 @@ object UserManagement {
 
     val current = tempUserVar.is
 
+    /**
+     * Renders the login form
+     */
     bind("user", loginXhtml,
       "username" -> SHtml.text(current.name, current.name = _),
       "password" -> SHtml.password(current.password, current.password = _),
@@ -232,6 +267,9 @@ object UserManagement {
       }))
   }
 
+  /**
+   * Registration form
+   */
   def memberXhtml() = {
     (<form method="post" action={S.uri}>
       <h2>
@@ -335,9 +373,14 @@ object UserManagement {
     </form>)
   }
 
-
+  /**
+   * Registration
+   */
   def signup() =
     {
+      /**
+       * Validates user input and register if there were no errors
+       */
       def testSignup() {
         val validationResult = validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
@@ -356,6 +399,10 @@ object UserManagement {
 
       val current = tempUserVar.is
 
+      /**
+       * Checks if a username already exists and returns a visual output
+       * This method is called by SHtml.ajaxText()
+       */
       def checkUsername(username: String) = {
 
         current.name = username
@@ -372,6 +419,9 @@ object UserManagement {
                 JsCmds.JsHideId("lift__noticesContainer__")
       }
 
+      /**
+       * Render register form
+       */
       bind("user",
         memberXhtml,
         "title" -> S.??("sign.up"),
@@ -391,6 +441,9 @@ object UserManagement {
 
   def editProfile =
     {
+      /**
+       * Validates user input and edit the user object if there were no errors
+       */
       def testSave() {
         val validationResult = validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
@@ -409,7 +462,9 @@ object UserManagement {
       }
 
       val current = currentUser
-
+       /**
+       * Render register form
+       */
       bind("user",
         memberXhtml,
         "title" -> S.?("member.editProfile"),
