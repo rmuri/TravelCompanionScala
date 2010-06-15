@@ -24,11 +24,11 @@ import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
 import TravelCompanionScala.widget.Gauge
-import TravelCompanionScala.api.RestAPI
 import net.liftweb.common._
 import java.util.Locale
 import net.liftweb.util.{NamedPF, Helpers}
 import TravelCompanionScala.snippet.{stageVar, tourVar, pictureVar, blogEntryVar}
+import TravelCompanionScala.api.{GridAPI, RestAPI}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -38,7 +38,33 @@ class Boot {
   def boot {
     ///http://groups.google.com/group/liftweb/browse_thread/thread/c95fcc4ce801b06c/d293bd49a9e68007
     ///UTF8 vs. tomcat
-    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+    //LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+
+    //Have a central control for forcing mimetype
+    //http://groups.google.com/group/liftweb/browse_thread/thread/85721b2134db5203/8dd1529cd9eaf315?lnk=raot
+    LiftRules.determineContentType = {
+      case (Full(Req("tour" :: "list" :: Nil, _, //jqgrid
+      GetRequest)), _) =>
+        "text/html; charset=utf-8"
+      case (Full(Req("tour" :: "view" :: Nil, _, //google maps
+      GetRequest)), _) =>
+        "text/html; charset=utf-8"
+      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _,  //google maps
+      GetRequest)), _) =>
+        "text/html; charset=utf-8"
+      case (_, Full(accept))
+        if LiftRules.useXhtmlMimeType &&
+                accept.toLowerCase.contains("application/xhtml+xml") =>
+        "application/xhtml+xml; charset=utf-8"
+      case _ => "text/html; charset=utf-8"
+    }
+
+    //Do an easy doctype management
+    //http://github.com/zhaotq/playliftweb/blob/master/survey/src/bootstrap/liftweb/Boot.scala
+    ResponseInfo.docType = {
+      case _ if S.getDocType._1 => S.getDocType._2
+      case _ => Full(DocType.xhtmlStrict)
+    }
 
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
@@ -50,6 +76,7 @@ class Boot {
     }
 
     LiftRules.dispatch.append(RestAPI)
+    LiftRules.dispatch.append(GridAPI)
     LiftRules.dispatch.append(ImageLogic.matcher)
 
 

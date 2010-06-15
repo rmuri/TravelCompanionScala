@@ -7,8 +7,8 @@ import net.liftweb.http.rest._
 import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
 import TravelCompanionScala.controller._
-import TravelCompanionScala.model.{Comment, validator, BlogEntry, Model}
 import net.liftweb.json.Xml
+import TravelCompanionScala.model._
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +30,12 @@ object RestAPI extends RestHelper {
       //      Model.createNamedQuery[Comment]("findCommentByEntry", "id" -> toLong(in), "entry" -> entry).findOne
       Model.find(classOf[Comment], toLong(in))
     }
+  }
+
+    def listTours = {
+    <Tours>
+      {Model.findAll[Tour]("findAllTours").flatMap(e => e.toXml)}
+    </Tours>
   }
 
   def listEntries = {
@@ -103,6 +109,9 @@ object RestAPI extends RestHelper {
   }
 
   serveJx {
+    // GET /api/tour lists all tours and stages
+    case Get("api" :: "tour" :: Nil, _) => Full(listTours)
+
     // GET /api/blog lists all entries
     case Get("api" :: "blog" :: Nil, _) => Full(listEntries)
 
