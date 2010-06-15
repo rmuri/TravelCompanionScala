@@ -49,7 +49,7 @@ class Boot {
       case (Full(Req("tour" :: "view" :: Nil, _, //google maps
       GetRequest)), _) =>
         "text/html; charset=utf-8"
-      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _,  //google maps
+      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _, //google maps
       GetRequest)), _) =>
         "text/html; charset=utf-8"
       case (_, Full(accept))
@@ -79,19 +79,28 @@ class Boot {
     LiftRules.dispatch.append(GridAPI)
     LiftRules.dispatch.append(ImageLogic.matcher)
 
+    def conditionalAccess(cond: List[Boolean]) = If(
+      () => cond.exists(_ == true),
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied"))))
+      )
 
     // Build SiteMap (used for navigation, access control...)
     val LoggedIn = If(
       () => UserManagement.loggedIn_?,
       () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.??("must.be.logged.in")))))
 
-    val EntryModification = If(
-      () => {
-        (UserManagement.currentUser == blogEntryVar.is.owner) ||
-                (blogEntryVar.is.owner == null) ||
-                (UserManagement.currentUser.roles.exists(_ == "mod"))
-      },
-      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
+    //    val EntryModification = If(
+    //      () => {
+    //        (UserManagement.currentUser == blogEntryVar.is.owner) ||
+    //                (blogEntryVar.is.owner == null) ||
+    //                (UserManagement.currentUser.roles.exists(_ == "mod"))
+    //      },
+    //      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
+    val EntryModification = conditionalAccess(List(
+      UserManagement.currentUser == blogEntryVar.is.owner,
+      blogEntryVar.is.owner == null,
+      UserManagement.currentUser.roles.exists(_ == "mod"))
+      )
 
     val PictureModification = If(
       () => {
