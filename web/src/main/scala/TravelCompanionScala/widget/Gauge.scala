@@ -3,22 +3,39 @@ package TravelCompanionScala.widget
 import net.liftweb.http.{LiftRules, ResourceServer}
 
 /**
- * Created by IntelliJ IDEA.
- * User: rmuri
- * Date: 04.05.2010
- * Time: 15:15:52
- * To change this template use File | Settings | File Templates.
+ * The Gauge object is as a GUI Widget.
+ *
+ * Further Information on GUI Widgets can be found on:
+ * - Technologiestudium (github link) Chapter 4.5 [German]
+ *
+ * Notices:
+ * - objImg and objImg2 have to be outside the gauge.js class to ensure correct pointing to the image path
+ *
+ * @author Daniel Hobi
+ *
  */
 
 object Gauge {
+
+  /**
+   *  Called by a snippet
+   *  i.e. Gauge(70)
+   */
   def apply(value: Int) = renderOnLoad(value)
 
+  /**
+   *  Called by Boot.scala class
+   *  Makes resources available for application
+   */
   def init() {
     ResourceServer.allow({
       case "gauge" :: tail => true
     })
   }
 
+  /**
+   *  Returns a NodeSeq containing several Javascript files, Javascript commands and a canvas element for drawing
+   */
   def renderOnLoad(value: Int) = {
     val resources = """
         var objImg = new Image();
@@ -34,6 +51,6 @@ object Gauge {
         {resources}{onLoad}
       </script>
     </head>
-              <canvas id="gauge" width="269" height="269"/>
+    <canvas id="gauge" width="269" height="269"/>
   }
 }

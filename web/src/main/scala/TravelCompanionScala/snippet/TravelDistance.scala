@@ -4,16 +4,20 @@ import xml.NodeSeq
 import TravelCompanionScala.widget.Gauge
 
 /**
- * Created by IntelliJ IDEA.
- * User: rmuri
- * Date: 04.05.2010
- * Time: 15:11:51
- * To change this template use File | Settings | File Templates.
+ * The TravelDistance snippet is responsible for rendering the Gauge widget.
+ *
+ * Further Information on creating a Widget can be found on:
+ * - http://www.assembla.com/wiki/show/liftweb/Widgets
+ * - Technologiestudium (github link) Chapter 4.5 [German]
+ *
+ * Known issues:
+ * - distance has a fixed and not a dynamically calculated value
+ * @author Daniel Hobi
+ *
  */
 
 class TravelDistance {
   def render(html: NodeSeq): NodeSeq = {
-    // calculate...
     val distance = 70
     Gauge(distance)
   }

@@ -20,27 +20,33 @@ import widgets.autocomplete.AutoComplete
 import TravelCompanionScala.api.tourVarFromAPI
 
 /**
- * Created by IntelliJ IDEA.
- * User: Ralf Muri
- * Date: 19.04.2010
- * Time: 08:55:22
- * To change this template use File | Settings | File Templates.
+ *  Set up a requestVar to track the STAGE object for edits and adds
  */
-
-// Set up a requestVar to track the STAGE object for edits and adds
 object stageVar extends RequestVar[Stage](new Stage())
 
-class StageSnippet {
 
+/**
+ * The StageSnippet is responsible for the stage view
+ *
+ * @author Daniel Hobi
+ */
+
+class StageSnippet {
   lazy val slashDate = new SimpleDateFormat("dd.MM.yyyy")
 
   def stage = stageVar.is
 
+  /**
+   *  This method edits a stage
+   */
   def editStage(html: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val currentStage = stage
     stage.tour = tourVar.is
 
+    /**
+     *  Finally edits the stage object
+     */
     def doEdit() = {
       if (validator.is_valid_entity_?(stage)) {
         Model.mergeAndFlush(stage)
@@ -49,6 +55,9 @@ class StageSnippet {
       }
     }
 
+    /**
+     *  Gets all locations for a location name and checks if the location is available in the database
+     */
     def setLocation(name: String, s: Stage) = {
       val geos: List[String] = name.split(",").toList.map(str => str.trim)
       var loc = GeoCoder.getCurrentLocations.find(
@@ -67,6 +76,11 @@ class StageSnippet {
       currentStage.startdate = TimeHelpers.now
     }
 
+    /**
+     *  Renders stage
+     *  Specials:
+     *  - AutoComplete Widget
+     */
     bind("stage", html,
       "title" -> SHtml.text(currentStage.name, currentStage.name = _),
       "destination" -> AutoComplete(currentStage.destination.name, (current, limit) => {GeoCoder.findLocationsByName(current).map(loc => loc.name + ", " + loc.countryname)}, s => setLocation(s, currentStage)),
@@ -75,8 +89,10 @@ class StageSnippet {
       "submit" -> SHtml.submit(S.?("save"), () => {stageVar(currentStage); tourVar(currentTour); doEdit}))
   }
 
+  /**
+   *  Renders stage
+   */
   def viewStage(html: NodeSeq): NodeSeq = {
-    //S.setHeader("Content-Type", "text/html; charset=utf-8") //now managed in boot
     stage.tour = tourVar.is
     bind("stage", html,
       "title" -> Text(stage.name),
@@ -84,19 +100,28 @@ class StageSnippet {
       "destination" -> Text(stage.destination.name + ", " + stage.destination.countryname))
   }
 
+  /**
+   *  Converts a stage to a JSON Object
+   */
   def cvt(stage: Stage): JsObj = {
     JsObj(("title", stage.destination.name),
       ("lat", stage.destination.lat),
       ("lng", stage.destination.lng))
   }
 
+  /**
+   *  Called by renderGoogleMap
+   *  Outputs the stages as JSON Objects and calls the generate() Javascript function
+   */
   def ajaxFunc(stages: List[Stage]): JsCmd = {
     val locobj = stages.map(stage => cvt(stage))
 
     JsCrVar("locations", JsObj(("stages", JsArray(locobj: _*)))) & JsRaw("generate(locations)").cmd
-
   }
 
+  /**
+   *  Renders the Google Map
+   */
   def renderGoogleMap(xhtml: NodeSeq): NodeSeq = {
     val currentTour = tourVar.is
     val maptype = S.attr("type").map(_.toString) openOr "SINGLE"
@@ -113,7 +138,9 @@ class StageSnippet {
     </head>)
   }
 
-
+  /**
+   *  Deletes a stage
+   */
   def doRemove() {
     val s = Model.merge(stage)
     Model.remove(s)
@@ -121,6 +148,9 @@ class StageSnippet {
     S.redirectTo("/tour/view", () => tourVar(currentTour))
   }
 
+  /**
+   *  Shows all stages from tour
+   */
   def showStagesFromTour(html: NodeSeq): NodeSeq = {
     var currentTour = tourVar.is
 

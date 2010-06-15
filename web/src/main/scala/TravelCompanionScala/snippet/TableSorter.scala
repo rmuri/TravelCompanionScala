@@ -14,8 +14,12 @@ import net.liftweb.http.S
  *
  */
 
-
 class TableSorter {
+
+  /**
+   * gets the id of the html table which should become sortable
+   * and passes this value to the TableSorter widget
+   */
   def render(xhtml: NodeSeq): NodeSeq = {
     val which = S.attr("for").map(_.toString) openOr ""
     net.liftweb.widgets.tablesorter.TableSorter("#" + which)
