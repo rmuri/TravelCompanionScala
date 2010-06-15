@@ -69,7 +69,7 @@ class PictureSnippet {
           S.redirectTo("/picture/create")
         }
       }
-      if (validator.is_valid_entity_?(picture)) {
+      if (Validator.is_valid_entity_?(picture)) {
         Model.mergeAndFlush(picture)
         S.redirectTo("/picture/list")
       }

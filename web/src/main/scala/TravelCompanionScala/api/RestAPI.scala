@@ -89,7 +89,7 @@ object RestAPI extends RestHelper {
   def saveBlogEntry(xml: Node) = {
     val e = xml.entryFromXml
     // proccess only if valid entry
-    if (validator.is_valid_entity_?(e)) {
+    if (Validator.is_valid_entity_?(e)) {
       val merged = Model.mergeAndFlush(e)
       // fire the EditEntry event to the LiftActor and pass on the saved entry
       BlogCache.cache ! EditEntry(merged)
@@ -108,7 +108,7 @@ object RestAPI extends RestHelper {
     val c = xml.commentFromXml
     c.blogEntry = entry
     // process only if valid entry
-    if (validator.is_valid_entity_?(c)) {
+    if (Validator.is_valid_entity_?(c)) {
       // merge comment and entry to the database
       val mergedComment = Model.mergeAndFlush(c)
       val mergedEntry = Model.merge(entry)

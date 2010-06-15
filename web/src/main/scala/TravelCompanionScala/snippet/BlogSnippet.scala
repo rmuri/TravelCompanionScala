@@ -66,7 +66,7 @@ class BlogSnippet {
 
     def doEditBlogEntry(entry: BlogEntry): JsCmd = {
       val save = () => {
-        if (validator.is_valid_entity_?(entry)) {
+        if (Validator.is_valid_entity_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
           BlogCache.cache ! EditEntry(merged)
           JqSetHtml(blogEntryDivId + entry.id, listEntries(entryTemplate, List(merged)))
@@ -106,7 +106,7 @@ class BlogSnippet {
 
       def renderNewCommentForm(): NodeSeq = {
         def doSaveComment(c: Comment): JsCmd = {
-          if (validator.is_valid_entity_?(c)) {
+          if (Validator.is_valid_entity_?(c)) {
             val merged = Model.merge(entry)
             merged.comments.add(c)
             Model.mergeAndFlush(merged)
@@ -155,7 +155,7 @@ class BlogSnippet {
         "edit" -> SHtml.a(() => doEditBlogEntry(entry), Text(?("edit"))),
         "comments" -> SHtml.a(() => doComments(entry), Text(?("blog.comments"))),
         "remove" -> SHtml.a(() => doRemoveBlogEntry(entry), Text(?("remove"))),
-        "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+        "preview" -> entry.content.substring(0, math.min(entry.content.length, 50)),
         "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
         "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
         "creator" -> entry.owner.name,
@@ -180,7 +180,7 @@ class BlogSnippet {
 
     def doNewEntry() = {
       def save(entry: BlogEntry): JsCmd = {
-        if (validator.is_valid_entity_?(entry)) {
+        if (Validator.is_valid_entity_?(entry)) {
           val merged = Model.mergeAndFlush(entry)
           BlogCache.cache ! AddEntry(merged)
           Hide(entryErrorDivId) &
@@ -235,7 +235,7 @@ class BlogSnippet {
 
   def editBlogEntry(html: NodeSeq): NodeSeq = {
     def doEdit() = {
-      if (validator.is_valid_entity_?(blogEntry)) {
+      if (Validator.is_valid_entity_?(blogEntry)) {
         val newEntry = Model.mergeAndFlush(blogEntry)
         BlogCache.cache ! AddEntry(newEntry)
         S.redirectTo("/blog/list")
@@ -277,7 +277,7 @@ class BlogSnippet {
       "edit" -> SHtml.link("/blog/edit", () => blogEntryVar(entry), Text(?("edit"))),
       "comments" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.comments"))),
       "remove" -> SHtml.link("/blog/remove", () => removeBlogEntry(entry), Text(?("remove"))),
-      "preview" -> entry.content.substring(0, Math.min(entry.content.length, 50)),
+      "preview" -> entry.content.substring(0, math.min(entry.content.length, 50)),
       "readOn" -> SHtml.link("/blog/view", () => blogEntryVar(entry), Text(?("blog.readOn"))),
       "lastUpdated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated),
       "creator" -> entry.owner.name))
@@ -301,7 +301,7 @@ class BlogSnippet {
 
   def addComment(html: NodeSeq): NodeSeq = {
     def doAdd(c: Comment) = {
-      if (validator.is_valid_entity_?(c))
+      if (Validator.is_valid_entity_?(c))
         Model.mergeAndFlush(c)
     }
 

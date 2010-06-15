@@ -4,11 +4,14 @@ import xml.NodeSeq
 import net.liftweb.http.S
 
 /**
- * Created by IntelliJ IDEA.
- * User: dhobi
- * Date: 20.04.2010
- * Time: 08:52:59
- * To change this template use File | Settings | File Templates.
+ * The TableSorter snippet is responsible for rendering the Tablesorter widget.
+ *
+ * Further Information on GUI Widgets and creating a Widget can be found on:
+ * - http://www.assembla.com/wiki/show/liftweb/Widgets
+ * - Technologiestudium (github link) Chapter 4.5 [German]
+ *
+ * @author Daniel Hobi
+ *
  */
 
 
