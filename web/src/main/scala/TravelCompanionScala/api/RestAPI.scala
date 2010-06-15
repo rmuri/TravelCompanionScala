@@ -11,23 +11,38 @@ import net.liftweb.json.Xml
 import TravelCompanionScala.model._
 
 /**
- * Created by IntelliJ IDEA.
- * User: rmuri
- * Date: 18.05.2010
- * Time: 10:05:32
- * To change this template use File | Settings | File Templates.
+ * The RestAPI Object provides a API for the blog functionality accessible for REST Clients.
+ * It extends from the RestHelper trait which provides support for implementing a REST API.
+ *
+ * Further Information on RestHelper and creating a REST API can be found on:
+ * - http://www.assembla.com/wiki/show/liftweb/REST_Web_Services
+ * - Technologiestudium (github link) Chapter 4.7 [German]
+ *
+ * Known Issues:
+ * -
+ *
+ *
+ * @author Ralf Muri
+ *
  */
-
-
 object RestAPI extends RestHelper {
+
+  /**
+   *  Extractor: extracts a blog entry by id
+   * @param in the id of a blog entry
+   */
   object AsBlogEntry {
     def unapply(in: String): Option[BlogEntry] = {
       Model.find(classOf[BlogEntry], toLong(in))
     }
   }
+
+  /**
+   * Extractor: extracts a comment by id
+   * * @param in the id of a comment
+   */
   object AsComment {
     def unapply(in: String): Option[Comment] = {
-      //      Model.createNamedQuery[Comment]("findCommentByEntry", "id" -> toLong(in), "entry" -> entry).findOne
       Model.find(classOf[Comment], toLong(in))
     }
   }
