@@ -382,7 +382,7 @@ object UserManagement {
        * Validates user input and register if there were no errors
        */
       def testSignup() {
-        val validationResult = validator.get.validate(tempUserVar.is)
+        val validationResult = Validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
           try {
             logInUser(Model.mergeAndFlush(tempUserVar.is))
@@ -445,7 +445,7 @@ object UserManagement {
        * Validates user input and edit the user object if there were no errors
        */
       def testSave() {
-        val validationResult = validator.get.validate(tempUserVar.is)
+        val validationResult = Validator.get.validate(tempUserVar.is)
         if (validationResult.isEmpty) {
           try {
             tempUserVar(Model.mergeAndFlush(tempUserVar.is))

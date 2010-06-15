@@ -48,7 +48,7 @@ class StageSnippet {
      *  Finally edits the stage object
      */
     def doEdit() = {
-      if (validator.is_valid_entity_?(stage)) {
+      if (Validator.is_valid_entity_?(stage)) {
         Model.mergeAndFlush(stage)
         val currentTour = tourVar.is
         S.redirectTo("/tour/view", () => tourVar(currentTour))
