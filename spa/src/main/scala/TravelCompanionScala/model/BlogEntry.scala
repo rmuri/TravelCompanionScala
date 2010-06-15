@@ -46,6 +46,9 @@ class BlogEntry {
 
   @OneToMany(mappedBy = "blogEntry", cascade = Array(CascadeType.ALL), targetEntity = classOf[Comment])
   var comments: java.util.List[Comment] = new ArrayList[Comment]()
+
+  @OneToMany(mappedBy = "blogEntry", cascade = Array(CascadeType.ALL), targetEntity = classOf[Picture])
+  var pictures: java.util.List[Picture] = new ArrayList[Picture]()
 }
 
 }
