@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints._
 
 @Entity
 @Table(name = "members")
-class Member() {
+class Member {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
@@ -57,7 +57,7 @@ class Member() {
   val pictures: List[Picture] = new ArrayList[Picture]()
 
   @ManyToMany(cascade = Array(CascadeType.ALL))
-  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member", referencedColumnName = "id")), inverseJoinColumns = Array(new JoinColumn(name = "roles", referencedColumnName = "id")))
+  @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member", referencedColumnName = "ID")), inverseJoinColumns = Array(new JoinColumn(name = "roles", referencedColumnName = "ID")))
   val roles: List[Role] = new ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {
