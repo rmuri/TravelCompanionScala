@@ -7,8 +7,8 @@ import net.liftweb.http.rest._
 import net.liftweb.common._
 import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
 import TravelCompanionScala.controller._
-import TravelCompanionScala.model.{Comment, validator, BlogEntry, Model}
 import net.liftweb.json.Xml
+import TravelCompanionScala.model._
 
 /**
  * The RestAPI Object provides a API for the blog functionality accessible for REST Clients.
@@ -47,10 +47,12 @@ object RestAPI extends RestHelper {
     }
   }
 
-  /**
-   * Returns a list of all blog entries in xml format sourrounded by the <BlogEntries/> tag as parent.
-   * The implicit
-   */
+    def listTours = {
+    <Tours>
+      {Model.findAll[Tour]("findAllTours").flatMap(e => e.toXml)}
+    </Tours>
+  }
+
   def listEntries = {
     <BlogEntries>
       {Model.findAll[BlogEntry]("findAllEntries").flatMap(e => e.toXml)}
@@ -122,6 +124,9 @@ object RestAPI extends RestHelper {
   }
 
   serveJx {
+    // GET /api/tour lists all tours and stages
+    case Get("api" :: "tour" :: Nil, _) => Full(listTours)
+
     // GET /api/blog lists all entries
     case Get("api" :: "blog" :: Nil, _) => Full(listEntries)
 

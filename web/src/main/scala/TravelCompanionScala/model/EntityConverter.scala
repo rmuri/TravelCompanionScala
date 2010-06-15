@@ -104,6 +104,100 @@ class EntityConverter(o: Object) {
             </blogEntry>
           </comment>)
       }
+      case e: Tour => {
+        Utility.trim(
+          <Tour>
+            <id>
+              {e.id}
+            </id>
+            <name>
+              {e.name}
+            </name>
+            <description>
+              {e.description}
+            </description>
+            <blogs>
+              {e.blogEntries.flatMap(b => new EntityConverter(b).toXml)}
+            </blogs>
+            <stages>
+              {e.stages.flatMap(s => new EntityConverter(s).toXml)}
+            </stages>
+          </Tour>)
+      }
+      case e: Stage => {
+        Utility.trim(
+          <Stage>
+            <id>
+              {e.id}
+            </id>
+            <name>
+              {e.name}
+            </name>
+            <description>
+              {e.description}
+            </description>
+            <startdate>
+              {e.startdate}
+            </startdate>
+            <destination>
+              {new EntityConverter(e.destination).toXml}
+            </destination>
+          </Stage>)
+      }
+      case e: Location => {
+        Utility.trim(
+          <Location>
+            <id>
+              {e.id}
+            </id>
+            <name>
+              {e.name}
+            </name>
+            <adminname>
+              {e.adminname}
+            </adminname>
+            <admincode>
+              {e.admincode}
+            </admincode>
+            <countryname>
+              {e.countryname}
+            </countryname>
+            <countrycode>
+              {e.countrycode}
+            </countrycode>
+            <geonameid>
+              {e.geonameid}
+            </geonameid>
+            <lat>
+              {e.lat}
+            </lat>
+            <lng>
+              {e.lng}
+            </lng>
+            <population>
+              {e.population}
+            </population>
+          </Location>)
+      }
+    }
+  }
+
+  //jquery Grid-Plugin needs special XML-Markup
+  def toGrid: Node = {
+
+    o match {
+      case e: Tour => {
+        Utility.trim(
+          <row id={e.id.toString }>
+            <cell>
+              { e.id }
+            </cell>
+            <tour:name>{e.name}</tour:name>
+            <cell>
+              {e.description}
+            </cell>
+          </row>)
+      }
     }
   }
 
