@@ -11,8 +11,6 @@ import util._
 import Helpers._
 
 import TravelCompanionScala.model._
-import api.tourVarFromAPI
-
 
 /**
  *  Simple enumeration to differ between own and other tours
@@ -28,13 +26,26 @@ object TourEnum extends Enumeration {
 object tourVar extends RequestVar[Tour](new Tour())
 
 /**
- * The TourSnippet is responsible for the whole tour view
+ * Sometimes the lifecyle of a RequestVar is too short, a SessionVar is needed
+ */
+object tourVarSession extends SessionVar[Tour](new Tour())
+
+/**
+ *  The TourSnippet is responsible for the whole tour view
  *
  * @author Daniel Hobi
  */
 
 class TourSnippet {
-  def tour = tourVar.is
+  def tour = {
+    if (tourVar.is.id == 0 && tourVarSession.is.id != 0) {
+      tourVar(tourVarSession.is)
+      tourVarSession(new Tour())
+      tourVar.is
+    } else {
+      tourVar.is
+    }
+  }
 
   /**
    *  This method removes a tour and redirects the user to /tour/list afterwards
@@ -50,11 +61,6 @@ class TourSnippet {
    */
   def showTour(html: NodeSeq): NodeSeq = {
     var currentTour = tour
-
-    //The requestVar is filled with a default tour, because Request comes from GridAPI via the sessionVar
-    if (currentTour.id == 0) {
-      currentTour = tourVarFromAPI.is
-    }
 
     /**
      *  This method renders a tour with the given html parameter

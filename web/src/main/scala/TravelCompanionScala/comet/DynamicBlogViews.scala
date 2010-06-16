@@ -9,10 +9,10 @@ import S._
 
 
 import java.text.SimpleDateFormat
-import TravelCompanionScala.snippet.tourVar
 import TravelCompanionScala.model.BlogEntry
 import TravelCompanionScala.model.Comment
 import TravelCompanionScala.controller._
+import TravelCompanionScala.snippet.{tourVarSession}
 
 /**
  * The DynamicBogViews class represents one CometActor.
@@ -55,7 +55,7 @@ class DynamicBlogViews extends CometActor {
             if (entry.tour == null) {
               NodeSeq.Empty
             } else {
-              Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVar(entry.tour), Text(entry.tour.name))
+              Text(?("blog.belongsTo") + " ") ++ SHtml.link("/tour/view", () => tourVarSession(entry.tour), Text(entry.tour.name))
             }
           },
           "date" -> Text(new SimpleDateFormat("dd.MM.yyyy HH:mm").format(entry.lastUpdated)),

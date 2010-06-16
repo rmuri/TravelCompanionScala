@@ -17,7 +17,6 @@ import JE._
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import widgets.autocomplete.AutoComplete
-import TravelCompanionScala.api.tourVarFromAPI
 
 /**
  *  Set up a requestVar to track the STAGE object for edits and adds
@@ -152,11 +151,8 @@ class StageSnippet {
    *  Shows all stages from tour
    */
   def showStagesFromTour(html: NodeSeq): NodeSeq = {
-    var currentTour = tourVar.is
 
-    if (currentTour.id == 0) {
-      currentTour = tourVarFromAPI.is
-    }
+    var currentTour = tourVar.is
 
     val stages = Model.createNamedQuery[Stage]("findStagesByTour").setParams("tour" -> currentTour).findAll.toList
 

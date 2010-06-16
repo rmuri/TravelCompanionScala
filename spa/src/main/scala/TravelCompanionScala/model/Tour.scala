@@ -38,6 +38,9 @@ class Tour {
   @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
   var blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
 
+  @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[Picture])
+  var pictures: List[Picture] = new ArrayList[Picture]()
+
 }
 
 
