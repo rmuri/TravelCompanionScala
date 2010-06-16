@@ -44,16 +44,16 @@ class BlogCache extends LiftActor {
       case AddBlogWatcher(me) =>
         val blog = getEntries
         reply(BlogUpdate(blog))
-        cache = cache ::: blog
+        cache = getEntries
         sessions = sessions ::: List(me)
       case AddEntry(e) =>
-        cache = cache ::: List(e)
+        cache = getEntries
         sessions.foreach(_ ! BlogUpdate(cache))
       case EditEntry(e) =>
         cache = getEntries
         sessions.foreach(_ ! BlogUpdate(cache))
       case DeleteEntry(e) =>
-        cache = cache.filter(p => p.id != e.id)
+        cache = getEntries
         sessions.foreach(_ ! BlogUpdate(cache))
 
       case AddCommentWatcher(me, entry) =>
