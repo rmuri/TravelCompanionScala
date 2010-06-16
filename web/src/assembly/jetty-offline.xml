@@ -39,6 +39,11 @@
       <outputDirectory>bin/</outputDirectory>
       <filtered>false</filtered>
     </fileSet>
+      <fileSet>
+      <directory>src/jetty/db</directory>
+      <outputDirectory>db/</outputDirectory>
+      <filtered>false</filtered>
+    </fileSet>
     <fileSet>
       <directory>src/jetty/resources</directory>
       <outputDirectory>etc/</outputDirectory>
