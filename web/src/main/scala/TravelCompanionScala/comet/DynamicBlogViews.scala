@@ -2,17 +2,22 @@ package TravelCompanionScala.comet
 
 import _root_.net.liftweb.http._
 import _root_.net.liftweb.common._
-import _root_.scala.xml._
+import _root_.scala.xml.{NodeSeq, Text}
 import js.jquery.JqJsCmds.JqSetHtml
 import js.{JsCmd}
+import js.JE.ElemById
+import js.jquery.JqJE.{JqRemove, JqId}
+import js.jquery.{JqJE, JqJsCmds}
+import js.{JE, JsCmds, JsCmd}
+import js.jquery.JqJsCmds._
 import S._
 
 
 import java.text.SimpleDateFormat
 import TravelCompanionScala.snippet.tourVar
-import TravelCompanionScala.model.BlogEntry
-import TravelCompanionScala.model.Comment
 import TravelCompanionScala.controller._
+import TravelCompanionScala.model._
+import net.liftweb.util.TimeHelpers
 
 /**
  * The DynamicBogViews class represents one CometActor.
@@ -34,6 +39,7 @@ class DynamicBlogViews extends CometActor {
 
   var blog: List[BlogEntry] = Nil
   var comments: List[Comment] = Nil
+  val commentErrorDivId = "commentErrorComet"
 
   /**
    *  Renders the CometActor view with defaultXml
@@ -72,7 +78,8 @@ class DynamicBlogViews extends CometActor {
       }
 
       JqSetHtml("blog_single", getEntry(e, chooseTemplate("blog", "entryfull", defaultXml))) &
-              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml)))
+              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml))) &
+      JqSetHtml("blog_comments_form", renderNewCommentForm(chooseTemplate("blog", "commentForm", defaultXml),e))
     }
 
     /**
@@ -82,6 +89,7 @@ class DynamicBlogViews extends CometActor {
 
     bind("entryfull" -> NodeSeq.Empty,
       "comments" -> NodeSeq.Empty,
+      "commentForm" -> NodeSeq.Empty,
       "entry" ->
               blog.flatMap(entry =>
                 bind("e", chooseTemplate("blog", "entry", defaultXml),
@@ -103,6 +111,39 @@ class DynamicBlogViews extends CometActor {
                 "dateCreated" -> new SimpleDateFormat("dd.MM.yyyy HH:mm").format(comment.dateCreated),
                 "content" -> comment.content)))
   }
+
+   /**
+   *  Renders an ajax comment form and saves the comment if submitted
+   */
+  def renderNewCommentForm(html: NodeSeq,entry: BlogEntry): NodeSeq = {
+    def doSaveComment(c: Comment): JsCmd = {
+      if (Validator.is_valid_entity_?(c)) {
+        val merged = Model.merge(entry)
+        merged.comments.add(c)
+        Model.mergeAndFlush(merged)
+        BlogCache.cache ! AddComment(merged)
+        Hide(commentErrorDivId) /* & JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm) */
+      } else {
+        Show(commentErrorDivId)
+      }
+    }
+
+    val newComment = new Comment
+    newComment.blogEntry = entry
+    newComment.member = UserManagement.currentUser
+    newComment.dateCreated = TimeHelpers.now
+    bind("blog", SHtml.ajaxForm(html),
+      "error" -> getErrorDiv(commentErrorDivId),
+      "newComment" -> SHtml.textarea(newComment.content, newComment.content = _),
+      "submit" -> SHtml.ajaxSubmit(?("save"), () => doSaveComment(newComment)),
+      "cancel" -> SHtml.a(() => Hide(commentErrorDivId) , Text(?("cancel")), "class" -> "button"))
+  }
+
+  def getErrorDiv(divIdPrefix: String) = <div id={divIdPrefix} style="display: none;">
+    <lift:Msgs>
+        <lift:error_msg/>
+    </lift:Msgs>
+  </div>
 
   /**
    *  This method is called in the very first beginning

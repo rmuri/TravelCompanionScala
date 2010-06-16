@@ -250,6 +250,32 @@
         </table>
         <div id="blog_single" class="contentl2"></div>
         <div id="blog_comments" class="contentl2"></div>
+        <div id="blog_comments_form" class="contentl2"></div>
+
+        <blog:commentForm>
+            <lift:UsrMgtHelper:showIfAuthenticated>
+                <blog:error/>
+                <table class="form">
+                    <tr>
+                        <td class="desc">
+                            <label for="content">
+                                <lift:loc locid="blog.yourComment">Ihr Kommentar</lift:loc>
+                                :*</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <blog:newComment/>
+                        </td>
+                    </tr>
+                </table>
+                <div class="bottomnavi">
+                    <blog:submit/>
+                    <blog:cancel/>
+                </div>
+            </lift:UsrMgtHelper:showIfAuthenticated>
+        </blog:commentForm>
+
     </lift:comet>
 
 </div>
