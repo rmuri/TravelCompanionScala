@@ -1,19 +1,15 @@
 package TravelCompanionScala.snippet
 
 import _root_.scala.xml.{NodeSeq, Text}
-
 import _root_.net.liftweb._
 import common.{Full, Empty}
 import http._
-import js.JE.ElemById
-import js.jquery.JqJE.{JqRemove, JqId}
-import js.jquery.{JqJE, JqJsCmds}
-import js.{JE, JsCmds, JsCmd}
+import js.jquery.{JqJsCmds}
+import js.{JsCmd}
 import S._
 import util._
 import Helpers._
 import JqJsCmds._
-
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import scala.collection.JavaConversions._

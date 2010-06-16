@@ -1,20 +1,17 @@
 package TravelCompanionScala.comet
 
-import _root_.net.liftweb.http._
 import _root_.net.liftweb.common._
 import _root_.scala.xml.{NodeSeq, Text}
-import js.jquery.JqJsCmds.JqSetHtml
-import js.{JsCmd}
-import js.jquery.JqJsCmds._
-import S._
-
-
 import java.text.SimpleDateFormat
 import TravelCompanionScala.model.BlogEntry
 import TravelCompanionScala.model.Comment
 import TravelCompanionScala.controller._
 import TravelCompanionScala.model._
 import net.liftweb.util.TimeHelpers
+import net.liftweb.http.js._
+import jquery.JqJsCmds._
+import net.liftweb.http.{SHtml, CometActor, S}
+import S._
 import TravelCompanionScala.snippet.tourVarSession
 
 /**
@@ -120,7 +117,7 @@ class DynamicBlogViews extends CometActor {
         merged.comments.add(c)
         Model.mergeAndFlush(merged)
         BlogCache.cache ! AddComment(merged)
-        Hide(commentErrorDivId) /* & JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm) */
+        Hide(commentErrorDivId) & JqSetHtml("blog_comments_form", renderNewCommentForm(html, entry))
       } else {
         Show(commentErrorDivId)
       }

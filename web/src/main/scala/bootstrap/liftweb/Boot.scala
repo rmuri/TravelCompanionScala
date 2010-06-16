@@ -44,13 +44,6 @@ class Boot {
       case _ => "text/html; charset=utf-8"
     }
 
-    //Do an easy doctype management
-    //http://github.com/zhaotq/playliftweb/blob/master/survey/src/bootstrap/liftweb/Boot.scala
-    ResponseInfo.docType = {
-      case _ if S.getDocType._1 => S.getDocType._2
-      case _ => Full(DocType.xhtmlStrict)
-    }
-
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: "Picture" :: Nil
