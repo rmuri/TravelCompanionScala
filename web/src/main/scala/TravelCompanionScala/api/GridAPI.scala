@@ -1,14 +1,5 @@
 package TravelCompanionScala.api
 
-/**
- * Created by IntelliJ IDEA.
- * User: pmei
- * Date: 04.06.2010
- * Time: 11:26:26
- * Package: TravelCompanionScala.api
- * Class: GridAPI
- */
-
 import TravelCompanionScala.model.EntityConverter._
 import net.liftweb.common._
 import TravelCompanionScala.model.{Model, Tour}
@@ -19,6 +10,12 @@ import net.liftweb.json.Xml
 import xml.{Elem, Text, Node}
 import collection.mutable.Buffer
 import TravelCompanionScala.snippet.tourVarSession
+
+/**
+ * GridAPI, serves the special jqGrid Table. This component was chosen because of the paging
+ *
+ * @author Philipp Meier
+ */
 
 object tourVar extends RequestVar[Tour](new Tour())
 

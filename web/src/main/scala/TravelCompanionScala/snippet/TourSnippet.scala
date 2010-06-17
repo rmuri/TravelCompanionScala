@@ -122,7 +122,6 @@ class TourSnippet {
       "creator" -> tour.owner.name,
       "addStage" -> SHtml.link("stage/edit", () => tourVar(tour), Text(?("tour.addStage"))),
       "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))),
-      "view" -> SHtml.link("view", () => tourVar(tour), Text(?("view"))),
       "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("remove")))))
   }
 

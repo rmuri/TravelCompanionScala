@@ -157,6 +157,7 @@ class Boot {
       }
     })
 
+    // Helper function executed on each request to set the locale
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
     def localeCalculator(request: Box[HTTPRequest]): Locale = {
 

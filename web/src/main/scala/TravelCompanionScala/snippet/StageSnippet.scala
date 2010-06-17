@@ -33,6 +33,7 @@ object stageVar extends RequestVar[Stage](new Stage())
 class StageSnippet {
   lazy val slashDate = new SimpleDateFormat("dd.MM.yyyy")
 
+  // Access method for the request var
   def stage = stageVar.is
 
   /**
