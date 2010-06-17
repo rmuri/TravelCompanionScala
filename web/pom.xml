@@ -15,6 +15,40 @@
     <packaging>war</packaging>
     <name>TravelCompanionScala Web</name>
 
+    <repositories>
+        <repository>
+            <id>stax-releases</id>
+            <url>http://mvn.stax.net/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>stax-snapshots</id>
+            <url>http://mvn.stax.net/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>stax-plugins-releases</id>
+            <url>http://mvn.stax.net/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>stax-plugins-snapshots</id>
+            <url>http://mvn.stax.net/content/repositories/snapshots</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
         <dependency>
             <groupId>TravelCompanionScala</groupId>
@@ -59,6 +93,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>net.stax</groupId>
+                <artifactId>stax-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.22</version>
@@ -92,72 +130,72 @@
     </build>
 
     <profiles>
-   <profile>
-      <id>jetty-offline</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.2-beta-5</version>
-            <configuration>
-              <finalName>TravelCompanionScala-offline-${project.version}</finalName>
-              <attach>false</attach>
-              <descriptors>
-                <descriptor>src/assembly/jetty-offline.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <id>make-assembly</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencies>
-        <!-- logging ...
-        <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>1.1.1</version>
-        </dependency>
-        <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.15</version>
-          <scope>runtime</scope>
-        </dependency>
-        -->
-        <!-- embedded jetty -->
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty</artifactId>
-          <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>start</artifactId>
-          <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-util</artifactId>
-          <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jsp-2.1-jetty</artifactId>
-          <version>${jetty.version}</version>
-        </dependency>
-      </dependencies>
-      <properties>
-          <jetty.version>6.1.23</jetty.version>
-      </properties>
-    </profile>
-</profiles>
+        <profile>
+            <id>jetty-offline</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.2-beta-5</version>
+                        <configuration>
+                            <finalName>TravelCompanionScala-offline-${project.version}</finalName>
+                            <attach>false</attach>
+                            <descriptors>
+                                <descriptor>src/assembly/jetty-offline.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <!-- logging ...
+                <dependency>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+                  <version>1.1.1</version>
+                </dependency>
+                <dependency>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+                  <version>1.2.15</version>
+                  <scope>runtime</scope>
+                </dependency>
+                -->
+                <!-- embedded jetty -->
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>start</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jsp-2.1-jetty</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+            </dependencies>
+            <properties>
+                <jetty.version>6.1.23</jetty.version>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

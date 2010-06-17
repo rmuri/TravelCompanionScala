@@ -17,7 +17,15 @@ import TravelCompanionScala.api.{GridAPI, RestAPI}
 
 /**
  * A class that's instantiated early and run.  It allows the application
- * to modify lift's environment
+ * to modify lift's environment.
+ * The boot class is used to configure the environment and behaviour of lift as well as other
+ * bootstrapping issues.
+ *
+ * Further information on bootstrapping can be found on:
+ * - "The Definitive Guide to Lift" Chapter "Bootstrapping in Lift" on
+ *    http://books.google.com/books?id=5lPmFLC6sHAC&pg=PA26
+ * - Technologiestudium (github link) Chapter 3.3.3 [German]
+ *
  */
 class Boot {
   def boot {
@@ -53,15 +61,21 @@ class Boot {
       case "images" :: _ => true
     }
 
+    // add custom dispatcher
     LiftRules.dispatch.append(RestAPI)
     LiftRules.dispatch.append(GridAPI)
     LiftRules.dispatch.append(ImageLogic.matcher)
 
     // Build SiteMap (used for navigation, access control...)
+    // Define If LocParams to check for access restrictions
     val LoggedIn = If(
       () => UserManagement.loggedIn_?,
       () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.??("must.be.logged.in")))))
 
+    /**
+     * helper method for providing access restriciton responses
+     * @param cond List of boolean conditions to check for access (logical or)
+     */
     def conditionalAccess(cond: List[Boolean]) = If(
       () => cond.exists(_ == true),
       () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
@@ -105,19 +119,30 @@ class Boot {
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
-
+    /**
+     * Extractor for Tour by name
+     */
     object AsTour {
       def unapply(name: String): Option[Tour] = {
         Model.createNamedQuery("findTourByName", "name" -> name).findOne
       }
     }
 
+    /**
+     * Extractor for Stage by name
+     */
     object AsStage {
       def unapply(name: String): Option[Stage] = {
         Model.createNamedQuery("findStageByName", "name" -> name).findOne
       }
     }
 
+    /**
+     * Example for URL rewriting:
+     * Tours and Stages should be accessible through
+     * /tour/view/<tour-name>
+     * /tour/view/<tour-name>/<stage-name>
+     */
     LiftRules.statefulRewrite.prepend(NamedPF("TourRewrite") {
       case RewriteRequest(
       ParsePath("tour" :: "view" :: AsTour(tour) :: Nil, _, _, _), _, _) => {
@@ -130,14 +155,6 @@ class Boot {
         stageVar(stage)
         RewriteResponse("tour" :: "stage" :: "view" :: Nil)
       }
-      //      case RewriteRequest(
-      //      ParsePath("tour" :: "view" :: Nil, _, _, _), _, _) => {
-      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: Nil)
-      //      }
-      //      case RewriteRequest(
-      //      ParsePath("tour" :: "stage" :: "view" :: Nil, _, _, _), _, _) => {
-      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: stageVar.get.name :: Nil)
-      //      }
     })
 
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
