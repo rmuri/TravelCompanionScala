@@ -17,6 +17,9 @@ You will get some additional stuff like:
 - General information about TravelCompanion
 - Experience made by the authors
 
+A running demo is deployed on stax.net:
+http://travelcompanion.ralfmuri.staxapps.net
+
 To run the app:
 mvn install
 cd web
