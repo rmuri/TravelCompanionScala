@@ -1,7 +1,32 @@
-Welcome to the Lift JPA Archetype. To run the sample app:
+Welcome to TravelCompanion in Scala / Lift.
 
+This project was created during the bachelor thesis by Ralf Muri and Daniel Hobi in spring 2010.
+
+The following technical aspects are implemented:
+- JPA (based on lift-jpa-archetype)
+- User Management (copy & paste from ProtoUser without mapper functionality)
+- Validating (JSR 303)
+- GUI Widgets (DistanceTraveler)
+- Ajax & Comet (Blog as Single Page Application)
+- REST
+
+Please feel free to download & study our document in the "doc" directory (german!)
+You will get some additional stuff like:
+- Best practices in Lift & HowTos
+- Working with IntelliJ IDEA & github.com
+- General information about TravelCompanion
+- Experience made by the authors
+
+To run the app:
 mvn install
 cd web
 mvn jetty:run
 
 Then point your favorite browser to http://localhost:9090/
+
+To create an offline version of the app (web/target/TravelCompanionScala-offline-1.0/):
+mvn install
+cd web
+mvn package -Pjetty-offline
+
+Notice: TravelCompanion is intended for demo purposes only.
