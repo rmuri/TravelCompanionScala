@@ -13,19 +13,19 @@
         <properties>
 
             <!--Configuration for deployment on stax.net on MySql database-->
-            <property name="javax.persistence.jdbc.password" value="tc"/>
-            <property name="javax.persistence.jdbc.user" value="tc"/>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:mysql://ec2-75-101-156-134.compute-1.amazonaws.com:3306/travelcompanion"/>
+            <!--<property name="javax.persistence.jdbc.password" value="tc"/>-->
+            <!--<property name="javax.persistence.jdbc.user" value="tc"/> -->
+            <!--<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>-->
+            <!--<property name="javax.persistence.jdbc.url"
+                      value="jdbc:mysql://ec2-75-101-156-134.compute-1.amazonaws.com:3306/travelcompanion"/> -->
             <!--stax.net deployment configuration end-->
 
             <!--Configuration for local file based H2 Database-->
-            <!--<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>-->
-            <!--<property name="javax.persistence.jdbc.password" value=""/>-->
-            <!--<property name="javax.persistence.jdbc.user" value="sa"/>-->
-            <!--<property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>-->
-            <!--<property name="javax.persistence.jdbc.url" value="jdbc:h2:file:~/TravelCompanion;FILE_LOCK=NO"/>-->
+            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:~/TravelCompanion;FILE_LOCK=NO"/>
             <!--H2 configuration end-->
 
             <property name="eclipselink.ddl-generation" value="create-tables"/>
