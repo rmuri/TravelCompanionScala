@@ -9,6 +9,7 @@ The following technical aspects are implemented:
 - GUI Widgets (DistanceTraveler)
 - Ajax & Comet (Blog as Single Page Application)
 - REST
+- Designer Friendly Templates
 
 Please feel free to download & study our document in the "doc" directory (german!)
 You will get some additional stuff like:
